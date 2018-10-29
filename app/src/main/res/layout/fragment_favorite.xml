@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#123456" >
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/favourite_Recycler"
+        android:clickable="true"
+        android:background="#123456"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
+        android:id="@+id/hiddenBarFavScreen"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play_pause_fav"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="31dp"
+            android:background="@drawable/pause_icon"/>
+        <ImageView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:id="@+id/defaultMusic"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/_11sdp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:background="@drawable/now_playing_bar_eq_image"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Now Playing"
+            android:id="@+id/nowPlaying"
+            android:textSize="@dimen/_14sdp"
+            android:layout_toRightOf="@+id/defaultMusic"
+            android:textColor="#bdbdbdbd"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+        <TextView
+            android:id="@+id/song_title_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/nowPlaying"
+            android:layout_alignStart="@id/nowPlaying"
+            android:layout_below="@+id/nowPlaying"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:maxWidth="@dimen/_150sdp"
+            android:text="my name is kunal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/song_artist_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/nowPlaying"
+            android:layout_alignStart="@id/nowPlaying"
+            android:layout_below="@+id/song_title_fav"
+            android:layout_marginTop="5dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:visibility="gone"
+            android:maxWidth="@dimen/_150sdp"
+            android:text="..."
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/noFavourites"
+        android:visibility="gone"
+        android:text="You Haven't Got any Favourites !!"
+        android:layout_centerInParent="true"
+        android:textColor="#ffffff"/>
+</RelativeLayout>

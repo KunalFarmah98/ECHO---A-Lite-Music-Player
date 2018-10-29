@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:paddingTop="@dimen/_11sdp"
+    android:background="#ffffff"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#212121"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:text="Shake to Change Song"
+        android:id="@+id/shakeToChange"
+        android:textSize="@dimen/_15sdp"/>
+
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switchShake"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:backgroundTint="#212121"
+        />
+
+    <View
+        android:id="@+id/v1"
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_below="@+id/shakeToChange"
+        android:background="#bdbdbd"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#212121"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_below="@+id/v1"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:visibility="gone"
+        android:text="Disabling Pop-Up Notificaitons for Android Oreo Users"
+        android:id="@+id/additional"
+        android:onClick="Setup"
+        android:textSize="@dimen/_15sdp"/>
+
+
+
+    <View
+        android:id="@+id/v2"
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:layout_margin="@dimen/_10sdp"
+        android:visibility="gone"
+        android:layout_below="@+id/additional"
+        android:background="#bdbdbd"/>
+
+</RelativeLayout>
+
+

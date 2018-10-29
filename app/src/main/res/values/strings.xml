@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">ECHO</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="intro">This app uses a new feature of Android Oreo called push-notifications. As a result of which the song control panel of the notification bar pops up when any changes are made to the song
+playback. For eg. next song is played or the song is paused so that you can change
+the song, play/pause while working on other apps without the hassle of opening the Echo app again
+or pulling down the notification panel to do the same.</string>
+    <string name="solutions">However some users might find it a bit irritating or a distraction. Hence they can always change that behavior by modifying the notification setting of the app by following the given steps :</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="inst1">Open the Settings app and go to Apps &amp; Notifications (or equivalent settings if you are running a custom UI) and open Notifications.
+    Click on Echo in the list</string>
+
+    <string name="inst2"> Tap on notify under Categories </string>
+    <string name="inst3"> Tap on Importance (which would be set to urgent by default) </string>
+    <string name="inst4"> Select High from the list
+                          Now Restart the app for the changes to take place</string>
+    <string name="nxt">&gt;</string>
+</resources>
