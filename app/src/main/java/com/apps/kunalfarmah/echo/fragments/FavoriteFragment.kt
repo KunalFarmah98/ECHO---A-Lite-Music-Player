@@ -17,6 +17,7 @@ import android.view.*
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.apps.kunalfarmah.echo.Adapters.FavoriteAdapter
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Constants
@@ -113,24 +114,30 @@ class FavoriteFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(query: String): Boolean {
+                try {
 
-                var name_to_saerch = query.toLowerCase()
+                    var name_to_saerch = query.toLowerCase()
 
-                var newList: java.util.ArrayList<Songs>? = java.util.ArrayList<Songs>()
+                    var newList: java.util.ArrayList<Songs>? = java.util.ArrayList<Songs>()
 
-                for (songs in refreshList!!) {
-                    var name = songs.songTitle.toLowerCase()
-                    var artist = songs.artist.toLowerCase()
-                    if (name.contains(name_to_saerch, true))
-                        newList?.add(songs)
-                    else if (artist.contains(name_to_saerch, true))
-                        newList?.add(songs)
+                    for (songs in refreshList!!) {
+                        var name = songs.songTitle.toLowerCase()
+                        var artist = songs.artist.toLowerCase()
+                        if (name.contains(name_to_saerch, true))
+                            newList?.add(songs)
+                        else if (artist.contains(name_to_saerch, true))
+                            newList?.add(songs)
 
+                    }
+                    //Task HERE
+
+                    _FavouriteAdapter?.filter_data(newList)
                 }
-                //Task HERE
-
-                _FavouriteAdapter?.filter_data(newList)
+                catch (e:Exception){
+                    Toast.makeText(context,"Aw Snap! Something Wrong Happened",Toast.LENGTH_SHORT).show()
+                }
                 return true
+
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {

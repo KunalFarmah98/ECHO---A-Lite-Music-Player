@@ -317,7 +317,10 @@ class SongPlayingFragment : Fragment() {
             play.action = Constants.ACTION.NEXT_UPDATE
             play.putExtra("title", currentSongHelper?.songTitle)
             play.putExtra("artist", currentSongHelper?.songArtist)
-            myActivity?.startService(play)
+            try {
+                myActivity?.startService(play)
+            }
+            catch (e:Exception){ }
         }
 
 

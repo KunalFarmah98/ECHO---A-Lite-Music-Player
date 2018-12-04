@@ -15,7 +15,6 @@ class SplashActivity : AppCompatActivity() {
     private var permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
             android.Manifest.permission.READ_PHONE_STATE,
-            android.Manifest.permission.PROCESS_OUTGOING_CALLS,
             android.Manifest.permission.RECORD_AUDIO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +56,8 @@ class SplashActivity : AppCompatActivity() {
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED
                         && grantResults[3] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[4] == PackageManager.PERMISSION_GRANTED) {
+                       // && grantResults[4] == PackageManager.PERMISSION_GRANTED
+                        ) {
 
                     DisplayActivity()
 
