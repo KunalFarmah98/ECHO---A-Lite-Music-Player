@@ -427,12 +427,12 @@ class FavoriteFragment : Fragment() {
 
             /*If refresh list is null we display that there are no favorites*/
             if (refreshList == null) {
-                recyclerView?.visibility = View.INVISIBLE
+              //  recyclerView?.visibility = View.INVISIBLE
                 noFavorites?.visibility = View.VISIBLE
             } else {
 
                 noFavorites?.visibility = View.INVISIBLE
-                recyclerView?.visibility = View.VISIBLE
+               // recyclerView?.visibility = View.VISIBLE
 
                 /*Else we setup our recycler view for displaying the favorite songs*/
                 _FavouriteAdapter = FavoriteAdapter(refreshList as java.util.ArrayList<Songs>, myActivity as Context)
