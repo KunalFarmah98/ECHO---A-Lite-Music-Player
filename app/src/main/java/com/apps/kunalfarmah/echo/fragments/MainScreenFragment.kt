@@ -124,12 +124,14 @@ class MainScreenFragment : Fragment()  {
         val action_sort_recent = prefs?.getString("action_sort_recent", "false")
 
         /*If there are no songs we do not display the list instead we display no songs message*/
-        if (getSongsList == null) {
-            visibleLayout?.visibility = View.INVISIBLE
+        if (getSongsList == null || getSongsList?.size==0) {
+            //visibleLayout?.visibility = View.INVISIBLE
             noSongs?.visibility = View.VISIBLE
         }
         /*If there are songs in the device, we display the list*/
         else {
+            visibleLayout?.visibility = View.VISIBLE
+            noSongs?.visibility=View.GONE
             /*Here we initialize the main screen adapter and pass it the required parameters i.e. the list of songs and the context*/
             _MainScreenAdapter = MainScreenAdapter(getSongsList as ArrayList<Songs>, myActivity as Context)
             /*The layout manager defines the way a view will be set in the recycler view
