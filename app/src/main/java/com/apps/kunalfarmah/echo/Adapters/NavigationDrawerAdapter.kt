@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activities.MainActivity
 import com.apps.kunalfarmah.echo.fragments.*
+import java.util.*
 
 
 /*This is the adapter class, which is used to set the views inside the recycler views. This class acts as bridge between the view and its data.
@@ -61,7 +62,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, favoriteFragment)
-                        .addToBackStack("Favourites")
+                        //.addToBackStack("Favourites")
                         .commit()
             }
 
@@ -71,14 +72,14 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, settingsFragment)
-                        .addToBackStack("Settings")
+                      //  .addToBackStack("Settings")
                         .commit()
             } else if (position == 3) {
                 val aboutUsFragment = AboutUSFragment()
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, aboutUsFragment)
-                        .addToBackStack("About Us")
+                       // .addToBackStack("About Us")
                         .commit()
             }
 
