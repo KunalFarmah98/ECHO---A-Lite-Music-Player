@@ -10,8 +10,8 @@ android {
         applicationId "com.apps.kunalfarmah.echo"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 5
-        versionName "5"
+        versionCode 6
+        versionName "6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
