@@ -116,7 +116,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
     }
 
     /*Class for creating a view holder for our recycler view. This class sets up the single object for our recycler view*/
-    class NavViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    class NavViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         /*Declaring the widgets and the layout used*/
         var icon_GET: ImageView? = null

@@ -2,15 +2,16 @@
 <RelativeLayout android:id="@+id/NavigationPanel"
     android:layout_width="match_parent"
     android:layout_height="128dip"
-    android:background="@drawable/bg_gradient"
+    android:background="@drawable/notifcation_layout"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <ImageView
         android:id="@+id/song_image"
-        android:layout_width="@dimen/_65sdp"
+        android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp"
         android:background="#bdbdbd"
+        android:layout_margin="@dimen/_5sdp"
         android:src="@drawable/now_playing_bar_eq_image" />
 
     <TextView
@@ -22,7 +23,7 @@
         android:layout_alignParentStart="true"
         android:gravity="center"
         android:text="abcdefghijklmno"
-        android:layout_marginBottom="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_5sdp"
         android:padding="@dimen/_2sdp"
         android:textColor="#ffffff"
@@ -47,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/close"
         android:layout_marginLeft="@dimen/_70sdp"
         android:layout_toEndOf="@+id/song_image"
         android:singleLine="true"
@@ -56,7 +58,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:duplicateParentState="true"
-        android:maxWidth="@dimen/_190sdp"
+        android:maxWidth="@dimen/_180sdp"
 
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ffffff">
@@ -102,8 +104,8 @@
         <ImageButton
             android:layout_gravity="center"
             android:id="@+id/previousbutton_not"
-            android:layout_width="@dimen/_45sdp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
             android:layout_marginRight="@dimen/_13sdp"
             android:layout_toLeftOf="@+id/playpausebutton"
             android:background="@drawable/play_previous_icon"
@@ -113,8 +115,8 @@
         <ImageView
             android:layout_gravity="center"
             android:id="@+id/playpausebutton_not"
-            android:layout_width="@dimen/_45sdp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
             android:layout_centerInParent="true"
             android:minHeight="0dp"
             android:minWidth="0dp" />
@@ -123,8 +125,8 @@
         <ImageButton
             android:layout_gravity="center"
             android:id="@+id/nextbutton_not"
-            android:layout_width="@dimen/_45sdp"
-            android:layout_height="@dimen/_45sdp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/_13sdp"
             android:layout_toRightOf="@+id/playpausebutton"

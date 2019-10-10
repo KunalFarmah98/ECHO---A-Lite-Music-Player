@@ -61,14 +61,12 @@ public class mNotification extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        //Toast.makeText(this, "Start", //Toast.LENGTH_SHORT).show();
         super.onStart(intent, startId);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //Toast.makeText(this, "Destroy", //Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -80,7 +78,6 @@ public class mNotification extends Service {
         thoughts.add("ECHO TIME!");
         thoughts.add("FUN TIME!");
         thoughts.add("LOST DREAMS!");
-//        thoughts.add("MOOD IMPROVED!");
         thoughts.add("DANCE BABY!");
         thoughts.add("GO ECHO");
         thoughts.add("NIRVANA!");
@@ -106,31 +103,22 @@ public class mNotification extends Service {
 
             if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
-
-//            if(main.getnotify_val() ==false) {
-
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
                 main.setNotify_val(true);
 
                 showNotification();
-                //Toast.makeText(this, "Service Started", //Toast.LENGTH_SHORT).show();
-//            }
 
             } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
-                //Toast.makeText(this, "Clicked Previous", //Toast.LENGTH_SHORT).show();
+
                 msong.previous();
-//            title=intent.getStringExtra("title");
-//            artist=intent.getStringExtra("artist");
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
 
 
-//            Log.i(LOG_TAG, "Clicked Previous");
             } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
 
-                //Toast.makeText(this, "Clicked Play", //Toast.LENGTH_SHORT).show();
                 msong.setPlay(msong.playorpause());
 
                 if (msong.getPlay() == false) {
@@ -157,21 +145,14 @@ public class mNotification extends Service {
                 updateNotiUI();
 
             } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
-                //Toast.makeText(this, "Clicked Next", //Toast.LENGTH_SHORT).show();
                 msong.next();
-//            title=intent.getStringExtra("title");
-//            artist=intent.getStringExtra("artist");
-//            views.setTextViewText(R.id.song_title_nav, title);
-//            views.setTextViewText(R.id.song_artist_nav, artist);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
 
 
-//            Log.i(LOG_TAG, "Clicked Next");
             } else if (intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
-                //Toast.makeText(this, "Clicked Next", //Toast.LENGTH_SHORT).show();
-//            msong.playNextsong("PlayNextNormal");
+
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
 
@@ -181,7 +162,6 @@ public class mNotification extends Service {
                 if (artist.equals("<unknown>"))
                     artist = "unknown";
 
-//            try {
                 views.setTextViewText(R.id.song_title_nav, title);
                 views.setTextViewText(R.id.song_artist_nav, artist);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
@@ -190,17 +170,9 @@ public class mNotification extends Service {
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
             }
-//            catch (Exception e) {
-//                msong.getMediaPlayer().stop();
-//                msong.unregister();
-//                main.finishAffinity();
-//            }
 
-//        }
 
             else if (intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
-                //Toast.makeText(this, "Clicked Next", //Toast.LENGTH_SHORT).show();
-//            msong.playNextsong("PlayNextNormal");
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
                 if (title.equals("<unknown>"))
@@ -217,18 +189,13 @@ public class mNotification extends Service {
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
 
-
-//            Log.i(LOG_TAG, "Clicked Next");
             } else if (intent.getAction().equals(
                     Constants.ACTION.STOPFOREGROUND_ACTION)) {
-//            Log.i(LOG_TAG, "Received Stop Foreground Intent");
-                //Toast.makeText(this, "Service Stoped", //Toast.LENGTH_SHORT).show();
 
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
                         .getInstance(this);
                 localBroadcastManager.sendBroadcast(new Intent(
                         "com.durga.action.close"));
-//            main.finishAffinity();
 
                 msong.unregister();
 
@@ -253,7 +220,6 @@ public class mNotification extends Service {
 }
 
     Notification status;
-//    private final String LOG_TAG = "Notification";
 
     private void showNotification() {
 // Using RemoteViews to bind custom layouts into Notification
@@ -355,10 +321,10 @@ public class mNotification extends Service {
             int notifyID = 1;
             String CHANNEL_ID = "my_channel_011";// The id of the channel.
             CharSequence name = "Notify";
-            int importance = NotificationManager.IMPORTANCE_MAX;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
 
 
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
 
            // NotificationChannel mChannel=  mNotificationManager.getNotificationChannel("my_channel_07");
 

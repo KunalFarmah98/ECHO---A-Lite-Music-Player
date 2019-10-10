@@ -27,7 +27,8 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/icon_navdrawer"
             android:layout_marginLeft="19dp"
-            android:textColor="#212121" />
+            android:text="Test"
+            android:textColor="@color/second" />
 
     </RelativeLayout>
     

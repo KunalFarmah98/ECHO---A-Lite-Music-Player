@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#bdbdbdbd"
+            android:textColor="#808080"
             android:textStyle="normal"
             android:textSize="15sp"
             android:text="The Smithies"

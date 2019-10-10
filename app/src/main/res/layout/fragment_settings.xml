@@ -24,7 +24,7 @@
         android:id="@+id/switchShake"
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/_14sdp"
-        android:backgroundTint="#212121"
+        android:backgroundTint="@color/second"
         />
 
     <View
@@ -57,7 +57,7 @@
         android:layout_margin="@dimen/_10sdp"
         android:visibility="gone"
         android:layout_below="@+id/additional"
-        android:background="#bdbdbd"/>
+        android:background="#808080"/>
 
 </RelativeLayout>
 
