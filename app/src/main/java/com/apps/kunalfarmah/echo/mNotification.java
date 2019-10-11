@@ -288,7 +288,7 @@ public class mNotification extends Service {
             currentPosition = 0;
         }
 
-        views.setTextViewText(R.id.logo,thoughts.get(currentPosition).toString());
+        views.setTextViewText(R.id.logo, thoughts.get(currentPosition));
 
 
 

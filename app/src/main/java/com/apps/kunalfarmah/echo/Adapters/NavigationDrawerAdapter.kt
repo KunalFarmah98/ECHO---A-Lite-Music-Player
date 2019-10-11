@@ -125,9 +125,9 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
 
         /*Constructor initialisation for the variables*/
         init {
-            icon_GET = itemView?.findViewById(R.id.icon_navdrawer)
-            text_GET = itemView?.findViewById(R.id.text_navDrawer)
-            contentHolder = itemView?.findViewById(R.id.navdrawer_item_skeleton)
+            icon_GET = itemView.findViewById(R.id.icon_navdrawer)
+            text_GET = itemView.findViewById(R.id.text_navDrawer)
+            contentHolder = itemView.findViewById(R.id.navdrawer_item_skeleton)
         }
     }
 }
