@@ -1,4 +1,4 @@
-# ECHO - A Lite music player for all the music lovers out there
+# ECHO - A Lite music player for all the music lovers out there.
 
 <p align = "center">
   <img width="320" height="220" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/ss1.png">
