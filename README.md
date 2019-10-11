@@ -1,7 +1,7 @@
 # ECHO - A Lite music player for all the music lovers out there
 
 <p align = "center">
-  <img width="320" height="220" src=https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/ss1(2).png">
+  <img width="320" height="220" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/ss1.png">
   </p>
  
 #
@@ -14,7 +14,7 @@
 
 * ### It uses a special feature Shake to Change which changes your song with a simple shake to your device even when the app is in background.
 
-   #### Note: This feature only works if your device has a working ACCELEROMETER Sensor.
+#### Note: This feature only works if your device has a working ACCELEROMETER Sensor.
 #
 
 ## Watch the Promo Video here:
@@ -25,8 +25,8 @@
 ## Features:
 
 #### Shake to Change - Change your song by a simple shake any time.
-#### Embedded Stylish Open Source Visualizer- It adapts according to your device volume.
-#### Favorites- Add or remove songs from favorites by a simple tap on the heart button.
+#### Embedded Stylish Open Source Visualizer - It adapts according to your device volume.
+#### Favorites - Add or remove songs from favorites by a simple tap on the heart button.
 #### User Friendly UI.
 
 #
@@ -57,11 +57,11 @@
 
 #### 7. Resuming process from where you left off if you launch the app without killing it from the task manager.
 
-#### 8. Auto Scrolling Text - The song name automatically scrolls horizontally if the name is too large for the screen size. (May not work with some devices or Android Versions)
+#### 8. Auto Scrolling Text - The song name automatically scrolls horizontally if the name is too large for the screen size. (May not work with some devices or Android Versions).
 
 #### 9. Media playback in the background even if the app is killed.
 
-#### 10. Cross button on the notification bar closes all instances of the app along with stopping music playback
+#### 10. Cross button on the notification bar closes all instances of the app along with stopping music playback.
 #
 
 <p vspace = "20" align="center" >
