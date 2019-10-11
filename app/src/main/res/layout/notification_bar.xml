@@ -2,14 +2,14 @@
 <RelativeLayout android:id="@+id/NavigationPanel"
     android:layout_width="match_parent"
     android:layout_height="128dip"
-    android:background="@drawable/notifcation_layout"
+    android:background="@color/second"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <ImageView
         android:id="@+id/song_image"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="@dimen/_60sdp"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
         android:background="#bdbdbd"
         android:layout_margin="@dimen/_5sdp"
         android:src="@drawable/now_playing_bar_eq_image" />

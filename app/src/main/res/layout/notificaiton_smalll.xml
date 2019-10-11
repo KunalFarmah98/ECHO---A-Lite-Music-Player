@@ -3,7 +3,7 @@
     android:id="@+id/NavigationPanel"
     android:layout_width="match_parent"
     android:layout_height="64dip"
-    android:background="@drawable/notifcation_layout"
+    android:background="@color/second"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
