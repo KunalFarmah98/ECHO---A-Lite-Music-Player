@@ -2,7 +2,7 @@
 <RelativeLayout android:id="@+id/NavigationPanel"
     android:layout_width="match_parent"
     android:layout_height="128dip"
-    android:background="@color/second"
+    android:background="@drawable/bg_gradient"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
