@@ -17,7 +17,7 @@
         android:layout_gravity="center_horizontal"
         android:padding="@dimen/_5sdp"
         android:text="YOUR DEVELOPER"
-        android:textColor="@color/second"
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_marginBottom="@dimen/_35sdp"
         android:textAlignment="center"
         android:textSize="@dimen/_25sdp" />
@@ -65,7 +65,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="48dp"
         android:padding="@dimen/_5sdp"
-        android:textColor="@color/second"
+        android:textColor="?android:attr/textColorPrimary"
         android:text="KUNAL FARMAH"
         android:textSize="@dimen/_15sdp" />
 
@@ -76,7 +76,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
         android:layout_below="@+id/Name"
         android:layout_alignStart="@+id/Name"
         android:padding="@dimen/_5sdp"
-        android:textColor="@color/second"
+        android:textColor="?android:attr/textColorPrimary"
         android:text="NEW DELHI, INDIA"
         android:textSize="@dimen/_15sdp" />
 
@@ -109,7 +109,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
             android:layout_height="@dimen/_30sdp"
             android:layout_alignBottom="@+id/email"
             android:layout_toStartOf="@+id/dev"
-            android:src="@drawable/gmail" />
+            android:src="@drawable/gmail1" />
 
         <TextView
             android:id="@+id/email"
@@ -120,7 +120,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
             android:layout_alignEnd="@+id/extra1"
             android:layout_marginLeft="@dimen/_15sdp"
             android:gravity="center"
-            android:textColor="@color/second"
+            android:textColor="?android:attr/textColorPrimary"
             android:text="kunalfarmah98@gmail.com"
             android:textSize="@dimen/_15sdp" />
 
@@ -142,7 +142,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
             android:layout_height="@dimen/_30sdp"
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/mailme"
-            android:src="@drawable/fb" />
+            android:src="@drawable/fb1" />
 
         <TextView
             android:id="@+id/fb"
@@ -153,7 +153,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
             android:layout_alignEnd="@+id/extra1"
             android:layout_marginLeft="@dimen/_15sdp"
             android:gravity="center"
-            android:textColor="@color/second"
+            android:textColor="?android:attr/textColorPrimary"
             android:text="www.facebook.com/kunal.farmah"
             android:textSize="@dimen/_15sdp" />
 
@@ -170,7 +170,7 @@ If anyone finds a bug or a crash at some point, feel free to reach me at the und
         android:text="Cheers to ALL :)"
         android:textAlignment="center"
         android:textStyle="italic"
-        android:textColor="@color/second"
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/_20sdp" />
 

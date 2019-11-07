@@ -28,7 +28,7 @@
             android:layout_toRightOf="@id/icon_navdrawer"
             android:layout_marginLeft="19dp"
             android:text="Test"
-            android:textColor="@color/second" />
+            android:textColor="?android:attr/textColorPrimary" />
 
     </RelativeLayout>
     

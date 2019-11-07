@@ -214,7 +214,7 @@ class SongPlayingFragment : Fragment() {
 
             Statified.mediaPlayer?.reset()
             try {
-                Statified.mediaPlayer?.setDataSource(myActivity, Uri.parse(currentSongHelper?.songpath))
+                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
                 Statified.mediaPlayer?.prepare()
                 Statified.mediaPlayer?.start()
                 processInformation(Statified.mediaPlayer as MediaPlayer)
@@ -277,7 +277,7 @@ class SongPlayingFragment : Fragment() {
                     Statified.mediaPlayer?.reset()
 
                     try {
-                        Statified.mediaPlayer?.setDataSource(myActivity, Uri.parse(currentSongHelper?.songpath))
+                        Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
                         Statified.mediaPlayer?.prepare()
                         Statified.mediaPlayer?.start()
                         processInformation(Statified.mediaPlayer as MediaPlayer)
@@ -518,7 +518,7 @@ class SongPlayingFragment : Fragment() {
             Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
 
             try {
-                Statified.mediaPlayer?.setDataSource(myActivity, Uri.parse(currentSongHelper?.songpath))
+                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
                 Statified.mediaPlayer?.prepare()
                 Statified.mediaPlayer?.start()
                 processInformation(Statified.mediaPlayer as MediaPlayer)
@@ -805,7 +805,7 @@ class SongPlayingFragment : Fragment() {
             try {
 
                 //setting the data source for the media player with the help of uri
-                Statified.mediaPlayer?.setDataSource(myActivity, Uri.parse(path))
+                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(path))
                 Statified.mediaPlayer?.prepare()
 
             } catch (e: Exception) {
@@ -1213,7 +1213,7 @@ class SongPlayingFragment : Fragment() {
         Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
 
         try {
-            Statified.mediaPlayer?.setDataSource(myActivity, Uri.parse(currentSongHelper?.songpath))
+            Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
             Statified.mediaPlayer?.prepare()
             Statified.mediaPlayer?.start()
             processInformation(Statified.mediaPlayer as MediaPlayer)

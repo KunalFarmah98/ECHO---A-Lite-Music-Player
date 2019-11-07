@@ -5,13 +5,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.apps.kunalfarmah.echo"
         minSdkVersion 17
-        targetSdkVersion 28
-        versionCode 8
-        versionName "8"
+        targetSdkVersion 29
+        versionCode 9
+        versionName "9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,10 +20,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-//    compileOptions {
-//        targetCompatibility X
-//        sourceCompatibility X
-//    }
 }
 
 dependencies {

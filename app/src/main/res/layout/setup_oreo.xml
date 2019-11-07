@@ -25,6 +25,7 @@
     <TextView
         android:id="@+id/intro"
         android:layout_marginLeft="@dimen/_5sdp"
+        android:textColor="?android:attr/textColorPrimary"
         android:padding="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_below="@+id/title"
@@ -44,8 +45,7 @@
         android:padding="@dimen/_5sdp"
         android:layout_below="@+id/intro"
         android:textAlignment="textStart"
-        
-
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/_15sdp"
