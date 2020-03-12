@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_80sdp"
         android:id="@+id/hiddenBarFavScreen"
+        android:forceDarkAllowed="false"
         android:layout_alignParentBottom="true"
         android:visibility="gone"
         android:background="@color/colorPrimary">

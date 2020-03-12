@@ -19,6 +19,8 @@ import android.content.Context
 import android.support.v4.content.LocalBroadcastManager
 import android.content.IntentFilter
 import android.support.v4.view.GravityCompat
+import android.support.v7.app.AppCompatDelegate
+import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
 import com.apps.kunalfarmah.echo.activities.MainActivity.Statified.notify
 
@@ -87,6 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Statified.firstrun=true
@@ -110,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         val mainScreenFragment = MainScreenFragment()
         this.supportFragmentManager
                 .beginTransaction()
-                .add(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
+                .replace(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
                 .commit()
 
         /*Now we create a variable of Navigation Drawer adapter and initialise it with the params required. As you remember that while creating a class for the navigation drawer adapter,
@@ -197,7 +200,7 @@ class MainActivity : AppCompatActivity() {
             val mainScreenFragment = MainScreenFragment()
             this.supportFragmentManager
                     .beginTransaction()
-                    .add(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
+                    .replace(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
                     .commit()
 
             Statified.settingsOn=false
@@ -210,7 +213,7 @@ class MainActivity : AppCompatActivity() {
             val mainScreenFragment = MainScreenFragment()
             this.supportFragmentManager
                     .beginTransaction()
-                    .add(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
+                    .replace(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
                     .commit()
 
             Statified.AboutOn=false

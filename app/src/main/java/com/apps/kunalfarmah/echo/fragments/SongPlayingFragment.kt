@@ -7,6 +7,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -385,18 +387,30 @@ class SongPlayingFragment : Fragment() {
         }
 
 
+        @SuppressLint("NewApi")
         fun reuestAudiofocus(): Int {
 
                 val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-// Request audio focus for playback
-                val result = am.requestAudioFocus(Staticated.focusChangeListener,
-                        // Use the music stream.
-                        AudioManager.STREAM_MUSIC,
-                        // Request permanent focus.
-                        AudioManager.AUDIOFOCUS_GAIN)
+ //Request audio focus for playback
+//                val result = am.requestAudioFocus(Staticated.focusChangeListener,
+//                        // Use the music stream.
+//                        AudioManager.STREAM_MUSIC,
+//                        // Request permanent focus.
+//                        AudioManager.AUDIOFOCUS_GAIN)
 
-                return result
+            var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                setAudioAttributes(AudioAttributes.Builder().run {
+                    setUsage(AudioAttributes.USAGE_GAME)
+                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    build()
+                })
+                setAcceptsDelayedFocusGain(true)
+                setOnAudioFocusChangeListener(focusChangeListener)
+                build()
+            }
+
+            return am.requestAudioFocus(focusRequest)
 
         }
 
@@ -805,7 +819,7 @@ class SongPlayingFragment : Fragment() {
             try {
 
                 //setting the data source for the media player with the help of uri
-                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(path))
+                Statified.mediaPlayer?.setDataSource(path)
                 Statified.mediaPlayer?.prepare()
 
             } catch (e: Exception) {

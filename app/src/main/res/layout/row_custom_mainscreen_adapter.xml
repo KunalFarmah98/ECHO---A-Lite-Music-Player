@@ -8,7 +8,7 @@
 
     android:layout_height="@dimen/_68sdp"
     android:layout_width="wrap_content"
-    android:background="#ffffff">
+    >
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#212121"
+        android:textColor="#ffffff"
         android:textStyle="normal"
         android:textSize="17sp"
         android:text="Stairway to Heaven"
@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#808080"
+            android:textColor="#858585"
             android:textStyle="normal"
             android:textSize="15sp"
             android:text="The Smithies"

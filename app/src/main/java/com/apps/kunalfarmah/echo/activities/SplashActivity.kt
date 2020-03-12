@@ -13,8 +13,9 @@ import com.apps.kunalfarmah.echo.R
 class SplashActivity : AppCompatActivity() {
 
     private var permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.ACCESS_MEDIA_LOCATION,
             android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
-           // android.Manifest.permission.READ_PHONE_STATE,
             android.Manifest.permission.RECORD_AUDIO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,7 @@ class SplashActivity : AppCompatActivity() {
 
             //ask for permisisons
 
-            ActivityCompat.requestPermissions(this@SplashActivity, permission_String, 131)
+            ActivityCompat.requestPermissions(this@SplashActivity, permission_String, 130)
 
         }
 
@@ -51,12 +52,12 @@ class SplashActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            131 -> {
+            130 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED
-                        //&& grantResults[3] == PackageManager.PERMISSION_GRANTED
-                       // && grantResults[4] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[3] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[4] == PackageManager.PERMISSION_GRANTED
                         ) {
 
                     DisplayActivity()
