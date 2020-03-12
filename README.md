@@ -32,11 +32,11 @@
 #
 
 <p vspace = "20" align="center" >
-   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo1.1.png">
-    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo5.1.png" width =190 
+   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo1_1.png">
+    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo5_1.png" width =190 
   height = 320/>
-  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo3.1.png">
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo4.1.png" width =190 
+  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo3_1.png">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo4_1.png" width =190 
   height = 320/>
 </p>
 
@@ -65,11 +65,11 @@
 #
 
 <p vspace = "20" align="center" >
-   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo2.1.png">
-    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo6.1.png" width =190 
+   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo2_1.png">
+    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo6_1.png" width =190 
   height = 320/>
-  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo7.1.png">
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo8.1.png" width =190 
+  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo7_1.png">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo8_1.png" width =190 
   height = 320/>
 </p>
 
