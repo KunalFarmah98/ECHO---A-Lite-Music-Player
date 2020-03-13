@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.widget.Toast
 import com.apps.kunalfarmah.echo.R
 
@@ -14,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
 
     private var permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.ACCESS_MEDIA_LOCATION,
+//            android.Manifest.permission.ACCESS_MEDIA_LOCATION,
             android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
             android.Manifest.permission.RECORD_AUDIO)
 
@@ -26,6 +27,7 @@ class SplashActivity : AppCompatActivity() {
         else{
             DisplayActivity_noSplash()
         }
+
 
 
         if (!hasPermissions(this@SplashActivity, *permission_String)) {           // '*' converts the complex array into a simple array
@@ -40,11 +42,15 @@ class SplashActivity : AppCompatActivity() {
 
             if(MainActivity.Statified.firstrun==false)
 
-            DisplayActivity()
+                DisplayActivity()
 
             else{}
 
         }
+
+
+
+
     }
 
 
@@ -56,8 +62,8 @@ class SplashActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[3] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[4] == PackageManager.PERMISSION_GRANTED
+//                        && grantResults[3] == PackageManager.PERMISSION_GRANTED
+//                        && grantResults[4] == PackageManager.PERMISSION_GRANTED
                         ) {
 
                     DisplayActivity()
@@ -70,12 +76,14 @@ class SplashActivity : AppCompatActivity() {
                 return
             }
 
+        // Add other 'when' lines to check for other
+        // permissions this app might request.
             else -> {
                 Toast.makeText(this@SplashActivity, "Something Went Wrong", Toast.LENGTH_SHORT).show()
                 this.finish()
                 return
             }
-        }
+    }
     }
 
     fun hasPermissions(context: Context, vararg Permissions: String): Boolean {          //vararg converts array to arguments
