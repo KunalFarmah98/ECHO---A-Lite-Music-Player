@@ -2,7 +2,10 @@ package com.apps.kunalfarmah.echo.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.VoiceInteractor
 import android.content.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -14,6 +17,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.ParcelFileDescriptor
 import android.support.annotation.Nullable
 import android.support.v4.app.Fragment
 import android.view.*
@@ -21,6 +25,7 @@ import android.widget.*
 import com.apps.kunalfarmah.echo.*
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Database.EchoDatabase
+import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.getAlbumart
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.onSongComplete
@@ -28,6 +33,8 @@ import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.playPr
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.processInformation
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.reuestAudiofocus
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.updateTextViews
+import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.ALbumArt
+import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.art
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.audioVisualization
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.currentPosition
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.currentSongHelper
@@ -49,6 +56,7 @@ import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.wasPlay
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
+import java.io.FileDescriptor
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -65,6 +73,7 @@ private const val ARG_PARAM2 = "param2"
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
+
 
 //    var receiver:BroadcastReceiver?=null
 
@@ -104,7 +113,9 @@ class SongPlayingFragment : Fragment() {
         var loopbutton: ImageButton? = null
         var shufflebutton: ImageButton? = null
 
+        var ALbumArt : ImageView? = null
         var fab: ImageButton? = null
+        var art: ImageButton? = null
 
         var currentPosition: Int = 0
         var currentSongHelper: CurrentSongHelper? = null
@@ -179,6 +190,22 @@ class SongPlayingFragment : Fragment() {
         var mSensorListener: SensorEventListener? = null
         var MY_PREFS_NAME = "ShakeFeature"
 
+         fun getAlbumart(album_id: Long): Bitmap? {
+            var bm: Bitmap? = null
+            try {
+                val sArtworkUri: Uri = Uri
+                        .parse("content://media/external/audio/albumart")
+                val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
+                val pfd: ParcelFileDescriptor? = myActivity!!.contentResolver
+                        .openFileDescriptor(uri, "r")
+                if (pfd != null) {
+                    val fd: FileDescriptor = pfd.getFileDescriptor()
+                    bm = BitmapFactory.decodeFileDescriptor(fd)
+                }
+            } catch (e: java.lang.Exception) {
+            }
+            return bm
+        }
 
         /*The function playPrevious() is used to play the previous song again*/
         fun playPrevious(check: String) {
@@ -210,6 +237,7 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songpath = nextSong?.songData
             currentSongHelper?.songTitle = nextSong?.songTitle
             currentSongHelper?.songArtist = nextSong?.artist
+            currentSongHelper?.songAlbum = nextSong?.songAlbum
             currentSongHelper?.songId = nextSong?.songID as Long
 
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
@@ -242,6 +270,7 @@ class SongPlayingFragment : Fragment() {
             play.action = Constants.ACTION.PREV_UPDATE
             play.putExtra("title", currentSongHelper?.songTitle)
             play.putExtra("artist", currentSongHelper?.songArtist)
+            play.putExtra("album", currentSongHelper?.songAlbum)
             myActivity?.startService(play)
         }
 
@@ -271,6 +300,7 @@ class SongPlayingFragment : Fragment() {
                     currentSongHelper?.songpath = nextSong?.songData
                     currentSongHelper?.songTitle = nextSong?.songTitle
                     currentSongHelper?.songArtist = nextSong?.artist
+                    currentSongHelper?.songAlbum = nextSong?.songAlbum
                     currentSongHelper?.songId = nextSong?.songID as Long
 
                     updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
@@ -319,6 +349,8 @@ class SongPlayingFragment : Fragment() {
             play.action = Constants.ACTION.NEXT_UPDATE
             play.putExtra("title", currentSongHelper?.songTitle)
             play.putExtra("artist", currentSongHelper?.songArtist)
+            play.putExtra("album", currentSongHelper?.songAlbum)
+
             try {
                 myActivity?.startService(play)
             }
@@ -427,6 +459,12 @@ class SongPlayingFragment : Fragment() {
             }
             Statified.songTitle?.text = songtitleupdted
             Statified.songArtist?.text = songartistupdted
+
+            var img = getAlbumart(currentSongHelper?.songAlbum!!.toLong())
+            if(img==null)
+            ALbumArt?.setImageResource(R.drawable.now_playing_bar_eq_image)
+            else ALbumArt?.setImageBitmap(img)
+
         }
 
 
@@ -525,6 +563,7 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songpath = nextSong?.songData
             currentSongHelper?.songTitle = nextSong?.songTitle
             currentSongHelper?.songArtist = nextSong?.artist
+            currentSongHelper?.songAlbum = nextSong?.songAlbum
             currentSongHelper?.songId = nextSong?.songID as Long
 
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
@@ -617,6 +656,8 @@ class SongPlayingFragment : Fragment() {
 
 //        receiver=CaptureBroadcast()
 
+        ALbumArt = view?.findViewById(R.id.art)
+
         Statified.songTitle = view?.findViewById(R.id.songTitle)
         Statified.songTitle?.isSelected = true
         Statified.songArtist = view?.findViewById(R.id.songArtist)
@@ -635,9 +676,11 @@ class SongPlayingFragment : Fragment() {
 
         /*Linking it with the view*/
         fab = view?.findViewById(R.id.favouriteButton)
+        art = view?.findViewById(R.id.showArtButton)
 
         /*Fading the favorite icon*/
         fab?.alpha = 0.8f
+        art?.alpha = 0.8f
 
         glView = view?.findViewById(R.id.visualizer_view)
 
@@ -684,6 +727,8 @@ class SongPlayingFragment : Fragment() {
 
         serviceIntent.putExtra("title", arguments?.getString("songTitle"))
         serviceIntent.putExtra("artist", arguments?.getString("songArtist"))
+        serviceIntent.putExtra("album", arguments?.getLong("songAlbum"))
+
         serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
 
 //            act?.setNotify_val(true)
@@ -764,11 +809,13 @@ class SongPlayingFragment : Fragment() {
         var _songTitle: String? = null
         var _songArtist: String? = null
         var _songId: Long? = null
+        var _songAlbum:Long?=null
 
         try {
             path = arguments?.getString("path")
             _songArtist = arguments?.getString("songArtist")
             _songTitle = arguments?.getString("songTitle")
+            _songAlbum = arguments?.getLong("songAlbum")
 //            var id = arguments?.getLong("SongID")
             _songId = arguments?.getLong("SongID")
 
@@ -782,7 +829,11 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songTitle = _songTitle
             currentSongHelper?.songArtist = _songArtist
             currentSongHelper?.songId = _songId
+            currentSongHelper?.songAlbum = _songAlbum
             currentSongHelper?.currentPosition = currentPosition
+
+            ALbumArt?.setImageBitmap(getAlbumart(currentSongHelper?.songAlbum!!.toLong()))
+            ALbumArt?.visibility=View.GONE
 
             // updating the textViews as soon as the song is changed and loaded
 
@@ -979,10 +1030,21 @@ class SongPlayingFragment : Fragment() {
 
                 /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
                 fab?.setBackgroundResource(R.drawable.favorite_on)
-                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath)
+                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, currentSongHelper?.songAlbum)
                 Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
         })
+
+        art?.setOnClickListener{
+            if(glView?.visibility==View.VISIBLE){
+                glView?.visibility = View.GONE
+                ALbumArt?.visibility= View.VISIBLE
+            }
+            else {
+                glView?.visibility=View.VISIBLE
+                ALbumArt?.visibility=View.GONE
+            }
+        }
 
 
         shufflebutton?.setOnClickListener({
@@ -1147,7 +1209,6 @@ class SongPlayingFragment : Fragment() {
     }
 
 
-
     /*This function handles the shake events in order to change the songs when we shake the phone*/
     fun bindShakeListener() {
 
@@ -1220,6 +1281,7 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper?.songpath = nextSong?.songData
         currentSongHelper?.songTitle = nextSong?.songTitle
         currentSongHelper?.songArtist = nextSong?.artist
+        currentSongHelper?.songAlbum = nextSong?.songAlbum
         currentSongHelper?.songId = nextSong?.songID as Long
 
         updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
@@ -1249,6 +1311,8 @@ class SongPlayingFragment : Fragment() {
         play.action = Constants.ACTION.NEXT_UPDATE
         play.putExtra("title", currentSongHelper?.songTitle)
         play.putExtra("artist", currentSongHelper?.songArtist)
+        play.putExtra("album", currentSongHelper?.songAlbum)
+
         myActivity?.startService(play)
     }
 

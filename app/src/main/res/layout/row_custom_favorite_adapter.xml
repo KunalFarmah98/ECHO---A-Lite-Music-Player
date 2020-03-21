@@ -6,38 +6,54 @@
 
     <RelativeLayout
 
-        android:layout_height="@dimen/_68sdp"
-        android:layout_width="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_68sdp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true">
 
-            <TextView
+
+            <ImageView
+                android:id="@+id/album"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#ffffff"
-                android:textStyle="normal"
-                android:textSize="17sp"
-                android:text="Stairway to Heaven"
-                android:paddingBottom="-7dp"
-                android:paddingRight="9dp"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/tracktitle"/>
-
-            <TextView
+                />
+            <LinearLayout
+                android:id="@+id/details"
+                android:layout_toRightOf="@id/album"
                 android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
-                android:textColor="#858585"
-                android:textStyle="normal"
-                android:textSize="15sp"
-                android:text="The Smithies"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tracktitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingRight="9dp"
+                    android:paddingBottom="-7dp"
+                    android:text="Stairway to Heaven"
+                    android:textColor="#ffffff"
+                    android:textSize="17sp"
+                    android:textStyle="normal" />
 
-                android:paddingRight="7dp"
-                android:layout_below="@+id/tracktitle"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/trackartist"/>
+                <TextView
+                    android:id="@+id/trackartist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingRight="7dp"
+                    android:text="The Smithies"
+                    android:textColor="#858585"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
 
 
         </RelativeLayout>
@@ -45,10 +61,10 @@
         <View
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="#e0e0e0"
-            android:layout_marginRight="11dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="11dp"
-            android:layout_alignParentBottom="true"/>
+            android:layout_marginRight="11dp"
+            android:background="#e0e0e0" />
 
 
     </RelativeLayout>

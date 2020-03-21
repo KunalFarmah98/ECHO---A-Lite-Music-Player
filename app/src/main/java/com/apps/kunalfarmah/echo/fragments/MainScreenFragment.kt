@@ -3,31 +3,36 @@ package com.apps.kunalfarmah.echo.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
-
 import android.view.*
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Constants
 import com.apps.kunalfarmah.echo.R
-
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activities.MainActivity
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songArtist
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songTitle
-
 import com.apps.kunalfarmah.echo.mNotification
-
+import java.io.FileDescriptor
 import java.util.*
 
 
@@ -252,6 +257,7 @@ class MainScreenFragment : Fragment()  {
             val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
             val songData = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val dateAdded = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
+            val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
 
             while (songCursor.moveToNext()) {
                 var currentID = songCursor.getLong(songId)
@@ -259,10 +265,11 @@ class MainScreenFragment : Fragment()  {
                 var currArtist = songCursor.getString(songArtist)
                 var currData = songCursor.getString(songData)
                 var currdate = songCursor.getLong(dateAdded)
+                var currAlbum = songCursor.getLong(songAlbum)
 
 
                 try {
-                    arralist.add(Songs(currentID, currTitle, currArtist, currData, currdate))
+                    arralist.add(Songs(currentID, currTitle, currArtist, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
                     Toast.makeText(context,"Not Enough RAM to Allocate Memory and Collect Your Songs :(",Toast.LENGTH_SHORT).show()
@@ -295,6 +302,52 @@ class MainScreenFragment : Fragment()  {
             }
         }catch (e:Exception){}
     }
+
+    fun getAlbumart(album_id: Long): Bitmap? {
+        var bm: Bitmap? = null
+        try {
+            val sArtworkUri: Uri = Uri
+                    .parse("content://media/external/audio/albumart")
+            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
+            val pfd: ParcelFileDescriptor? = context!!.contentResolver
+                    .openFileDescriptor(uri, "r")
+            if (pfd != null) {
+                val fd: FileDescriptor = pfd.getFileDescriptor()
+                bm = BitmapFactory.decodeFileDescriptor(fd)
+            }
+        } catch (e: java.lang.Exception) {
+        }
+        return bm
+    }
+    private fun getCoverArtPath(context: Context?, androidAlbumId: Long): String? {
+        var path: String? = null
+
+        val cursor = context?.contentResolver?.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                arrayOf<String>(MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART),
+                MediaStore.Audio.Albums._ID + "=?",
+                arrayOf<String>(java.lang.Long.toString(androidAlbumId)),
+                null)
+
+        if (cursor!!.moveToFirst())
+        {
+             path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART))
+            // do whatever you need to do
+        }
+        return path
+        /*val c: Cursor? = context?.contentResolver?.query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Albums.ALBUM_ART),
+                MediaStore.Audio.Albums._ID + "=?", arrayOf(java.lang.Long.toString(androidAlbumId)),
+                null)
+        if (c != null) {
+            if (c.moveToFirst()) {
+                path = c.getString(0)
+            }
+            c.close()
+        }
+        return path*/
+    }
+
+
 
 
     fun bottomBarSetup() {

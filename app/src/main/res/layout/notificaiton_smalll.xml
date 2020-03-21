@@ -16,7 +16,7 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:foregroundGravity="center"
-        android:background="#bdbdbd"
+        android:background="@color/colorPrimary"
         android:src="@drawable/now_playing_bar_eq_image" />
 
     <TextView

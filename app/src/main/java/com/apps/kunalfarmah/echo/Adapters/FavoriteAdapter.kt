@@ -1,12 +1,18 @@
 package com.apps.kunalfarmah.echo.Adapters
 
+import android.content.ContentUris
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.apps.kunalfarmah.echo.R
@@ -14,6 +20,7 @@ import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.fragments.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment
+import java.io.FileDescriptor
 
 class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<FavoriteAdapter.MyViewHolder>() {
 
@@ -42,6 +49,12 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
         if( holder.trackArtist?.text !!.equals("<unknown>"))
             holder.trackArtist?.text ="unknown"
+
+        var albumId = songObject?.songAlbum as Long
+        var art = getAlbumart(albumId)
+
+        if(art!=null) holder.trackArt?.setImageBitmap(art)
+        else holder.trackArt?.setBackgroundResource(R.drawable.baseline_audiotrack_white_36dp)
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.contentHolder?.setOnClickListener({
@@ -106,12 +119,14 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         /*Declaring the widgets and the layout used*/
         var trackTitle: TextView? = null
         var trackArtist: TextView? = null
+        var trackArt: ImageView? = null
         var contentHolder: RelativeLayout? = null
 
         /*Constructor initialisation for the variables*/
         init {
             trackTitle = view.findViewById(R.id.tracktitle) as TextView
             trackArtist = view.findViewById(R.id.trackartist) as TextView
+            trackArt = view.findViewById(R.id.album) as ImageView
             contentHolder = view.findViewById(R.id.content_row_fav) as RelativeLayout
         }
     }
@@ -134,6 +149,23 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
 
     }
+    fun getAlbumart(album_id: Long): Bitmap? {
+        var bm: Bitmap? = null
+        try {
+            val sArtworkUri: Uri = Uri
+                    .parse("content://media/external/audio/albumart")
+            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
+            val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
+                    .openFileDescriptor(uri, "r")
+            if (pfd != null) {
+                val fd: FileDescriptor = pfd.getFileDescriptor()
+                bm = BitmapFactory.decodeFileDescriptor(fd)
+            }
+        } catch (e: java.lang.Exception) {
+        }
+        return bm
+    }
+
 
     fun filter_data(newList : ArrayList<Songs>?){
 
