@@ -64,7 +64,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         var art = getAlbumart(albumId)
 
         if(art!=null) holder.trackArt?.setImageBitmap(art)
-        else holder.trackArt?.setBackgroundResource(R.drawable.baseline_audiotrack_white_36dp)
+        else holder.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
 
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
