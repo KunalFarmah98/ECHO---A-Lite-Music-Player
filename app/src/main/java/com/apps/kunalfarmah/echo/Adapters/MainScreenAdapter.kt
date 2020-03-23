@@ -162,6 +162,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
     fun getAlbumart(album_id: Long): Bitmap? {
         var bm: Bitmap? = null
+        if(album_id <= 0L) return bm
         try {
             val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")

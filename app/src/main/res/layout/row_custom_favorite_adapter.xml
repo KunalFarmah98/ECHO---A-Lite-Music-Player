@@ -7,7 +7,7 @@
     <RelativeLayout
 
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_68sdp">
+        android:layout_height="@dimen/_70sdp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             <LinearLayout
                 android:id="@+id/details"
                 android:layout_toRightOf="@id/album"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

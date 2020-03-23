@@ -8,11 +8,13 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_ID
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_ARTIST
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_PATH
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_TITLE
+import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.DB_NAME
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.TABLE_NAME
 import com.apps.kunalfarmah.echo.Songs
 import java.io.ByteArrayOutputStream
@@ -28,6 +30,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     /*List for storing the favorite songs*/
     var _songList = ArrayList<Songs>()
+    var context:Context? = null
 
 
 
@@ -36,7 +39,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     object Staticated{
         val DB_NAME = "FavoriteDatabase"
-        var DB_VERSION = 7
+        var DB_VERSION = 12
 
 
         val TABLE_NAME = "FavoriteTable"
@@ -55,6 +58,10 @@ class EchoDatabase : SQLiteOpenHelper {
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        if(oldVersion<newVersion){
+            db?.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME)
+            onCreate(db)
+        }
     }
 
     constructor(context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) : super(context, name, factory, version)

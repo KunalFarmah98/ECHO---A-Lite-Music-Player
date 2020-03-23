@@ -8,6 +8,7 @@
         android:id="@+id/favourite_Recycler"
         android:clickable="true"
         android:background="@color/colorPrimary"
+        android:layout_above="@id/hiddenBarFavScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

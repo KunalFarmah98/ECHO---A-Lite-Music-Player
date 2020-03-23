@@ -75,6 +75,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             args.putString("path", songObject?.songData)
             args.putLong("SongID", songObject?.songID!!)
             args.putInt("songPosition", position)
+            args.putLong("songAlbum",songObject?.songAlbum as Long)
 
             /*Here the complete array list is sent*/
             args.putParcelableArrayList("songData", songDetails)
@@ -151,6 +152,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     }
     fun getAlbumart(album_id: Long): Bitmap? {
         var bm: Bitmap? = null
+        if(album_id <= 0L) return bm
         try {
             val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")

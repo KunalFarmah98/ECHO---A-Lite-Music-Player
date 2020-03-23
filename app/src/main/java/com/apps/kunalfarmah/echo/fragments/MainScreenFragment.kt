@@ -230,10 +230,10 @@ class MainScreenFragment : Fragment()  {
             _MainScreenAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
-            val editortwo = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
-            editortwo?.putString("action_sort_recent", "true")
-            editortwo?.putString("action_sort_ascending", "false")
-            editortwo?.apply()
+            val editor = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
+            editor?.putString("action_sort_recent", "true")
+            editor?.putString("action_sort_ascending", "false")
+            editor?.apply()
             if (getSongsList != null) {
                 Collections.sort(getSongsList, Songs.Statified.dateComparator)
             }
