@@ -2,7 +2,6 @@ package com.apps.kunalfarmah.echo.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.VoiceInteractor
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,6 +25,7 @@ import com.apps.kunalfarmah.echo.*
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Database.EchoDatabase
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.getAlbumart
+import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.mLastShakeTime
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Staticated.onSongComplete
@@ -189,6 +189,7 @@ class SongPlayingFragment : Fragment() {
         var mSensorManager: SensorManager? = null
         var mSensorListener: SensorEventListener? = null
         var MY_PREFS_NAME = "ShakeFeature"
+        var mLastShakeTime:Long? =0
 
          fun getAlbumart(album_id: Long): Bitmap? {
             var bm: Bitmap? = null
@@ -1228,7 +1229,7 @@ class SongPlayingFragment : Fragment() {
                 val x = event.values[0]
                 val y = event.values[1]
                 val z = event.values[2]
-
+                val curTime = System.currentTimeMillis()
                 /*Now lets see how we calculate the changes in the acceleration*/
                 /*Now we shook the phone so the current acceleration will be the first to start with*/
                 mAccelerationLast = mAccelerationCurrent
@@ -1245,7 +1246,7 @@ class SongPlayingFragment : Fragment() {
 
                 /*We obtain a real number for acceleration
                 * and we check if the acceleration was noticeable, considering 12 here*/
-                if (mAcceleration > 12) {
+                if ((curTime - Staticated.mLastShakeTime!!) >1000 && mAcceleration > 12) {
 
                     /*If the accel was greater than 12 we change the song, given the fact our shake to change was active*/
                     val prefs = myActivity?.getSharedPreferences(Staticated.MY_PREFS_NAME, Context.MODE_PRIVATE)
@@ -1254,12 +1255,15 @@ class SongPlayingFragment : Fragment() {
                     val shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
                     val isshuffled = shuffle?.getBoolean("feature", false)
 
+                    mLastShakeTime = curTime
+
                     if (isAllowed as Boolean && isshuffled as Boolean != true) {
                         playNext("PlayNextNormal")
                     } else if (isAllowed && isshuffled as Boolean)
                         playNext("PlayNextLikeNormalShuffle")
                 }
             }
+
         }
     }
 

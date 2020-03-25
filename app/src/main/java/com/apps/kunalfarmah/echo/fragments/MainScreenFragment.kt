@@ -148,6 +148,10 @@ class MainScreenFragment : Fragment()  {
             /*It is similar to the item animator we used in the navigation drawer*/
             recyclerView?.itemAnimator = DefaultItemAnimator()
             /*Finally we set the adapter to the recycler view*/
+            recyclerView?.setHasFixedSize(true)
+            recyclerView?.setItemViewCacheSize(100)
+            recyclerView?.isDrawingCacheEnabled = true
+            recyclerView?.isAlwaysDrawnWithCacheEnabled=true
             recyclerView?.adapter = _MainScreenAdapter
         }
 

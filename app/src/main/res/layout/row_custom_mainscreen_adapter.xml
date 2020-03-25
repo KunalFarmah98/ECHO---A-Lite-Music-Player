@@ -20,8 +20,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@color/colorPrimary"
                 />
             <LinearLayout
@@ -38,6 +38,10 @@
                     android:layout_marginLeft="20dp"
                     android:paddingRight="9dp"
                     android:paddingBottom="-7dp"
+                    android:maxLines="2"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit ="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:text="Stairway to Heaven"
                     android:textColor="#ffffff"
                     android:textSize="17sp"
@@ -50,6 +54,10 @@
                     android:layout_marginLeft="20dp"
                     android:paddingRight="7dp"
                     android:text="The Smithies"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit ="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:textColor="#858585"
                     android:textSize="15sp"
                     android:textStyle="normal" />
