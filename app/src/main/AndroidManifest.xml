@@ -14,7 +14,6 @@
 
     <application
         android:requestLegacyExternalStorage="true"
-        android:forceDarkAllowed="true"
         android:allowBackup="true"
         android:icon="@drawable/echo_icon"
         android:label="@string/app_name"
