@@ -22,7 +22,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/now_playing_bar_eq_image"
                 />
             <LinearLayout
                 android:id="@+id/details"

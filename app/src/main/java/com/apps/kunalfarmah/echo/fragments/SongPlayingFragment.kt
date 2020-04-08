@@ -425,25 +425,32 @@ class SongPlayingFragment : Fragment() {
 
                 val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
- //Request audio focus for playback
-//                val result = am.requestAudioFocus(Staticated.focusChangeListener,
-//                        // Use the music stream.
-//                        AudioManager.STREAM_MUSIC,
-//                        // Request permanent focus.
-//                        AudioManager.AUDIOFOCUS_GAIN)
+        //Request audio focus for playback
+            // old method
+            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+                val result = am.requestAudioFocus(Staticated.focusChangeListener,
+                        // Use the music stream.
+                        AudioManager.STREAM_MUSIC,
+                        // Request permanent focus.
+                        AudioManager.AUDIOFOCUS_GAIN)
 
-            var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
-                setAudioAttributes(AudioAttributes.Builder().run {
-                    setUsage(AudioAttributes.USAGE_GAME)
-                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    build()
-                })
-                setAcceptsDelayedFocusGain(true)
-                setOnAudioFocusChangeListener(focusChangeListener)
-                build()
+                return result
             }
+            // from O onwards
+            else {
+                var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                    setAudioAttributes(AudioAttributes.Builder().run {
+                        setUsage(AudioAttributes.USAGE_GAME)
+                        setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        build()
+                    })
+                    setAcceptsDelayedFocusGain(true)
+                    setOnAudioFocusChangeListener(focusChangeListener)
+                    build()
+                }
 
-            return am.requestAudioFocus(focusRequest)
+                return am.requestAudioFocus(focusRequest)
+            }
 
         }
 

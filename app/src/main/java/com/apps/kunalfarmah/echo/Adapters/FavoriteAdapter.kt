@@ -20,6 +20,7 @@ import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.fragments.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment
+import com.bumptech.glide.Glide
 import java.io.FileDescriptor
 
 class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<FavoriteAdapter.MyViewHolder>() {
@@ -51,10 +52,16 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             holder.trackArtist?.text ="unknown"
 
         var albumId = songObject?.songAlbum as Long
-        var art = getAlbumart(albumId)
 
-        if(art!=null) holder.trackArt?.setImageBitmap(art)
-        else holder.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if(albumId<=0L) holder.trackArt!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+        val sArtworkUri: Uri = Uri
+                .parse("content://media/external/audio/albumart")
+        val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
+        Glide.with(mContext).load(uri).into(holder.trackArt)
+//        var art = getAlbumart(albumId)
+//
+//        if(art!=null) holder.trackArt?.setImageBitmap(art)
+//        else holder.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.contentHolder?.setOnClickListener({

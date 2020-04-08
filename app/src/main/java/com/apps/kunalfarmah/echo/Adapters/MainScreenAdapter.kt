@@ -14,15 +14,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter.Statified.stopPlayingCalled
-
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activities.MainActivity
 import com.apps.kunalfarmah.echo.fragments.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.FileDescriptor
 
 
@@ -61,10 +62,15 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             holder.trackArtist?.text ="unknown"
 
         var albumId = songObject?.songAlbum as Long
-        var art = getAlbumart(albumId)
+        //var art: Bitmap? =null
 
-        if(art!=null) holder.trackArt?.setImageBitmap(art)
-        else holder.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if(albumId<=0L) holder.trackArt!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+        val sArtworkUri: Uri = Uri
+                .parse("content://media/external/audio/albumart")
+        val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
+        Glide.with(mContext).load(uri).into(holder.trackArt)
+
+
 
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
@@ -160,21 +166,27 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
     }
 
-    fun getAlbumart(album_id: Long): Bitmap? {
+     fun getAlbumart(album_id: Long): Bitmap? {
+
         var bm: Bitmap? = null
-        if(album_id <= 0L) return bm
-        try {
-            val sArtworkUri: Uri = Uri
-                    .parse("content://media/external/audio/albumart")
-            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
-            val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
-                    .openFileDescriptor(uri, "r")
-            if (pfd != null) {
-                val fd: FileDescriptor = pfd.getFileDescriptor()
-                bm = BitmapFactory.decodeFileDescriptor(fd)
+        if(album_id <= 0L) return  BitmapFactory.decodeResource(mContext!!.getResources(),
+                R.drawable.now_playing_bar_eq_image);
+         //GlobalScope.launch {
+            try {
+                val sArtworkUri: Uri = Uri
+                        .parse("content://media/external/audio/albumart")
+                val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
+                val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
+                        .openFileDescriptor(uri, "r")
+                if (pfd != null) {
+                    val fd: FileDescriptor = pfd.getFileDescriptor()
+                    bm = BitmapFactory.decodeFileDescriptor(fd)
+                }
+            } catch (e: java.lang.Exception) {
             }
-        } catch (e: java.lang.Exception) {
-        }
+             if(bm==null) bm = BitmapFactory.decodeResource(mContext!!.getResources(),
+                     R.drawable.now_playing_bar_eq_image);
+       // }
         return bm
     }
 
@@ -190,7 +202,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             notifyDataSetChanged()
         }
 
-
-
     }
+
 }

@@ -85,7 +85,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:duplicateParentState="true"
-        android:maxWidth="@dimen/_120sdp"
+        android:maxWidth="@dimen/_110sdp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ffffff">
 
