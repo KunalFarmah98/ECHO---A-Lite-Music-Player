@@ -24,52 +24,51 @@
 
 ## Features:
 
-#### Shake to Change - Change your song by a simple shake any time.
-#### Embedded Stylish Open Source Visualizer - It adapts according to your device volume.
-#### Favorites - Add or remove songs from favorites by a simple tap on the heart button.
-#### User Friendly UI.
+### Shake to Change - Change your song by a simple shake any time.
+### Embedded Stylish Open Source Visualizer - It adapts according to your device volume, with an option to switch to album arts
+### Favorites - Add or remove songs from favorites by a simple tap on the heart button.
+### Immersive Friendly UI.
+### Accurate Album Arts when available
 
 #
 
 <p vspace = "20" align="center" >
-   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo1_1.png">
-    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo5_1.png" width =190 
+   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_echo_1.jpg">
+    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_echo_5.jpg" width =190 
   height = 320/>
-  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo3_1.png">
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo4_1.png" width =190 
+  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_1echo_3.jpg">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_echo_4.jpg" width =190 
   height = 320/>
 </p>
 
-#
-## Added Key Features:
 
-#### 1. A stylish Notification Bar with music controls for hassle free engagement with your music at any time. Also visible on the lock screen for Android 5.0 and above.
+###  A stylish Notification Bar with music controls for hassle free engagement with your music at any time. Also visible on the lock screen for Android 5.0 and above.
 
-#### 2. Push notification feature for Android Oreo and above users which notifies whenever the song changes, completes or any other change taking place. A wizard is provided in the settings section for the users to disable it if they want.
+###  Push notification feature for Android Oreo and above users which notifies whenever the song changes, completes or any other change taking place. A wizard is provided in the settings section for the users to disable it if they want.
 
-#### 3. Search - Search your favorite song or Artist by typing the Song or Artist name in the search box.
+###  Search - Search your favorite song or Artist by typing the Song or Artist name in the search box.
 
-#### 4. Shake to change works even with the app in background (unless not killed using task manager).
+###  Shake to change works even with the app in background (unless not killed using task manager).
 
-#### 5. Smart Audio Focus Management- Never gets another app playing music along with Echo simultaneously. One app stops its playback if another music player launches.
+###  Smart Audio Focus Management- Never gets another app playing music along with Echo simultaneously. One app stops its playback if another music player launches.
 
-#### 6. Auto playback pause and resume on receiving and making voice calls- The playback stops when a call comes or goes and automatically resumes when it is over.
+###  Auto playback pause and resume on receiving and making voice calls- The playback stops when a call comes or goes and automatically resumes when it is over.
 
-#### 7. Resuming process from where you left off if you launch the app without killing it from the task manager.
+###  Resuming process from where you left off if you launch the app without killing it from the task manager.
 
-#### 8. Auto Scrolling Text - The song name automatically scrolls horizontally if the name is too large for the screen size. (May not work with some devices or Android Versions).
+###  Auto Scrolling Text - The song name automatically scrolls horizontally if the name is too large for the screen size. (May not work with some devices or Android Versions).
 
-#### 9. Media playback in the background even if the app is killed.
+###  Media playback in the background even if the app is killed.
 
-#### 10. Cross button on the notification bar closes all instances of the app along with stopping music playback.
+###  Cross button on the notification bar closes all instances of the app along with stopping music playback.
 #
 
 <p vspace = "20" align="center" >
-   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo2_1.png">
-    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo6_1.png" width =190 
+   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_echo_2.jpg">
+    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_1echo_6.jpg" width =190 
   height = 320/>
-  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo7_1.png">
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/echo8_1.png" width =190 
+  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_echo_7.jpg">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/rsz_echo_8.jpg" width =190 
   height = 320/>
 </p>
 
