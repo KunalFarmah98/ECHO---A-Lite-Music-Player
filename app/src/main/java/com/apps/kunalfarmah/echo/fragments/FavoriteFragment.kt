@@ -2,11 +2,17 @@ package com.apps.kunalfarmah.echo.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DefaultItemAnimator
@@ -28,6 +34,7 @@ import com.apps.kunalfarmah.echo.activities.MainActivity
 import com.apps.kunalfarmah.echo.fragments.FavoriteFragment.Statified.songArtist
 import com.apps.kunalfarmah.echo.fragments.FavoriteFragment.Statified.songTitle
 import com.apps.kunalfarmah.echo.mNotification
+import java.io.FileDescriptor
 import java.util.*
 
 class FavoriteFragment : Fragment() {
@@ -210,7 +217,7 @@ class FavoriteFragment : Fragment() {
             val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
             val songData = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val dateIndex = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
-
+            val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
             /*moveToNext() returns the next row of the results. It returns null if there is no row after the current row*/
             while (songCursor.moveToNext()) {
 
@@ -219,9 +226,9 @@ class FavoriteFragment : Fragment() {
                 var currentArtist = songCursor.getString(songArtist)
                 var currentData = songCursor.getString(songData)
                 var currentDate = songCursor.getLong(dateIndex)
-
+                var currAlbum = songCursor.getLong(songAlbum)
                 /*Adding the fetched songs to the arraylist*/
-                arrayList.add(Songs(currentId, currentTitle, currentArtist, currentData, currentDate))
+                arrayList.add(Songs(currentId, currentTitle, currentArtist, currentData, currentDate, currAlbum))
             }
         } else {
             return null
@@ -266,6 +273,21 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+
+    private fun getCoverArtPath(context: Context?, androidAlbumId: Long): String? {
+        var path: String? = null
+        val c: Cursor? = context?.contentResolver?.query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Albums.ALBUM_ART),
+                MediaStore.Audio.Albums._ID + "=?", arrayOf(java.lang.Long.toString(androidAlbumId)),
+                null)
+        if (c != null) {
+            if (c.moveToFirst()) {
+                path = c.getString(0)
+            }
+            c.close()
+        }
+        return path
+    }
     /*The bottomBarClickHandler() function is used to handle the click events on the bottom bar*/
     fun bottomBarClickHandler() {
 

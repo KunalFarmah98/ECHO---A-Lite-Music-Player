@@ -43,7 +43,7 @@
         android:layout_below="@+id/v1"
         android:layout_marginLeft="@dimen/_20sdp"
         android:visibility="gone"
-        android:text="Disabling Pop-Up Notificaitons for Android Oreo Users"
+        android:text="Disabling Pop-Up Notificaitons for Android Oreo and Above Users"
         android:id="@+id/additional"
         android:onClick="Setup"
         android:textSize="@dimen/_15sdp"/>

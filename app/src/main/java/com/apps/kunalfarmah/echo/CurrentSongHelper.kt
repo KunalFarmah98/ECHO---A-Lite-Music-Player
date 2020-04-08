@@ -1,9 +1,12 @@
 package com.apps.kunalfarmah.echo
 
+import android.graphics.Bitmap
+
 class CurrentSongHelper{
     var songTitle: String? = null
     var songArtist: String? = null
     var songpath:String?=null
+    var songAlbum:Long? = null
 
     var songId: Long? = 0
 

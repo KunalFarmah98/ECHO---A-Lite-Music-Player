@@ -5,15 +5,20 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.util.Log
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_ID
+import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_ARTIST
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_PATH
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.COLUMN_SONG_TITLE
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.DB_NAME
-import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.DB_VERSION
 import com.apps.kunalfarmah.echo.Database.EchoDatabase.Staticated.TABLE_NAME
-import com.apps.kunalfarmah.echo.R.id.songTitle
 import com.apps.kunalfarmah.echo.Songs
+import java.io.ByteArrayOutputStream
+
 
 /*This class is created for managing the database for our application
 * In Android we use SQLite database for storing the data
@@ -25,6 +30,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     /*List for storing the favorite songs*/
     var _songList = ArrayList<Songs>()
+    var context:Context? = null
 
 
 
@@ -33,7 +39,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     object Staticated{
         val DB_NAME = "FavoriteDatabase"
-        var DB_VERSION = 1
+        var DB_VERSION = 12
 
 
         val TABLE_NAME = "FavoriteTable"
@@ -41,32 +47,39 @@ class EchoDatabase : SQLiteOpenHelper {
         val COLUMN_SONG_TITLE = "SongTitle"
         val COLUMN_SONG_ARTIST = "SongArtist"
         val COLUMN_SONG_PATH = "SongPath"
+        val COLUMN_SONG_ALBUM = "SongAlbum"
     }
 
     @SuppressLint("SQLiteString")
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE " + TABLE_NAME + "( " + COLUMN_ID +
                 " INTEGER," + COLUMN_SONG_ARTIST + " STRING," + COLUMN_SONG_TITLE + " STRING,"
-                + COLUMN_SONG_PATH + " STRING);")
+                + COLUMN_SONG_PATH + " STRING," + COLUMN_SONG_ALBUM + " NUMERIC);")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        if(oldVersion<newVersion){
+            db?.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME)
+            onCreate(db)
+        }
     }
 
     constructor(context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) : super(context, name, factory, version)
 
     constructor(context: Context?) : super(context,Staticated.DB_NAME, null, Staticated.DB_VERSION)
 
-    fun storeAsFavorite(id: Int?, artist: String?, songTitle: String?, path: String?) {
+    fun storeAsFavorite(id: Int?, artist: String?, songTitle: String?, path: String?, album: Long?) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(COLUMN_ID, id)
         contentValues.put(COLUMN_SONG_ARTIST, artist)
         contentValues.put(COLUMN_SONG_TITLE, songTitle)
         contentValues.put(COLUMN_SONG_PATH, path)
+        contentValues.put(COLUMN_SONG_ALBUM, album)
         db.insert(TABLE_NAME, null, contentValues)
         db.close()
     }
+
 
     /*This method asks the database for the list of Songs stored as favorite*/
     fun queryDBList(): ArrayList<Songs>? {
@@ -96,7 +109,8 @@ class EchoDatabase : SQLiteOpenHelper {
                     var _artist = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_ARTIST))
                     var _title = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_TITLE))
                     var _songPath = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_PATH))
-                    _songList.add(Songs(_id.toLong(), _title, _artist, _songPath, 0))
+                    var _songAlbum = cSor.getInt(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM))
+                    _songList.add(Songs(_id.toLong(), _title, _artist, _songPath, 0,_songAlbum.toLong()))
                 }
 
                 /*This task is performed till there are items present*/

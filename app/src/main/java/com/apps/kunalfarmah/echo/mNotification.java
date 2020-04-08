@@ -6,12 +6,17 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -25,6 +30,7 @@ import com.apps.kunalfarmah.echo.activities.MainActivity;
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment;
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment;
 
+import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -45,6 +51,7 @@ public class mNotification extends Service {
 
     String title = "";
     String artist = "";
+    Long albumID;
     SongPlayingFragment msong;
     RemoteViews views;
     RemoteViews smallviews;
@@ -105,6 +112,7 @@ public class mNotification extends Service {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
+                albumID = intent.getLongExtra("album",-1);
                 main.setNotify_val(true);
 
                 showNotification();
@@ -114,6 +122,17 @@ public class mNotification extends Service {
                 msong.previous();
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
+
+                Bitmap img = getAlbumart(getBaseContext(), albumID);
+                if(img!=null){
+                    views.setImageViewBitmap(R.id.song_image, img);
+                    smallviews.setImageViewBitmap(R.id.song_image, img);
+                }
+                else{
+                    views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                    smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                }
+
                 updateNotiUI();
 
 
@@ -148,6 +167,17 @@ public class mNotification extends Service {
                 msong.next();
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
+
+                Bitmap img = getAlbumart(getBaseContext(), albumID);
+                if(img!=null){
+                    views.setImageViewBitmap(R.id.song_image, img);
+                    smallviews.setImageViewBitmap(R.id.song_image, img);
+                }
+                else{
+                    views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                    smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                }
+
                 updateNotiUI();
 
 
@@ -155,6 +185,8 @@ public class mNotification extends Service {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
+                albumID = intent.getLongExtra("album",-1);
+
 
                 if (title.equals("<unknown>"))
                     title = "Unknown";
@@ -168,6 +200,18 @@ public class mNotification extends Service {
                 smallviews.setTextViewText(R.id.song_title_nav, title);
                 smallviews.setTextViewText(R.id.song_artist_nav, artist);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
+
+                Bitmap img = getAlbumart(getBaseContext(), albumID);
+                if(img!=null){
+                    views.setImageViewBitmap(R.id.song_image, img);
+                    smallviews.setImageViewBitmap(R.id.song_image, img);
+                }
+                else{
+                    views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                    smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                }
+
+
                 updateNotiUI();
             }
 
@@ -175,6 +219,8 @@ public class mNotification extends Service {
             else if (intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
+                albumID = intent.getLongExtra("album",-1);
+
                 if (title.equals("<unknown>"))
                     title = "Unknown";
 
@@ -187,6 +233,18 @@ public class mNotification extends Service {
                 smallviews.setTextViewText(R.id.song_title_nav, title);
                 smallviews.setTextViewText(R.id.song_artist_nav, artist);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
+
+                Bitmap img = getAlbumart(getBaseContext(), albumID);
+                if(img!=null){
+                    views.setImageViewBitmap(R.id.song_image, img);
+                    smallviews.setImageViewBitmap(R.id.song_image, img);
+                }
+                else{
+                    views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                    smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+                }
+
+
                 updateNotiUI();
 
             } else if (intent.getAction().equals(
@@ -311,6 +369,21 @@ public class mNotification extends Service {
         smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
 
 
+        Bitmap img = getAlbumart(getBaseContext(), albumID);
+        if(img!=null){
+        views.setImageViewBitmap(R.id.song_image, img);
+        smallviews.setImageViewBitmap(R.id.song_image, img);
+        }
+        else{
+            views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+            smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
+        }
+
+
+
+
+
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -394,6 +467,24 @@ public class mNotification extends Service {
 //        msong.bindShakeListener();
 
 
+    }
+
+    public static Bitmap getAlbumart(Context context,Long album_id){
+        Bitmap bm = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        try{
+            final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+            Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
+            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
+            if (pfd != null){
+                FileDescriptor fd = pfd.getFileDescriptor();
+                bm = BitmapFactory.decodeFileDescriptor(fd, null, options);
+                pfd = null;
+                fd = null;
+            }
+        } catch(Error ee){}
+        catch (Exception e) {}
+        return bm;
     }
 
 

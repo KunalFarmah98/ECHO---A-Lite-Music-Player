@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:forceDarkAllowed="false"
     android:clickable="true"
-    android:theme="@style/PlayingTheme"
+    android:forceDarkAllowed="false"
     android:orientation="vertical"
+    android:theme="@style/PlayingTheme"
     android:weightSum="2">
 
     <LinearLayout
@@ -15,13 +16,24 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary">
 
-            <com.cleveroad.audiovisualization.GLAudioVisualizationView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <ImageView
+                android:id="@+id/art"
+                android:layout_width="@dimen/_300sdp"
+                android:layout_height="@dimen/_270sdp"
+                android:layout_centerInParent="true"
+                android:visibility="visible"
+                android:background="@color/colorPrimary"
+                />
+
+
+            <com.cleveroad.audiovisualization.GLAudioVisualizationView
                 android:id="@+id/visualizer_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="visible"
                 app:av_backgroundColor="#00032a"
                 app:av_bubblesPerLayer="20"
                 app:av_bubblesRandomizeSizes="true"
@@ -32,15 +44,32 @@
                 app:av_wavesFooterHeight="170dp"
                 app:av_wavesHeight="60dp" />
 
-
-            <ImageButton
-                android:id="@+id/favouriteButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginTop="11dp"
+                android:layout_marginRight="11dp"
                 android:layout_alignParentRight="true"
-                android:layout_margin="11dp"
-                android:background="@drawable/white_circle_icon"
-                android:src="@drawable/favorite_off" />
+                android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/showArtButton"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:layout_marginRight="11dp"
+                    android:layout_toLeftOf="@+id/favouriteButton"
+                    android:background="@drawable/music"
+                    />
+
+                <ImageButton
+                    android:id="@+id/favouriteButton"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/white_circle_icon" />
+            </LinearLayout>
         </RelativeLayout>
 
     </LinearLayout>
@@ -65,9 +94,9 @@
                     android:id="@+id/songTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:ellipsize="marquee"
                     android:gravity="center"
-                    android:layout_centerHorizontal="true"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:padding="5dp"
                     android:scrollHorizontally="true"
@@ -82,9 +111,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/songTitle"
+                    android:layout_centerHorizontal="true"
                     android:ellipsize="marquee"
                     android:gravity="center"
-                    android:layout_centerHorizontal="true"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:padding="5dp"
                     android:scrollHorizontally="true"
@@ -112,8 +141,8 @@
                     android:id="@+id/startTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_below="@+id/seekbar"
+                    android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#ffffff" />
@@ -122,8 +151,8 @@
                     android:id="@+id/endTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/seekbar"
+                    android:layout_alignParentRight="true"
                     android:layout_marginRight="15dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#ffffff" />
@@ -134,11 +163,11 @@
                 android:id="@+id/controlPanel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_below="@+id/seekBarLayout"
+                android:layout_alignParentBottom="true"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="@dimen/_55sdp"
-                android:layout_marginTop="@dimen/_10sdp">
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_55sdp">
 
                 <ImageButton
                     android:id="@+id/playpausebutton"
@@ -146,8 +175,8 @@
                     android:layout_height="@dimen/_47sdp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/play_icon"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
 
                 <ImageButton
                     android:id="@+id/previousbutton"
@@ -157,8 +186,8 @@
                     android:layout_marginRight="19dp"
                     android:layout_toLeftOf="@+id/playpausebutton"
                     android:background="@drawable/play_previous_icon"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
 
                 <ImageButton
                     android:id="@+id/nextbutton"
@@ -168,8 +197,8 @@
                     android:layout_marginLeft="19dp"
                     android:layout_toRightOf="@+id/playpausebutton"
                     android:background="@drawable/play_next_icon"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
 
                 <ImageButton
                     android:id="@+id/loopButton"
@@ -179,8 +208,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/nextbutton"
                     android:background="@drawable/loop_white_icon"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
 
 
                 <ImageButton
@@ -191,8 +220,8 @@
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/previousbutton"
                     android:background="@drawable/shuffle_white_icon"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp" />
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
 
 
             </RelativeLayout>
