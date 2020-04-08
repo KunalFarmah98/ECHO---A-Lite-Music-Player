@@ -316,7 +316,7 @@ class MainScreenFragment : Fragment()  {
             val pfd: ParcelFileDescriptor? = context!!.contentResolver
                     .openFileDescriptor(uri, "r")
             if (pfd != null) {
-                val fd: FileDescriptor = pfd.getFileDescriptor()
+                val fd: FileDescriptor = pfd.fileDescriptor
                 bm = BitmapFactory.decodeFileDescriptor(fd)
             }
         } catch (e: java.lang.Exception) {

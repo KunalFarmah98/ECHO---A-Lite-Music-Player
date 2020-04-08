@@ -77,12 +77,12 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             /*putString() function is used for adding a string to the bundle object
             * the string written in green is the name of the string which is placed in the bundle object with the value of that string written alongside
             * Note: Remember the name of the strings/entities you place inside the bundle object as you will retrieve them later using the same name. And these names are case-sensitive*/
-            args.putString("songArtist", songObject?.artist)
-            args.putString("songTitle", songObject?.songTitle)
-            args.putString("path", songObject?.songData)
-            args.putLong("SongID", songObject?.songID!!)
+            args.putString("songArtist", songObject.artist)
+            args.putString("songTitle", songObject.songTitle)
+            args.putString("path", songObject.songData)
+            args.putLong("SongID", songObject.songID)
             args.putInt("songPosition", position)
-            args.putLong("songAlbum",songObject?.songAlbum as Long)
+            args.putLong("songAlbum", songObject.songAlbum as Long)
 
             /*Here the complete array list is sent*/
             args.putParcelableArrayList("songData", songDetails)
@@ -167,7 +167,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
                     .openFileDescriptor(uri, "r")
             if (pfd != null) {
-                val fd: FileDescriptor = pfd.getFileDescriptor()
+                val fd: FileDescriptor = pfd.fileDescriptor
                 bm = BitmapFactory.decodeFileDescriptor(fd)
             }
         } catch (e: java.lang.Exception) {

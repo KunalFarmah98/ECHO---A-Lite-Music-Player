@@ -78,11 +78,11 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             val songPlayingFragment = SongPlayingFragment()
 
             var args = Bundle()
-            args.putString("songArtist", songObject?.artist)
-            args.putString("songTitle", songObject?.songTitle)
-            args.putString("path", songObject?.songData)
-            args.putLong("SongID", songObject?.songID!!)
-            args.putLong("songAlbum",songObject?.songAlbum!!)
+            args.putString("songArtist", songObject.artist)
+            args.putString("songTitle", songObject.songTitle)
+            args.putString("path", songObject.songData)
+            args.putLong("SongID", songObject.songID)
+            args.putLong("songAlbum", songObject.songAlbum!!)
             args.putInt("songPosition", position)
 
             args.putParcelableArrayList("songData",songDetails)  // sending the details as a parcel to the bundle
@@ -169,8 +169,8 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
      fun getAlbumart(album_id: Long): Bitmap? {
 
         var bm: Bitmap? = null
-        if(album_id <= 0L) return  BitmapFactory.decodeResource(mContext!!.getResources(),
-                R.drawable.now_playing_bar_eq_image);
+        if(album_id <= 0L) return  BitmapFactory.decodeResource(mContext!!.resources,
+                R.drawable.now_playing_bar_eq_image)
          //GlobalScope.launch {
             try {
                 val sArtworkUri: Uri = Uri
@@ -179,14 +179,14 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
                 val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
                         .openFileDescriptor(uri, "r")
                 if (pfd != null) {
-                    val fd: FileDescriptor = pfd.getFileDescriptor()
+                    val fd: FileDescriptor = pfd.fileDescriptor
                     bm = BitmapFactory.decodeFileDescriptor(fd)
                 }
             } catch (e: java.lang.Exception) {
             }
-             if(bm==null) bm = BitmapFactory.decodeResource(mContext!!.getResources(),
-                     R.drawable.now_playing_bar_eq_image);
-       // }
+             if(bm==null) bm = BitmapFactory.decodeResource(mContext!!.resources,
+                     R.drawable.now_playing_bar_eq_image)
+         // }
         return bm
     }
 

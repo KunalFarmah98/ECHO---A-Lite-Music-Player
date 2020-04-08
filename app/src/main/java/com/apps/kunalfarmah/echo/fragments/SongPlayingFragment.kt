@@ -200,7 +200,7 @@ class SongPlayingFragment : Fragment() {
                 val pfd: ParcelFileDescriptor? = myActivity!!.contentResolver
                         .openFileDescriptor(uri, "r")
                 if (pfd != null) {
-                    val fd: FileDescriptor = pfd.getFileDescriptor()
+                    val fd: FileDescriptor = pfd.fileDescriptor
                     bm = BitmapFactory.decodeFileDescriptor(fd)
                 }
             } catch (e: java.lang.Exception) {
