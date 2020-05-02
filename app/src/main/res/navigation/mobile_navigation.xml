@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_albums">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.apps.kunalfarmah.echo.activities.ui.home.HomeFragment"
+        android:id="@+id/navigation_albums"
+        android:name="com.apps.kunalfarmah.echo.Online.ui.albums.AlbumsFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_albums" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.apps.kunalfarmah.echo.activities.ui.dashboard.DashboardFragment"
+        android:id="@+id/navigation_artists"
+        android:name="com.apps.kunalfarmah.echo.Online.ui.artists.ArtistsFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_artists" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.apps.kunalfarmah.echo.activities.ui.notifications.NotificationsFragment"
+        android:id="@+id/navigation_tracks"
+        android:name="com.apps.kunalfarmah.echo.Online.ui.tracks.TracksFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_tracks" />
 </navigation>

@@ -20,9 +20,6 @@ public class Constants {
         String PREV_UPDATE = "com.marothiatechs.customnotification.action.prevupdate";
         String PREV_UPDATE_SHUFFLE = "com.marothiatechs.customnotification.action.prevupdateshuffle";
 
-
-
-
     }
 
     public interface NOTIFICATION_ID {
@@ -40,5 +37,8 @@ public class Constants {
         }
         return bm;
     }
+
+    private static final String  key = "96575af11bc84f955ad52eb7c0a951ad";
+    private static final String secret  = "985c2b381395c365681141fb3864c973";
 
 }

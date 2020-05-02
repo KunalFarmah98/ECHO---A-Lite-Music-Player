@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.apps.kunalfarmah.echo" >
+    package="com.apps.kunalfarmah.echo">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,7 +17,11 @@
         android:icon="@drawable/echo_icon"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:supportsRtl="true" >
+        android:supportsRtl="true">
+        <activity
+            android:name=".Online.OnlineActivity"
+            android:label="@string/title_activity_online"
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -26,7 +30,7 @@
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +43,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name=".utils.CaptureBroadcast" >
+        <receiver android:name=".utils.CaptureBroadcast">
 
             <!--
             <intent-filter android:priority="100000">
