@@ -23,4 +23,8 @@ or pulling down the notification panel to do the same.</string>
     <string name="inst4"> Select High from the list
                           Now Restart the app for the changes to take place</string>
     <string name="nxt">&gt;</string>
+    <string name="title_activity_online">OnlineActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

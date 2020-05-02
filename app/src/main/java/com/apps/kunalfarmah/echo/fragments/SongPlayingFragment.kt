@@ -17,10 +17,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.ParcelFileDescriptor
-import android.support.annotation.Nullable
-import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.*
+import androidx.annotation.Nullable
+import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.*
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Database.EchoDatabase
@@ -748,23 +748,23 @@ class SongPlayingFragment : Fragment() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        menu?.clear()   // clearing any previous menus
-        inflater?.inflate(R.menu.song_playing_menu, menu)
+        menu.clear()   // clearing any previous menus
+        inflater.inflate(R.menu.song_playing_menu, menu)
 
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
 
-        val item: MenuItem? = menu?.findItem(R.id.action_redirect)
+        val item: MenuItem? = menu.findItem(R.id.action_redirect)
         item?.isVisible = true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_redirect -> {
                 // redirecting the user to the activity from which they came
                 myActivity?.onBackPressed()
@@ -783,19 +783,20 @@ class SongPlayingFragment : Fragment() {
     }
 
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         myActivity = context as Activity
 
     }
 
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         myActivity = activity
     }
 
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
 
 

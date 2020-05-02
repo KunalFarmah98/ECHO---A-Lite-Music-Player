@@ -6,14 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.Constants
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activities.MainActivity
@@ -88,12 +87,12 @@ class SettingsFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         myActivity = context as Activity
     }
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         myActivity = activity
     }
@@ -142,15 +141,15 @@ class SettingsFragment : Fragment() {
 
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
 
         //removing the sorting adn searching options as they r not needed
 
-        val item = menu?.findItem(R.id.action_sort)
+        val item = menu.findItem(R.id.action_sort)
         item?.isVisible=false
 
-        val item1 = menu?.findItem(R.id.action_search)
+        val item1 = menu.findItem(R.id.action_search)
         item1?.isVisible=false
     }
 

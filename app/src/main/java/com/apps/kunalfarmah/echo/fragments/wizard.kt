@@ -1,13 +1,13 @@
 package com.apps.kunalfarmah.echo.fragments
 
 import android.app.Activity
-import android.support.v4.app.Fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.R
 
 class wizard : Fragment() {
@@ -35,25 +35,25 @@ class wizard : Fragment() {
 
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         myActivity = context as Activity
     }
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         myActivity = activity
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
 
         //removing the sorting adn searching options as they r not needed
 
-        val item = menu?.findItem(R.id.action_sort)
+        val item = menu.findItem(R.id.action_sort)
         item?.isVisible = false
 
-        val item1 = menu?.findItem(R.id.action_search)
+        val item1 = menu.findItem(R.id.action_search)
         item1?.isVisible = false
     }
 

@@ -4,10 +4,6 @@ import android.app.Notification
 import android.app.NotificationManager
 
 import android.os.Bundle
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.*
 import com.apps.kunalfarmah.echo.Adapters.NavigationDrawerAdapter
 
 import com.apps.kunalfarmah.echo.R
@@ -16,11 +12,19 @@ import com.apps.kunalfarmah.echo.mNotification
 import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.support.v4.content.LocalBroadcastManager
 import android.content.IntentFilter
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 
 import com.apps.kunalfarmah.echo.activities.MainActivity.Statified.notify
 
@@ -107,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         navigationDrawerIconsList.add("Settings")
         navigationDrawerIconsList.add("About Developer")
 
-        val toggle = ActionBarDrawerToggle(this@MainActivity, MainActivity.Statified.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this@MainActivity, Statified.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         MainActivity.Statified.drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
         val mainScreenFragment = MainScreenFragment()

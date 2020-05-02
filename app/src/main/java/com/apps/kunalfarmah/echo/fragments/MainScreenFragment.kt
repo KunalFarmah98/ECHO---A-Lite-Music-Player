@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo.fragments
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentUris
@@ -14,24 +13,26 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
 import android.view.*
-import android.widget.ImageButton
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Constants
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activities.MainActivity
+import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Staticated.setAlbumArt
+import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songAlbum
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songArtist
+import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songImg
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songTitle
+import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.currentSongHelper
+import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.mNotification
+import com.bumptech.glide.Glide
 import java.io.FileDescriptor
 import java.util.*
 
@@ -67,18 +68,33 @@ class MainScreenFragment : Fragment()  {
     var song:SongPlayingFragment?=null
 
     @SuppressLint("StaticFieldLeak")
-    object Statified {
+    companion object Statified {
+        var songImg: ImageView? = null
         var mediaPlayer: MediaPlayer? = null
         var noNext:Boolean=true
         var songTitle: TextView? = null
         var songArtist: TextView? =null
-    }
+        var songAlbum: Long? = null
 
+    }
     object Staticated{
         fun setTitle(){
             songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
         }
+
+        fun setAlbumArt(){
+            songAlbum = currentSongHelper?.songAlbum
+            var albumId = songAlbum as Long
+
+            if(albumId<=0L) songImg!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+            val sArtworkUri: Uri = Uri
+                    .parse("content://media/external/audio/albumart")
+            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
+            myActivity?.let { songImg?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
+        }
+
     }
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -97,6 +113,7 @@ class MainScreenFragment : Fragment()  {
         songTitle = view?.findViewById(R.id.song_title)
         songTitle?.isSelected = true
         songArtist=view?.findViewById(R.id.song_artist)
+        songImg = view?.findViewById(R.id.defaultMusic)
         play_pause = view?.findViewById(R.id.play_pause)
         nowPlayingBottomBarMain = view?.findViewById(R.id.hiddenBarMainScreen1)
 
@@ -105,12 +122,12 @@ class MainScreenFragment : Fragment()  {
         return view
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         myActivity = context as Activity
     }
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         myActivity = activity
     }
@@ -170,17 +187,14 @@ class MainScreenFragment : Fragment()  {
 
         bottomBarSetup()
 
-        // setting up search widget
-
-
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?){
-        menu?.clear()
-        inflater?.inflate(R.menu.main, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.main, menu)
 
-        val searchItem = menu?.findItem(R.id.action_search)
+        val searchItem = menu.findItem(R.id.action_search)
         var searchView = searchItem?.actionView as SearchView
         searchView.queryHint = "Enter Song or Artist to Search"
 
@@ -220,8 +234,8 @@ class MainScreenFragment : Fragment()  {
 
 
     /*Here we perform the actions of sorting according to the menu item clicked*/
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val switcher = item?.itemId
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {
             /*Whichever action item is selected, we save the preferences and perform the operation of comparison*/
             val editor = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
@@ -307,6 +321,7 @@ class MainScreenFragment : Fragment()  {
         }catch (e:Exception){}
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun getAlbumart(album_id: Long): Bitmap? {
         var bm: Bitmap? = null
         try {
@@ -363,11 +378,17 @@ class MainScreenFragment : Fragment()  {
             /*We fetch the song title with the help of the current song helper and set it to the song title in our bottom bar*/
             songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
 
+            songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+
+            setAlbumArt()
+
             /*If we are the on the favorite screen and not on the song playing screen when the song finishes
             * we want the changes in the song to reflect on the favorite screen hence we call the onSongComplete() function which help us in maintaining consistency*/
             SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener({
                 songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
                 songArtist?.text = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+                songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+                setAlbumArt()
                 SongPlayingFragment.Staticated.onSongComplete()
             })
 
@@ -516,8 +537,5 @@ class MainScreenFragment : Fragment()  {
         })
 
 }
-
-
-
 
 }

@@ -7,14 +7,14 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.v4.app.FragmentActivity
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.fragments.FavoriteFragment
@@ -57,7 +57,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(mContext).load(uri).into(holder.trackArt)
+        mContext?.let { holder.trackArt?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
 //        var art = getAlbumart(albumId)
 //
 //        if(art!=null) holder.trackArt?.setImageBitmap(art)

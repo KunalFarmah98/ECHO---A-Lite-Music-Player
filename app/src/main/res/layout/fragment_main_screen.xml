@@ -12,13 +12,13 @@
         android:layout_height="match_parent"
         android:id="@+id/visible_layout">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="false"
             android:id="@+id/ContentMain"
             android:layout_above="@id/hiddenBarMainScreen1">
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
         <RelativeLayout
             android:layout_width="match_parent"

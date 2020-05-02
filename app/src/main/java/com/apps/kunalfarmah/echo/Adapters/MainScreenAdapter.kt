@@ -7,13 +7,13 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.Adapters.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
@@ -22,8 +22,7 @@ import com.apps.kunalfarmah.echo.fragments.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+
 import java.io.FileDescriptor
 
 
@@ -68,7 +67,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(mContext).load(uri).into(holder.trackArt)
+        mContext?.let { holder.trackArt?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
 
 
 

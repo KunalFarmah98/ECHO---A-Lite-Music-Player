@@ -5,35 +5,33 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+
 import android.widget.ImageView;
 import android.widget.RemoteViews;
-import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activities.MainActivity;
+import com.apps.kunalfarmah.echo.fragments.FavoriteFragment;
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment;
 import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment;
+import com.bumptech.glide.Glide;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+
 
 /**
  * http://www.tutorialsface.com/2015/08/android-custom-notification-tutorial/
@@ -134,6 +132,7 @@ public class mNotification extends Service {
                 }
 
                 updateNotiUI();
+                setAlbumArt();
 
 
             } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
@@ -152,6 +151,7 @@ public class mNotification extends Service {
 
 
                 updateNotiUI();
+                setAlbumArt();
 
             } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
@@ -162,6 +162,7 @@ public class mNotification extends Service {
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
                 updateNotiUI();
+                setAlbumArt();
 
             } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
                 msong.next();
@@ -179,6 +180,7 @@ public class mNotification extends Service {
                 }
 
                 updateNotiUI();
+                setAlbumArt();
 
 
             } else if (intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
@@ -213,6 +215,7 @@ public class mNotification extends Service {
 
 
                 updateNotiUI();
+                setAlbumArt();
             }
 
 
@@ -246,6 +249,7 @@ public class mNotification extends Service {
 
 
                 updateNotiUI();
+                setAlbumArt();
 
             } else if (intent.getAction().equals(
                     Constants.ACTION.STOPFOREGROUND_ACTION)) {
@@ -491,6 +495,21 @@ public class mNotification extends Service {
 
     public void updateNotiUI() {
         this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
+    }
+
+    void setAlbumArt(){
+        Long albumId = albumID;
+        if(albumId<=0L) MainScreenFragment.Statified.getSongImg().setImageResource(R.drawable.now_playing_bar_eq_image);
+        Uri sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart");
+        Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+        Glide.with(getApplicationContext()).load(uri).into(MainScreenFragment.Statified.getSongImg());
+
+        if(albumId<=0L) FavoriteFragment.Statified.getSongImg().setImageResource(R.drawable.now_playing_bar_eq_image);
+         sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart");
+        uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+        Glide.with(getApplicationContext()).load(uri).into(FavoriteFragment.Statified.getSongImg());
     }
 
 
