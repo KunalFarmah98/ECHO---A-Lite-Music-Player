@@ -15,9 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.apps.kunalfarmah.echo.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.vpaliy.last_fm_api.model.Album;
 
+
+import java.util.Date;
 import java.util.List;
+
+import de.umass.lastfm.Album;
+import de.umass.lastfm.ImageSize;
 
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumsViewHolder> {
 
@@ -39,9 +43,11 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumsView
     @Override
     public void onBindViewHolder(@NonNull AlbumsViewHolder holder, int position) {
         Album album = Albums.get(position);
-        holder.name.setText(album.name);
-        holder.year.setText(album.releaseDate);
-        String image_url = album.image.get(0).text;
+        holder.name.setText(album.getName());
+        Date date = album.getReleaseDate();
+        if(date!=null)
+        holder.year.setText(album.getReleaseDate().toString());
+        String image_url = album.getImageURL(ImageSize.LARGE);
         RequestOptions options = new RequestOptions()
                 .centerCrop()
                 .placeholder(R.drawable.now_playing_bar_eq_image)
@@ -51,7 +57,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumsView
 
     @Override
     public int getItemCount() {
-        return 0;
+        return Albums.size();
     }
 
     public class AlbumsViewHolder extends RecyclerView.ViewHolder {

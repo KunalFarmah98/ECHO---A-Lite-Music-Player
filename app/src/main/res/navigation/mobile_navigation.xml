@@ -8,18 +8,26 @@
     <fragment
         android:id="@+id/navigation_albums"
         android:name="com.apps.kunalfarmah.echo.Online.ui.albums.AlbumsFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_albums" />
+        android:label="Albums"
+        tools:layout="@layout/fragment_albums" >
+        <action
+            android:id="@+id/action_navigation_albums_to_navigation_artists"
+            app:destination="@id/navigation_artists" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_artists"
         android:name="com.apps.kunalfarmah.echo.Online.ui.artists.ArtistsFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_artists" />
+        android:label="Artists"
+        tools:layout="@layout/fragment_artists" >
+        <action
+            android:id="@+id/action_navigation_artists_to_navigation_tracks"
+            app:destination="@id/navigation_tracks" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_tracks"
         android:name="com.apps.kunalfarmah.echo.Online.ui.tracks.TracksFragment"
-        android:label="@string/title_notifications"
+        android:label="Tracks"
         tools:layout="@layout/fragment_tracks" />
 </navigation>

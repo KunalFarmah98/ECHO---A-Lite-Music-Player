@@ -12,25 +12,25 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.apps.kunalfarmah.echo.Constants;
-import com.vpaliy.last_fm_api.LastFm;
-import com.vpaliy.last_fm_api.LastFmService;
-import com.vpaliy.last_fm_api.model.Album;
-import com.vpaliy.last_fm_api.model.AlbumPage;
-import com.vpaliy.last_fm_api.model.Artist;
-import com.vpaliy.last_fm_api.model.Tag;
-import com.vpaliy.last_fm_api.model.TagPage;
+import com.apps.kunalfarmah.echo.Online.OnlineActivity;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.umass.lastfm.Album;
+import de.umass.lastfm.Caller;
+import de.umass.lastfm.Tag;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.apps.kunalfarmah.echo.Constants.API_KEY;
+
 public class AlbumsViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Album>> data;
-    List<Album> Albums;
-    List<Tag> tags;
+    private static MutableLiveData<List<Album>> data;
+    static List<de.umass.lastfm.Album> Albums;
+    static List<Tag> tags;
 
     public AlbumsViewModel(@NonNull Application application) {
         super(application);
@@ -39,43 +39,25 @@ public class AlbumsViewModel extends AndroidViewModel {
     }
 
     public void init(){
-        //get the service
-        LastFmService service= LastFm.create(Constants.API_KEY)
-                .createService(this.getApplication());
+
+        Caller.getInstance().setCache(null);
+        Caller.getInstance().setUserAgent("Android");
 
 
-
-        //request an artist
-        service.fetchArtist("Eminem")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    Log.d("Error",String.valueOf(response.error)+response.message);
-                    Artist artist=response.result;
-                });
-
-        //request tags
-        service.fetchTopTags()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    TagPage tag = response.result;
-                    Log.d("Error",String.valueOf(response.error)+response.message);
-                    tags = tag.tag;
-                });
-
-        //request an album
-        service.fetchTagTopAlbums("pop")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    AlbumPage albums = response.result;
-                    Log.d("Error",String.valueOf(response.error)+response.message);
-                    Albums = albums.album;
-                });
+        Albums = (List<Album>) Tag.getTopAlbums("pop",API_KEY);
 
         data.setValue(Albums);
 
+    }
+
+    public static void update(String tag){
+        Albums = (List<Album>) Tag.getTopAlbums(OnlineActivity.selectedTag,API_KEY);
+        data.setValue(Albums);
+    }
+
+    public static void updateAlbum(String name){
+        Albums = (List<Album>)Album.search(name,API_KEY);
+        data.setValue(Albums);
     }
 
     public MutableLiveData<List<Album> > getAlbums() {

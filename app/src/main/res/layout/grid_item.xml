@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
+    android:padding="@dimen/_10sdp"
     android:background="@color/colorPrimary"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/now_playing_bar_eq_image"/>
 
@@ -19,11 +20,13 @@
         android:textSize="20sp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
         android:gravity="center"
         android:text="Name"/>
 
     <TextView
         android:id="@+id/year"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
