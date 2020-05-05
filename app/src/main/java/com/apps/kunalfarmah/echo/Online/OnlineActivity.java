@@ -1,13 +1,25 @@
 package com.apps.kunalfarmah.echo.Online;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apps.kunalfarmah.echo.Adapters.TagAdapter;
+import com.apps.kunalfarmah.echo.Online.ui.albums.AlbumsViewModel;
+import com.apps.kunalfarmah.echo.Online.ui.artists.ArtistsViewModel;
 import com.apps.kunalfarmah.echo.R;
+import com.apps.kunalfarmah.echo.activities.MainActivity;
+import com.apps.kunalfarmah.echo.activities.SplashActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -48,12 +60,68 @@ public class OnlineActivity extends AppCompatActivity {
         Caller.getInstance().setUserAgent("Android");
 
         // setting up tags in activity as it is used by all
-        tags = (List<Tag>)Tag.getTopTags(API_KEY);
-        tagAdapter = new TagAdapter(this,tags);
+        tags = (List<Tag>) Tag.getTopTags(API_KEY);
+        tagAdapter = new TagAdapter(this, tags);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.online_options, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        if (currFragment == 0)
+            searchView.setQueryHint("Enter Album name or select any tag");
+        else if (currFragment == 1)
+            searchView.setQueryHint("Enter Artist name or select any tag");
+        else
+            searchView.setQueryHint("Enter Track name or select any tag");
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                if (currFragment == 0)
+                    AlbumsViewModel.updateAlbum(s);
+              else if(currFragment==1)
+                    ArtistsViewModel.updateArtist(s);
+//               else if(currFragment==0)
+//                    AlbumsViewModel.updateTrack(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return true;
+            }
+        });
+
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                AlbumsViewModel.update("pop");
+                return false;
+            }
+        });
+
+        //MenuItem offline = menu.findItem(R.id.action_goOffline);
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_goOffline:
+                SharedPreferences pref  = getSharedPreferences("Mode",0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("mode","offline");
+                editor.apply();
+                finish();
+                startActivity(new Intent(this, SplashActivity.class));
+                return true;
+        }
+        return false;
     }
 }

@@ -27,6 +27,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumsView
 
     List<Album> Albums;
     Context mContext;
+
     public AlbumsAdapter(Context context, List<Album> albums) {
         Albums = albums;
         mContext = context;

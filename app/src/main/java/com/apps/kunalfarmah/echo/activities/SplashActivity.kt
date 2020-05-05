@@ -2,6 +2,7 @@ package com.apps.kunalfarmah.echo.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.apps.kunalfarmah.echo.Online.OnlineActivity
 import com.apps.kunalfarmah.echo.R
 
 class SplashActivity : AppCompatActivity() {
@@ -105,12 +107,22 @@ class SplashActivity : AppCompatActivity() {
 
     fun DisplayActivity() {
 
-
-            Handler().postDelayed({
-                val startAct = Intent(this@SplashActivity, MainActivity::class.java)
-                startActivity(startAct)
-                this.finish()
-            }, 1500)
+            var pref:SharedPreferences = getSharedPreferences("Mode",Context.MODE_PRIVATE)
+            var value = pref.getString("mode","offline")
+            if(value.equals("offline")) {
+                Handler().postDelayed({
+                    val startAct = Intent(this@SplashActivity, MainActivity::class.java)
+                    startActivity(startAct)
+                    this.finish()
+                }, 1500)
+            }
+            else{
+                Handler().postDelayed({
+                    val startAct = Intent(this@SplashActivity, OnlineActivity::class.java)
+                    startActivity(startAct)
+                    this.finish()
+                }, 1500)
+            }
 
     }
 

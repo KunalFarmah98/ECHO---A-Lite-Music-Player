@@ -1,6 +1,9 @@
 package com.apps.kunalfarmah.echo.Adapters
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.apps.kunalfarmah.echo.Online.OnlineActivity
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activities.MainActivity
 import com.apps.kunalfarmah.echo.fragments.*
@@ -81,6 +85,15 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                         .replace(R.id.details_fragment, aboutUsFragment)
                        // .addToBackStack("About Us")
                         .commit()
+            }
+            else if (position == 4){
+                var pref: SharedPreferences = mContext!!.getSharedPreferences("Mode",Context.MODE_PRIVATE)
+                var editor = pref.edit()
+                editor.putString("mode","online")
+                editor.apply()
+                val activity: MainActivity = mContext as MainActivity
+                activity.finish()
+                mContext?.startActivity(Intent(mContext,OnlineActivity::class.java))
             }
 
             /*As we tap on any item we want our drawer to close automatically as the fragment loads. The function closeDrawers() is used for doing the same

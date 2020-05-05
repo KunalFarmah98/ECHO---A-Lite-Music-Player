@@ -47,8 +47,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
                 switch(OnlineActivity.currFragment){
                     case 0:
                         AlbumsViewModel.update(OnlineActivity.selectedTag);break;
-//                    case 1:
-//                        ArtistsViewModel.update(OnlineActivity.selectedTag);break;
+                    case 1:
+                        ArtistsViewModel.update(OnlineActivity.selectedTag);break;
 //                    case 2:
 //                        TracksViewModel.update(OnlineActivity.selectedTag);break;
                 }

@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     var navigationDrawerIconsList: ArrayList<String> = arrayListOf()
 
     /*Images which will be used inside navigation drawer*/
-    var images_for_navdrawer = intArrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_favorites, R.drawable.navigation_settings, R.drawable.navigation_aboutus)
+    var images_for_navdrawer = intArrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_favorites, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.baseline_album_white_24dp)
 
     // to track the notificaiton
     var trackNotificationBuilder: Notification? = null
@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
         navigationDrawerIconsList.add("Favorites")
         navigationDrawerIconsList.add("Settings")
         navigationDrawerIconsList.add("About Developer")
+        navigationDrawerIconsList.add("Go Online")
 
         val toggle = ActionBarDrawerToggle(this@MainActivity, Statified.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         MainActivity.Statified.drawerLayout?.addDrawerListener(toggle)

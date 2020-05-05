@@ -13,12 +13,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.apps.kunalfarmah.echo.Constants;
 import com.apps.kunalfarmah.echo.Online.OnlineActivity;
+import com.apps.kunalfarmah.echo.Online.ui.artists.ArtistsViewModel;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.umass.lastfm.Album;
+import de.umass.lastfm.Artist;
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.Tag;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -45,13 +47,14 @@ public class AlbumsViewModel extends AndroidViewModel {
 
 
         Albums = (List<Album>) Tag.getTopAlbums("pop",API_KEY);
+        //ArtistsViewModel.Artists = (List<Artist>) Tag.getTopArtists("pop",API_KEY) ;
 
         data.setValue(Albums);
 
     }
 
     public static void update(String tag){
-        Albums = (List<Album>) Tag.getTopAlbums(OnlineActivity.selectedTag,API_KEY);
+        Albums = (List<Album>) Tag.getTopAlbums(tag,API_KEY);
         data.setValue(Albums);
     }
 
