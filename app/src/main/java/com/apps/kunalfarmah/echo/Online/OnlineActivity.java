@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.apps.kunalfarmah.echo.Adapters.TagAdapter;
 import com.apps.kunalfarmah.echo.Online.ui.albums.AlbumsViewModel;
 import com.apps.kunalfarmah.echo.Online.ui.artists.ArtistsViewModel;
+import com.apps.kunalfarmah.echo.Online.ui.tracks.TracksViewModel;
 import com.apps.kunalfarmah.echo.R;
 import com.apps.kunalfarmah.echo.activities.MainActivity;
 import com.apps.kunalfarmah.echo.activities.SplashActivity;
@@ -84,8 +85,8 @@ public class OnlineActivity extends AppCompatActivity {
                     AlbumsViewModel.updateAlbum(s);
               else if(currFragment==1)
                     ArtistsViewModel.updateArtist(s);
-//               else if(currFragment==0)
-//                    AlbumsViewModel.updateTrack(s);
+               else if(currFragment==2)
+                       TracksViewModel.updateTracks(s);
                 return true;
             }
 

@@ -23,8 +23,7 @@ import de.umass.lastfm.Album;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.Tag;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
 
 import static com.apps.kunalfarmah.echo.Constants.API_KEY;
 
