@@ -8,12 +8,31 @@
     android:background="@drawable/bg_gradient">
 
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="@dimen/_160sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
+    <RelativeLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:srcCompat="@drawable/echo_logo" />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ECHO"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:padding="0dp"
+            android:textSize="90sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A LITE MUSIC PLAYER"
+            android:textColor="#FFFFFF"
+            android:layout_below="@+id/t1"
+            android:padding="0dp"
+            android:layout_marginTop="-20dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="23sp"/>
+    </RelativeLayout>
+
 </RelativeLayout>

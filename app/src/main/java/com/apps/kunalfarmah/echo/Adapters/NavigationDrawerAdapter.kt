@@ -66,7 +66,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, favoriteFragment)
-                        //.addToBackStack("Favourites")
+                        .addToBackStack("Favourites")
                         .commit()
             }
 
@@ -76,14 +76,14 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, settingsFragment)
-                      //  .addToBackStack("Settings")
+                        .addToBackStack("Settings")
                         .commit()
             } else if (position == 3) {
                 val aboutUsFragment = AboutUSFragment()
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, aboutUsFragment)
-                       // .addToBackStack("About Us")
+                        .addToBackStack("About Us")
                         .commit()
             }
             else if (position == 4){
