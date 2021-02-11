@@ -24,35 +24,18 @@ import com.apps.kunalfarmah.echo.Constants
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activities.MainActivity
-import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Staticated.setAlbumArt
-import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songAlbum
-import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songArtist
-import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songImg
-import com.apps.kunalfarmah.echo.fragments.MainScreenFragment.Statified.songTitle
-import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.currentSongHelper
-import com.apps.kunalfarmah.echo.fragments.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.mNotification
 import com.bumptech.glide.Glide
 import java.io.FileDescriptor
 import java.util.*
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 
 class MainScreenFragment : Fragment()  {
 
 
     var args:Bundle?=null
     var main:MainActivity?=null
-
     var getSongsList: ArrayList<Songs>? = null
 
     var nowPlayingBottomBarMain: RelativeLayout? = null
@@ -82,17 +65,6 @@ class MainScreenFragment : Fragment()  {
             songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
         }
 
-        fun setAlbumArt(){
-            songAlbum = currentSongHelper?.songAlbum
-            var albumId = songAlbum as Long
-
-            if(albumId<=0L) songImg!!.setImageResource(R.drawable.now_playing_bar_eq_image)
-            val sArtworkUri: Uri = Uri
-                    .parse("content://media/external/audio/albumart")
-            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-            myActivity?.let { songImg?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
-        }
-
     }
 
 
@@ -106,7 +78,6 @@ class MainScreenFragment : Fragment()  {
 
         main= MainActivity()
         activity?.title = "All Songs"
-
         visibleLayout = view?.findViewById<RelativeLayout>(R.id.visible_layout)
         noSongs = view?.findViewById(R.id.noSongs)
         recyclerView = view?.findViewById(R.id.ContentMain)
@@ -134,7 +105,6 @@ class MainScreenFragment : Fragment()  {
 
 
     /* It is used to do the final initialization once the other things are in place*/
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
@@ -266,7 +236,7 @@ class MainScreenFragment : Fragment()  {
 
         var arralist = ArrayList<Songs>()
         var contentResolver = myActivity?.contentResolver
-        var songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI   // a class in android has static objeects for audio files
+        var songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         var songCursor = contentResolver?.query(songURI, null, null, null, null)
 
         if (songCursor != null && songCursor.moveToFirst()) {
@@ -338,35 +308,6 @@ class MainScreenFragment : Fragment()  {
         }
         return bm
     }
-    private fun getCoverArtPath(context: Context?, androidAlbumId: Long): String? {
-        var path: String? = null
-
-        val cursor = context?.contentResolver?.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                arrayOf<String>(MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART),
-                MediaStore.Audio.Albums._ID + "=?",
-                arrayOf<String>(java.lang.Long.toString(androidAlbumId)),
-                null)
-
-        if (cursor!!.moveToFirst())
-        {
-             path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART))
-            // do whatever you need to do
-        }
-        return path
-        /*val c: Cursor? = context?.contentResolver?.query(
-                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Albums.ALBUM_ART),
-                MediaStore.Audio.Albums._ID + "=?", arrayOf(java.lang.Long.toString(androidAlbumId)),
-                null)
-        if (c != null) {
-            if (c.moveToFirst()) {
-                path = c.getString(0)
-            }
-            c.close()
-        }
-        return path*/
-    }
-
-
 
 
     fun bottomBarSetup() {
@@ -380,7 +321,7 @@ class MainScreenFragment : Fragment()  {
 
             songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
 
-            setAlbumArt()
+            setAlbumArt(songAlbum)
 
             /*If we are the on the favorite screen and not on the song playing screen when the song finishes
             * we want the changes in the song to reflect on the favorite screen hence we call the onSongComplete() function which help us in maintaining consistency*/
@@ -388,7 +329,12 @@ class MainScreenFragment : Fragment()  {
                 songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
                 songArtist?.text = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
-                setAlbumArt()
+                try {
+                    setAlbumArt(songAlbum)
+                }
+                catch (e:java.lang.Exception){
+
+                }
                 SongPlayingFragment.Staticated.onSongComplete()
             })
 
@@ -485,7 +431,7 @@ class MainScreenFragment : Fragment()  {
 
 //                    SongPlayingFragment.Statified.mediaPlayer?.seekTo(-0)
                     if(SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    SongPlayingFragment.Statified.mediaPlayer?.start()
+                        SongPlayingFragment.Statified.mediaPlayer?.start()
 //                    SongPlayingFragment.Statified.mediaPlayer?.previous()
 
 
@@ -516,7 +462,7 @@ class MainScreenFragment : Fragment()  {
                     trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int  // current postiton where the player as stopped
                     SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
                     if(SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    SongPlayingFragment.Statified.mediaPlayer?.start()
+                        SongPlayingFragment.Statified.mediaPlayer?.start()
                     play_pause?.setBackgroundResource(R.drawable.pause_icon)
 
 //                if (main?.notify == true) {
@@ -536,6 +482,15 @@ class MainScreenFragment : Fragment()  {
             }
         })
 
-}
+    }
 
+    fun setAlbumArt(songAlbum:Long?){
+        var albumId = songAlbum as Long
+
+        if(albumId<=0L) songImg!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+        val sArtworkUri: Uri = Uri
+                .parse("content://media/external/audio/albumart")
+        val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
+        Glide.with(requireContext()).load(uri).into(songImg!!)
+    }
 }

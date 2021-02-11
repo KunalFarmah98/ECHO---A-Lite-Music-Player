@@ -124,8 +124,8 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
     /*This function returns the number elements present in our recycler view. The number of these items can be calculated by the number of items in our arraylist(contentList)*/
     override fun getItemCount(): Int {
 
-        /*Here we return the size of the list we used.*/
-        return (contentList as ArrayList).size
+        return 4;
+//        return (contentList as ArrayList).size
     }
 
     /*Class for creating a view holder for our recycler view. This class sets up the single object for our recycler view*/

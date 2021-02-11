@@ -1,7 +1,7 @@
 package com.apps.kunalfarmah.echo.Adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.apps.kunalfarmah.echo.R;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-import de.umass.lastfm.Album;
 import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Track;
 
 import static com.apps.kunalfarmah.echo.Constants.API_KEY;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
-    List<Track> Tracks;
+    public static List<Track> Tracks;
     Context mContext;
 
     public TrackAdapter(Context context, List<Track> tracks) {
@@ -42,13 +40,15 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
 
     @Override
     public void onBindViewHolder(@NonNull TrackViewHolder holder, int position) {
-//        try {
+
 
             Track track = Tracks.get(position);
             holder.name.setText(track.getName());
             holder.artist.setText(track.getArtist());
             holder.album.setText(track.getAlbum());
-//            String url = track.getImageURL(ImageSize.LARGE);
+            Track t = Track.getInfo(track.getArtist(), track.getMbid(), API_KEY);
+
+//            String url = t.getImageURL(ImageSize.LARGE);
 //            RequestOptions options = new RequestOptions()
 //                    .centerCrop()
 //                    .skipMemoryCache(true)
@@ -60,8 +60,30 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
 //            e.printStackTrace();
 //        }
 
-        getArt fetch = new getArt(holder.art, mContext, track);
+        getArt fetch = new getArt(holder.art, mContext, track, position);
         fetch.execute("");
+//
+//        holder.art.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+                String url = t.getLastFmInfo("freeTrackURL");
+                String loc = t.getLocation();
+//                MediaPlayer player = new MediaPlayer();
+//
+//                try {
+//                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//
+//                    player.setDataSource(url);
+//
+//
+//                    player.prepare();
+//                    player.start();
+//                }
+//                catch (IOException e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
     }
 
@@ -87,10 +109,12 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
         ImageView img;
         Context montext;
         Track track;
-        public getArt(ImageView img, Context mcontext, Track track){
+        int position;
+        public getArt(ImageView img, Context mcontext, Track track, int pos){
             this.img = img;
             this.montext=mcontext;
             this.track = track;
+            this.position = pos;
         }
         @Override
         protected String doInBackground(String... strings) {
@@ -98,6 +122,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
             try {
                 Track t = Track.getInfo(track.getArtist(), track.getMbid(), API_KEY);
                 //Album album = Album.getInfo(t.getArtist(), t.getAlbum(), API_KEY);
+                Tracks.set(position,t);
                 url = t.getImageURL(ImageSize.LARGE);
             }
             catch (Exception e){

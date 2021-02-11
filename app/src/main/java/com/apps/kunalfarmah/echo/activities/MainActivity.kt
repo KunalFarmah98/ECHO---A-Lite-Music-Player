@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo.activities
 
-import android.app.Notification
 import android.app.NotificationManager
 
 import android.os.Bundle
@@ -8,22 +7,26 @@ import com.apps.kunalfarmah.echo.Adapters.NavigationDrawerAdapter
 
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.fragments.MainScreenFragment
-import com.apps.kunalfarmah.echo.mNotification
 import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.apps.kunalfarmah.echo.Constants
 
 
 import com.apps.kunalfarmah.echo.activities.MainActivity.Statified.notify
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     var  mBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 
        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == "com.durga.action.close") {
+            if (intent.action == Constants.ACTION.CLOSE) {
 
                 SongPlayingFragment.Statified.mediaPlayer?.stop()
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
@@ -65,13 +68,6 @@ class MainActivity : AppCompatActivity() {
     /*Images which will be used inside navigation drawer*/
     var images_for_navdrawer = intArrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_favorites, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.baseline_album_white_24dp)
 
-    // to track the notificaiton
-    var trackNotificationBuilder: Notification? = null
-
-    var testBoundService: mNotification? = null
-    var isBound = false
-
-    /*We made the drawer layout as an object of this class so that this object can also be used as same inside the adapter class without any change in its value*/
     object Statified {
         var drawerLayout: DrawerLayout? = null
         var notify =false
@@ -100,6 +96,9 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_MEDIA_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_MEDIA_LOCATION), 1001);
+        }
         song= SongPlayingFragment()
 
         /*This syntax is used to access the objects inside the class*/
@@ -141,31 +140,11 @@ class MainActivity : AppCompatActivity() {
 /*Now we set the adapter to our recycler view to the adapter we created*/
         navigation_recycler_view.adapter = _navigationAdapter
 
-/*As the code setHasFixedSize() suggests, the number of items present in the recycler view are fixed and won't change any time*/
         navigation_recycler_view.setHasFixedSize(true)
-
-//
-//        var intent = Intent(this@MainActivity, MainActivity::class.java)
-//
-//        var pIntent = PendingIntent.getActivity(this@MainActivity, System.currentTimeMillis().toInt(),
-//                intent, 0)
-
-//        trackNotificationBuilder = Notification.Builder(this).setContentTitle("A track is playing in the background")
-//                .setSmallIcon(R.drawable.echo_logo).setContentIntent(pIntent).setOngoing(true).setAutoCancel(false).build()
-//
-//        Statified.notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//
-//        var serviceIntent = Intent(this@MainActivity, mNotification::class.java)
-//
-//
-//        serviceIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION)
-//
-//        startService(serviceIntent)
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this)
         val mIntentFilter = IntentFilter()
-        mIntentFilter.addAction("com.durga.action.close")
+        mIntentFilter.addAction(Constants.ACTION.CLOSE)
 
 
         mLocalBroadcastManager?.registerReceiver(
@@ -179,7 +158,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         try {
             super.onDestroy()
-            //Toast.makeText(this,"Destroyed", Toast.LENGTH_SHORT).show()
             mLocalBroadcastManager?.unregisterReceiver(mBroadcastReceiver)
             SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
             song!!.unregister()
@@ -196,9 +174,6 @@ class MainActivity : AppCompatActivity() {
             Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
         }
 
-
-
-        // going to MainScreenFragment when back is pressed in Settings or AboutUs
 
         if(Statified.settingsOn){
 
@@ -224,9 +199,6 @@ class MainActivity : AppCompatActivity() {
             Statified.AboutOn=false
 
         }
-
-        // closing the app if we are on Main or favorite screen
-
         else if(Statified.MainorFavOn){
 
             var index = supportFragmentManager.backStackEntryCount-2
@@ -259,5 +231,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && grantResults[0] == PackageManager.PERMISSION_DENIED)
+            Toast.makeText(this, "Please Provide Storage Permission to Continue", Toast.LENGTH_SHORT).show()
+    }
 }

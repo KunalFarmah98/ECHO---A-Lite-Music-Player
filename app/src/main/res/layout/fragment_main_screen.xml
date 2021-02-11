@@ -107,7 +107,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="You don't have any Downloaded Songs at the moment"
+                android:gravity="center"
+                android:text="You don't have any Songs in the Music Folder at the moment.\nAdd songs to continue enjoying the music"
                 android:textColor="#ffffff"/>
 
 

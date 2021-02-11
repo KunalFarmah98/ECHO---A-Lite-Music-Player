@@ -257,7 +257,7 @@ public class mNotification extends Service {
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
                         .getInstance(this);
                 localBroadcastManager.sendBroadcast(new Intent(
-                        "com.durga.action.close"));
+                        Constants.ACTION.CLOSE));
 
                 msong.unregister();
 
@@ -378,17 +378,10 @@ public class mNotification extends Service {
         views.setImageViewBitmap(R.id.song_image, img);
         smallviews.setImageViewBitmap(R.id.song_image, img);
         }
-        else{
+        else {
             views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
-
-
-
-
-
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -403,14 +396,6 @@ public class mNotification extends Service {
 
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
 
-           // NotificationChannel mChannel=  mNotificationManager.getNotificationChannel("my_channel_07");
-
-//            int importance = mChannel.getImportance();
-//            if (importance < NotificationManager.IMPORTANCE_HIGH && importance > 0 ) {
-//                mChannel.setImportance(NotificationManager.IMPORTANCE_MAX);
-//            }
-
-            // Create a notification and set the notification channel.
             mChannel.setSound(null, null);
             mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             mChannel.enableVibration(false);
@@ -465,12 +450,6 @@ public class mNotification extends Service {
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
         }
 
-        // binding sensor in notification
-
-        /*Here we call the function*/
-//        msong.bindShakeListener();
-
-
     }
 
     public static Bitmap getAlbumart(Context context,Long album_id){
@@ -494,6 +473,7 @@ public class mNotification extends Service {
 
 
     public void updateNotiUI() {
+        getApplicationContext().getSharedPreferences("Notification",Context.MODE_PRIVATE).edit().putLong("albumId",albumID).apply();
         this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
     }
 
