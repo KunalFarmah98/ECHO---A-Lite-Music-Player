@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:orientation="vertical"
-    tools:context=".Online.ui.albums.AlbumsFragment">
+    tools:context=".online.ui.albums.AlbumsFragment">
 
 
     <LinearLayout

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
 
         <fragment
             android:layout_below="@id/appbarlayout"
-            class="com.apps.kunalfarmah.echo.fragments.MainScreenFragment"
+            class="com.apps.kunalfarmah.echo.fragment.MainScreenFragment"
             android:layout_width="match_parent"
             android:id="@+id/details_fragment"
             android:layout_height="match_parent"/>

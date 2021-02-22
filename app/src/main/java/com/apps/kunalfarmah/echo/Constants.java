@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class Constants {
+    public static final String SETTINGS_APP_SETTINGS = "ECHO_A_LITE_MUSIC_PLAYER";
+
     public interface ACTION {
         String MAIN_ACTION = "com.apps.kunalfarmah.action.main";
         String INIT_ACTION = "com.apps.kunalfarmah.action.init";
@@ -40,5 +42,6 @@ public class Constants {
 
     public static final String  API_KEY = "96575af11bc84f955ad52eb7c0a951ad";
     public static final String SECRET  = "985c2b381395c365681141fb3864c973";
+    public static final String CURRENT_SONG = "CURRENT_SONG";
 
 }

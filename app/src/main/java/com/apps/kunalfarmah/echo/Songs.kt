@@ -1,7 +1,6 @@
 package com.apps.kunalfarmah.echo
 
-import android.graphics.Bitmap
-import android.graphics.ComposePathEffect
+
 import android.os.Parcel
 import android.os.Parcelable
 
