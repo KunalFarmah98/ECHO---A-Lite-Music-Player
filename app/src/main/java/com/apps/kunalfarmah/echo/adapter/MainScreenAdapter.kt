@@ -99,8 +99,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
             stopPlaying()
 
-            sharedPreferences.edit().putString(Constants.CURRENT_SONG, Gson().toJson(songObject)).apply()
-
 
             var serviceIntent = Intent(mContext, EchoNotification::class.java)
 

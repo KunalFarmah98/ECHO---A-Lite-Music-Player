@@ -200,11 +200,10 @@ class SongPlayingFragment : Fragment() {
             }
             return bm
         }
-
+        
         fun setData(){
             currSong = Songs(songID = currentSongHelper?.songId!!, songTitle = currentSongHelper?.songTitle!!, artist = currentSongHelper?.songArtist!!,
                     songAlbum = currentSongHelper?.songAlbum!!, dateAdded = 0L, songData = "")
-            sharedPreferences.edit().putString(Constants.CURRENT_SONG, Gson().toJson(currSong)).apply()
         }
 
         /*The function playPrevious() is used to play the previous song again*/
