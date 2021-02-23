@@ -18,20 +18,26 @@ constructor(private val songsRepository: SongsRepository,
             @Assisted private val savedSateHandle: SavedStateHandle) : ViewModel() {
 
     private val _songsList: MutableLiveData<List<Songs>> = MutableLiveData()
+    private val _isDataReady: MutableLiveData<Boolean> = MutableLiveData()
 
     val songsList: MutableLiveData<List<Songs>>
         get() = _songsList
+
+    val isDataReady: MutableLiveData<Boolean>
+        get() = _isDataReady
+
+    lateinit var list: List<Songs>
 
 
     fun init() {
         viewModelScope.launch {
             songsRepository.fetchSongs()
-        }
+        }.invokeOnCompletion { isDataReady.value = true }
     }
 
     fun getAllSongs() {
         viewModelScope.launch {
-            _songsList.value = songsRepository.getAllSongs();
-        }
+            list = songsRepository.getAllSongs()
+        }.invokeOnCompletion { songsList.value = list }
     }
 }

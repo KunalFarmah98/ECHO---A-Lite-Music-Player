@@ -16,7 +16,6 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.adapter.FavoriteAdapter
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Constants
@@ -25,6 +24,9 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.EchoNotification
+import com.apps.kunalfarmah.echo.databinding.FragmentFavoriteBinding
+import com.apps.kunalfarmah.echo.fragment.FavoriteFragment.Staticated.setArtist
+import com.apps.kunalfarmah.echo.fragment.FavoriteFragment.Staticated.setTitle
 import com.bumptech.glide.Glide
 import java.util.*
 
@@ -34,10 +36,6 @@ class FavoriteFragment : Fragment() {
     var _FavouriteAdapter: FavoriteAdapter? = null
     var main: MainActivity? = null
     var myActivity: Activity? = null
-    var noFavorites: TextView? = null
-    var nowPlayingBottomBar: RelativeLayout? = null
-    var playPauseButtonfav: ImageButton? = null
-    var recyclerView: RecyclerView? = null
     var trackPosition: Int = 0
 
     /*This variable will be used for database instance*/
@@ -48,54 +46,55 @@ class FavoriteFragment : Fragment() {
 
     var getListfromDatabase: ArrayList<Songs>? = null
 
+    lateinit var binding: FragmentFavoriteBinding
+    lateinit var song: SongPlayingFragment
+
     @SuppressLint("StaticFieldLeak")
     companion object Statified {
-        var songImg: ImageView? = null
-        var songTitle: TextView? = null
-        var songArtist:TextView?=null
         var mediaPlayer: MediaPlayer? = null
-        var noNext:Boolean?=true
+        var noNext: Boolean? = true
         var songAlbum: Long? = null
+        var songTitle: TextView? = null
+        var songArtist: TextView? = null
+        var songImg: ImageView? = null
     }
 
-    object Staticated{
-        fun setTitle(){
-            songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+    object Staticated {
+        fun setTitle() {
+            if (null != songTitle)
+                songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
         }
-        fun setAlbumArt(){
-            FavoriteFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
-            var albumId = FavoriteFragment.songAlbum as Long
 
-            if(albumId<=0L) FavoriteFragment.songImg!!.setImageResource(R.drawable.now_playing_bar_eq_image)
-            val sArtworkUri: Uri = Uri
-                    .parse("content://media/external/audio/albumart")
-            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-            SongPlayingFragment.Statified.myActivity?.let {FavoriteFragment.songImg?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
+        fun setArtist() {
+            if (null != MainScreenFragment.songArtist) {
+                var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+                if (artist.equals("<unknown>", ignoreCase = true))
+                    MainScreenFragment.songArtist?.visibility = View.GONE
+                else
+                    MainScreenFragment.songArtist?.text = artist
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_favorite, container, false)
 
         setHasOptionsMenu(true)
         main = MainActivity()
         activity?.title = "Favourites"
         favoriteContent = EchoDatabase(myActivity)
-        noFavorites = view?.findViewById(R.id.noFavourites)
-        nowPlayingBottomBar = view.findViewById(R.id.hiddenBarFavScreen)
-        songTitle = view.findViewById(R.id.song_title_fav)
-        songTitle?.isSelected = true
-        songArtist = view.findViewById(R.id.song_artist_fav)
-        songTitle?.isSelected = true
-        songImg = view?.findViewById(R.id.defaultMusic)
-        playPauseButtonfav = view.findViewById(R.id.play_pause_fav)
-        recyclerView = view.findViewById(R.id.favourite_Recycler)
+        binding = FragmentFavoriteBinding.inflate(layoutInflater)
+        MainActivity.Statified.settingsOn = true
+        songTitle = binding.songTitle
+        songArtist = binding.songArtist
+        songImg = binding.songImg
 
-        MainActivity.Statified.settingsOn=true
+        binding.songTitle.isSelected = true
+        binding.songArtist.isSelected = true
+
 //        MainActivity.Statified.MainorFavOn=true
 
-        return view
+        return binding.root
     }
 
 
@@ -144,9 +143,8 @@ class FavoriteFragment : Fragment() {
                     //Task HERE
 
                     _FavouriteAdapter?.filter_data(newList)
-                }
-                catch (e:Exception){
-                    Toast.makeText(context,"Aw Snap! Something Wrong Happened",Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Aw Snap! Something Wrong Happened", Toast.LENGTH_SHORT).show()
                 }
                 return true
 
@@ -162,13 +160,6 @@ class FavoriteFragment : Fragment() {
 
         return
     }
-
-//    override fun onPrepareOptionsMenu(menu: Menu?) {
-//        super.onPrepareOptionsMenu(menu)
-//
-//        //removing the searching options as they r not needed
-//
-//    }
 
 
     /*Here we perform the actions of sorting according to the menu item clicked*/
@@ -223,17 +214,19 @@ class FavoriteFragment : Fragment() {
             val songData = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val dateIndex = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
+            val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
             /*moveToNext() returns the next row of the results. It returns null if there is no row after the current row*/
             while (songCursor.moveToNext()) {
 
                 var currentId = songCursor.getLong(songId)
                 var currentTitle = songCursor.getString(songTitle)
+                var album = songCursor.getString(songAlbumName)
                 var currentArtist = songCursor.getString(songArtist)
                 var currentData = songCursor.getString(songData)
                 var currentDate = songCursor.getLong(dateIndex)
                 var currAlbum = songCursor.getLong(songAlbum)
                 /*Adding the fetched songs to the arraylist*/
-                arrayList.add(Songs(currentId, currentTitle, currentArtist, currentData, currentDate, currAlbum))
+                arrayList.add(Songs(currentId, currentTitle, currentArtist,album, currentData, currentDate, currAlbum))
             }
         } else {
             return null
@@ -253,36 +246,42 @@ class FavoriteFragment : Fragment() {
             bottomBarClickHandler()
 
             /*We fetch the song title with the help of the current song helper and set it to the song title in our bottom bar*/
-            FavoriteFragment.songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+            binding.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+            var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+            if (artist.equals("<unknown>", ignoreCase = true))
+                binding.songArtist.visibility = View.GONE
+            else
+                binding.songArtist.text = artist
+            songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
 
-            FavoriteFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
-
-            setAlbumArt(FavoriteFragment.songAlbum)
+            setAlbumArt(songAlbum)
 
             /*If we are the on the favorite screen and not on the song playing screen when the song finishes
             * we want the changes in the song to reflect on the favorite screen hence we call the onSongComplete() function which help us in maintaining consistency*/
-            SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener({
-                FavoriteFragment.songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
-                FavoriteFragment.songArtist?.text = SongPlayingFragment.Statified.currentSongHelper?.songArtist
-                FavoriteFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+            SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener {
+                binding.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+                if (artist.equals("<unknown>", ignoreCase = true))
+                    binding.songArtist.visibility = View.GONE
+                else
+                    binding.songArtist.text = artist
+                songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
                 try {
-                    setAlbumArt(FavoriteFragment.songAlbum)
-                }
-                catch (e:java.lang.Exception){
+                    setAlbumArt(songAlbum)
+                } catch (e: java.lang.Exception) {
 
                 }
                 SongPlayingFragment.Staticated.onSongComplete()
-            })
+            }
 
             /*While coming back from the song playing screen
             * if the song was playing then only the bottom bar is placed, else not placed*/
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
-                nowPlayingBottomBar?.visibility = View.VISIBLE
-                playPauseButtonfav?.setBackgroundResource(R.drawable.pause_icon)
+                binding.nowPlayingBottomBar.visibility = View.VISIBLE
+                binding.playPause.setBackgroundResource(R.drawable.pause_icon)
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             } else {
-                nowPlayingBottomBar?.visibility = View.VISIBLE
-                playPauseButtonfav?.setBackgroundResource(R.drawable.play_icon)
+                binding.nowPlayingBottomBar.visibility = View.VISIBLE
+                binding.playPause.setBackgroundResource(R.drawable.play_icon)
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
             }
 
@@ -307,11 +306,12 @@ class FavoriteFragment : Fragment() {
         }
         return path
     }
+
     /*The bottomBarClickHandler() function is used to handle the click events on the bottom bar*/
     fun bottomBarClickHandler() {
 
         /*We place a click listener on the bottom bar*/
-        nowPlayingBottomBar?.setOnClickListener({
+        binding.nowPlayingBottomBar.setOnClickListener {
 
             /*Using the same media player object*/
             Statified.mediaPlayer = SongPlayingFragment.Statified.mediaPlayer
@@ -346,11 +346,11 @@ class FavoriteFragment : Fragment() {
                     * on pressing back button you navigate to the screen you came from*/
                     ?.addToBackStack("SongPlayingFragment")
                     ?.commit()
-        })
+        }
 
         /*Apart from the click on the bottom bar we have a play/pause button in our bottom bar
         * This button is used to play or pause the media player*/
-        playPauseButtonfav?.setOnClickListener({
+        binding.playPause.setOnClickListener {
 
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
 
@@ -358,7 +358,7 @@ class FavoriteFragment : Fragment() {
                 * and then change the button to play button*/
                 SongPlayingFragment.Statified.mediaPlayer?.pause()
 //                trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int
-                playPauseButtonfav?.setBackgroundResource(R.drawable.play_icon)
+                binding.playPause.setBackgroundResource(R.drawable.play_icon)
 
                 var play = Intent(context, EchoNotification::class.java)
                 play.action = Constants.ACTION.CHANGE_TO_PLAY
@@ -367,7 +367,7 @@ class FavoriteFragment : Fragment() {
                 SongPlayingFragment.Staticated.upddateButton("pause")
             } else {
 
-                MainScreenAdapter.Statified.stopPlayingCalled=true
+                MainScreenAdapter.Statified.stopPlayingCalled = true
 
                 if (main?.getnotify_val() == false) {
 
@@ -378,17 +378,17 @@ class FavoriteFragment : Fragment() {
                     SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
 
 //                    SongPlayingFragment.Statified.mediaPlayer?.seekTo(-0)
-                    if(SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    SongPlayingFragment.Statified.mediaPlayer?.start()
+                    if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                        SongPlayingFragment.Statified.mediaPlayer?.start()
 //                    SongPlayingFragment.Statified.mediaPlayer?.previous()
 
 
-                    playPauseButtonfav?.setBackgroundResource(R.drawable.pause_icon)
+                    binding.playPause.setBackgroundResource(R.drawable.pause_icon)
 
                     var serviceIntent = Intent(myActivity, EchoNotification::class.java)
 
-                    serviceIntent.putExtra("title", songTitle?.text.toString())
-                    serviceIntent.putExtra("artist", songArtist?.text.toString())
+                    serviceIntent.putExtra("title", binding.songTitle.text.toString())
+                    serviceIntent.putExtra("artist", binding.songArtist.text.toString())
                     serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
 
 
@@ -409,9 +409,9 @@ class FavoriteFragment : Fragment() {
                 * and change the button to pause button*/
                     trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int  // current postiton where the player as stopped
                     SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
-                    if(SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    SongPlayingFragment.Statified.mediaPlayer?.start()
-                    playPauseButtonfav?.setBackgroundResource(R.drawable.pause_icon)
+                    if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                        SongPlayingFragment.Statified.mediaPlayer?.start()
+                    binding.playPause.setBackgroundResource(R.drawable.pause_icon)
 
 //                if (main?.notify == true) {
 //                    var play = Intent(context, EchoNotification::class.java)
@@ -428,7 +428,18 @@ class FavoriteFragment : Fragment() {
 
                 }
             }
-        })
+        }
+
+        val shuffle = context?.getSharedPreferences(SongPlayingFragment.Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
+        val isshuffled = shuffle?.getBoolean("feature", false)
+
+        binding.next.setOnClickListener {
+            song = SongPlayingFragment()
+            if (isshuffled!!)
+                song!!.playNext("PlayNextLikeNormalShuffle")
+            else
+                song!!.playNext("PlayNextNormal")
+        }
     }
 
     /*The below function is used to search the favorites and display*/
@@ -469,36 +480,43 @@ class FavoriteFragment : Fragment() {
 
             /*If refresh list is null we display that there are no favorites*/
             if (refreshList == null) {
-              //  recyclerView?.visibility = View.INVISIBLE
-                noFavorites?.visibility = View.VISIBLE
+                //  recyclerView?.visibility = View.INVISIBLE
+                binding.noFavorites?.visibility = View.VISIBLE
             } else {
 
-                noFavorites?.visibility = View.INVISIBLE
-               // recyclerView?.visibility = View.VISIBLE
+                binding.noFavorites?.visibility = View.INVISIBLE
+                // recyclerView?.visibility = View.VISIBLE
 
                 /*Else we setup our recycler view for displaying the favorite songs*/
                 _FavouriteAdapter = FavoriteAdapter(refreshList as java.util.ArrayList<Songs>, myActivity as Context)
                 val mLayoutManager = LinearLayoutManager(activity)
-                recyclerView?.layoutManager = mLayoutManager
-                recyclerView?.itemAnimator = DefaultItemAnimator()
-                recyclerView?.adapter = _FavouriteAdapter
-                recyclerView?.setHasFixedSize(true)
+                binding.recyclerView?.layoutManager = mLayoutManager
+                binding.recyclerView?.itemAnimator = DefaultItemAnimator()
+                binding.recyclerView?.adapter = _FavouriteAdapter
+                binding.recyclerView?.setHasFixedSize(true)
             }
         } else {
 
             /*If initially the checkSize() function returned 0 then also we display the no favorites present message*/
-            recyclerView?.visibility = View.INVISIBLE
-            noFavorites?.visibility = View.VISIBLE
+            binding.recyclerView?.visibility = View.INVISIBLE
+            binding.noFavorites?.visibility = View.VISIBLE
         }
     }
 
-    fun setAlbumArt(songAlbum:Long?){
+    @SuppressLint("UseCompatLoadingForDrawables")
+    fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum as Long
 
-        if(albumId<=0L) FavoriteFragment.songImg!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+        if (albumId <= 0L) binding.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(requireContext()).load(uri).into(FavoriteFragment.songImg!!)
+        Glide.with(requireContext()).load(uri).into(binding.songImg)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setTitle()
+        setArtist()
     }
 }

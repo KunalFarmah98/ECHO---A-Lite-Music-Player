@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.echo;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -30,6 +31,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -477,19 +479,22 @@ public class EchoNotification extends Service {
         this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     void setAlbumArt(){
         Long albumId = albumID;
-        if(albumId<=0L) MainScreenFragment.Statified.getSongImg().setImageResource(R.drawable.now_playing_bar_eq_image);
+        if(albumId<=0L) Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
+                .getResources().getDrawable(R.drawable.now_playing_bar_eq_image));
         Uri sArtworkUri = Uri
                 .parse("content://media/external/audio/albumart");
         Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).into(MainScreenFragment.Statified.getSongImg());
+        Glide.with(getApplicationContext()).load(uri).into(Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()));
 
-        if(albumId<=0L) FavoriteFragment.Statified.getSongImg().setImageResource(R.drawable.now_playing_bar_eq_image);
+        if(albumId<=0L) Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext().getResources()
+                .getDrawable(R.drawable.now_playing_bar_eq_image));
          sArtworkUri = Uri
                 .parse("content://media/external/audio/albumart");
         uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).into(FavoriteFragment.Statified.getSongImg());
+        Glide.with(getApplicationContext()).load(uri).into(Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()));
     }
 
 

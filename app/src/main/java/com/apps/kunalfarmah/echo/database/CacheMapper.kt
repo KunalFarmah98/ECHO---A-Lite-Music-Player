@@ -18,6 +18,7 @@ constructor() :
                 songData = entity.songData,
                 songAlbum = entity.songAlbum,
                 artist = entity.artist,
+                album = entity.album,
                 dateAdded = entity.dateAdded
         )
     }
@@ -28,6 +29,7 @@ constructor() :
                 songTitle = domainModel.songTitle,
                 songData = domainModel.songData,
                 artist = domainModel.artist,
+                album = domainModel.album,
                 songAlbum = domainModel.songAlbum,
                 dateAdded = domainModel.dateAdded
         )

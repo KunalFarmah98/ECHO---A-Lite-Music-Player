@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.echo.adapter
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -22,6 +23,7 @@ import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlaying
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
@@ -41,6 +43,9 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     var songDetails: ArrayList<Songs>? = null
     var mContext: Context? = null
     lateinit var sharedPreferences: SharedPreferences
+    var binding: RowCustomMainscreenAdapterBinding?=null
+
+    public get() = binding
 
     object Statified{
         var stopPlayingCalled = false
@@ -52,6 +57,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         this.mContext = _context
         sharedPreferences = AppUtil.getAppPreferences(mContext)
     }
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
 
@@ -59,29 +65,33 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         * trackTitle for holding the name of the song and
         * trackArtist for holding the name of the artist*/
 
-            holder.trackTitle?.text = songObject?.songTitle
-            holder.trackArtist?.text = songObject?.artist
+        holder.binding!!.trackTitle?.text = songObject?.songTitle
+        holder.binding!!.trackArtist?.text = songObject?.artist
+        holder.binding!!.trackAlbum?.text = songObject?.album
 
-        if(holder.trackTitle?.text!!.equals("<unknown>"))
-            holder.trackTitle?.text="unknown"
+        if(holder.binding!!.trackTitle?.text!!.equals("<unknown>"))
+            holder.binding!!.trackTitle?.text="unknown"
 
-        if( holder.trackArtist?.text !!.equals("<unknown>"))
-            holder.trackArtist?.text ="unknown"
+        if( holder.binding!!.trackArtist?.text !!.equals("<unknown>"))
+            holder.binding!!.trackArtist?.visibility = View.GONE
+
+        if( holder.binding!!.trackAlbum?.text !!.equals("<unknown>"))
+            holder.binding!!.trackAlbum?.text = "Unknown Album"
 
         var albumId = songObject?.songAlbum as Long
         //var art: Bitmap? =null
 
-        if(albumId<=0L) holder.trackArt!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+        if(albumId<=0L) holder.binding!!.album!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.trackArt?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
+        mContext?.let { holder.binding!!.album?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
 
 
 
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.contentHolder?.setOnClickListener {
+        holder.binding!!.contentRow?.setOnClickListener {
             val songPlayingFragment = SongPlayingFragment()
 
             var args = Bundle()
@@ -140,18 +150,10 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     /*Every view holder class we create will serve the same purpose as it did when we created it for the navigation drawer*/
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        /*Declaring the widgets and the layout used*/
-        var trackTitle: TextView? = null
-        var trackArtist: TextView? = null
-        var trackArt: ImageView? = null
-        var contentHolder: RelativeLayout? = null
-
         /*Constructor initialisation for the variables*/
+        var binding:RowCustomMainscreenAdapterBinding?=null
         init {
-            trackTitle = view.findViewById(R.id.tracktitle) as TextView
-            trackArtist = view.findViewById(R.id.trackartist) as TextView
-            trackArt = view.findViewById(R.id.album) as ImageView
-            contentHolder = view.findViewById(R.id.content_row) as RelativeLayout
+            binding = RowCustomMainscreenAdapterBinding.bind(view)
         }
     }
 
@@ -175,29 +177,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
     }
 
-     fun getAlbumart(album_id: Long): Bitmap? {
-
-        var bm: Bitmap? = null
-        if(album_id <= 0L) return  BitmapFactory.decodeResource(mContext!!.resources,
-                R.drawable.now_playing_bar_eq_image)
-         //GlobalScope.launch {
-            try {
-                val sArtworkUri: Uri = Uri
-                        .parse("content://media/external/audio/albumart")
-                val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
-                val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
-                        .openFileDescriptor(uri, "r")
-                if (pfd != null) {
-                    val fd: FileDescriptor = pfd.fileDescriptor
-                    bm = BitmapFactory.decodeFileDescriptor(fd)
-                }
-            } catch (e: java.lang.Exception) {
-            }
-             if(bm==null) bm = BitmapFactory.decodeResource(mContext!!.resources,
-                     R.drawable.now_playing_bar_eq_image)
-         // }
-        return bm
-    }
 
     fun filter_data(newList : ArrayList<Songs>?){
 

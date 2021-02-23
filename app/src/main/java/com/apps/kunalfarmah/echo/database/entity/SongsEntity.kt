@@ -13,10 +13,12 @@ data class SongsEntity(
         var songTitle: String,
         @ColumnInfo(name = "artist")
         var artist: String,
+        @ColumnInfo(name = "album")
+        var album: String,
         @ColumnInfo(name = "songData")
         var songData: String,
         @ColumnInfo(name = "dateAdded")
         var dateAdded: Long,
         @ColumnInfo(name = "songAlbum")
-        var songAlbum: Long?
+        var songAlbum: Long?,
 )

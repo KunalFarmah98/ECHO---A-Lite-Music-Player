@@ -202,7 +202,7 @@ class SongPlayingFragment : Fragment() {
         }
         
         fun setData(){
-            currSong = Songs(songID = currentSongHelper?.songId!!, songTitle = currentSongHelper?.songTitle!!, artist = currentSongHelper?.songArtist!!,
+            currSong = Songs(songID = currentSongHelper?.songId!!, songTitle = currentSongHelper?.songTitle!!, album = currentSongHelper?.album!!, artist = currentSongHelper?.songArtist!!,
                     songAlbum = currentSongHelper?.songAlbum!!, dateAdded = 0L, songData = "")
         }
 
@@ -262,7 +262,10 @@ class SongPlayingFragment : Fragment() {
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 
             MainScreenFragment.Staticated.setTitle()
+            MainScreenFragment.Staticated.setArtist()
+
             FavoriteFragment.Staticated.setTitle()
+            FavoriteFragment.Staticated.setArtist()
 
 
             var play = Intent(myActivity, EchoNotification::class.java)
@@ -454,6 +457,7 @@ class SongPlayingFragment : Fragment() {
 
         }
 
+        @SuppressLint("UseCompatLoadingForDrawables")
         fun updateTextViews(songtitle: String, songartist: String) {
 
             var songtitleupdted = songtitle
@@ -470,7 +474,7 @@ class SongPlayingFragment : Fragment() {
 
             var img = getAlbumart(currentSongHelper?.songAlbum!!.toLong())
             if(img==null)
-            ALbumArt?.setImageResource(R.drawable.now_playing_bar_eq_image)
+            ALbumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
             else ALbumArt?.setImageBitmap(img)
 
         }
@@ -588,7 +592,10 @@ class SongPlayingFragment : Fragment() {
             }
 
             MainScreenFragment.Staticated.setTitle()
+            MainScreenFragment.Staticated.setArtist()
+
             FavoriteFragment.Staticated.setTitle()
+            FavoriteFragment.Staticated.setArtist()
 
             if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
@@ -1009,7 +1016,7 @@ class SongPlayingFragment : Fragment() {
 
         /*Here we handle the click of the favorite icon
        * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
-        fab?.setOnClickListener({
+        fab?.setOnClickListener {
             if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_off)
                 favoriteContent?.deleteFavourite(currentSongHelper?.songId?.toInt() as Int)
@@ -1020,10 +1027,11 @@ class SongPlayingFragment : Fragment() {
 
                 /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
                 fab?.setBackgroundResource(R.drawable.favorite_on)
-                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, currentSongHelper?.songAlbum)
+                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, currentSongHelper?.songAlbum,
+                currentSongHelper?.album)
                 Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
-        })
+        }
 
         art?.setOnClickListener{
             if(glView?.visibility==View.VISIBLE){
@@ -1037,7 +1045,7 @@ class SongPlayingFragment : Fragment() {
         }
 
 
-        shufflebutton?.setOnClickListener({
+        shufflebutton?.setOnClickListener {
 
             /*Initializing the shared preferences in private mode
             * edit() used so that we can overwrite the preferences*/
@@ -1070,7 +1078,7 @@ class SongPlayingFragment : Fragment() {
                 editorLoop?.putBoolean("feature", false)
                 editorLoop?.apply()
             }
-        })
+        }
 
 
         nextbutton?.setOnClickListener({
@@ -1167,7 +1175,7 @@ class SongPlayingFragment : Fragment() {
         })
 
         /*Here we handle the click event on the play/pause button*/
-        playpausebutton?.setOnClickListener({
+        playpausebutton?.setOnClickListener {
 
             /*if the song is already playing and then play/pause button is tapped
             * then we pause the media player and also change the button to play button*/
@@ -1185,7 +1193,7 @@ class SongPlayingFragment : Fragment() {
                 * change the image to pause icon*/
             } else {
                 if (reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                Statified.mediaPlayer?.start()
+                    Statified.mediaPlayer?.start()
                 play = true
                 currentSongHelper?.isPlaying = true
                 playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
@@ -1195,7 +1203,7 @@ class SongPlayingFragment : Fragment() {
                 activity?.startService(play)
 
             }
-        })
+        }
     }
 
 
@@ -1298,7 +1306,10 @@ class SongPlayingFragment : Fragment() {
 
 
         MainScreenFragment.Staticated.setTitle()
+        MainScreenFragment.Staticated.setArtist()
+
         FavoriteFragment.Staticated.setTitle()
+        FavoriteFragment.Staticated.setArtist()
 
         var play = Intent(myActivity, EchoNotification::class.java)
         play.action = Constants.ACTION.NEXT_UPDATE

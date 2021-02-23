@@ -39,7 +39,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: SongsViewModel by viewModels()
     var song:SongPlayingFragment?=null
 
     //setting up a broadcast receiver to close the activity when notification is closed
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
                 song!!.unregister()
 
 
-                MainActivity.Statified.firstrun=false
                // SongPlayingFragment.Statified.mediaPlayer?.release()
                 finishAffinity()
 
@@ -78,7 +76,6 @@ class MainActivity : AppCompatActivity() {
         var settingsOn:Boolean=false
         var AboutOn:Boolean=false
         var MainorFavOn:Boolean=false
-        var firstrun=false
 
     }
 
@@ -95,11 +92,8 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Statified.firstrun=true
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        viewModel.init()
 
         song= SongPlayingFragment()
 

@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.echo.adapter
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -39,6 +40,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         this.mContext = _context
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
 
@@ -56,7 +58,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
         var albumId = songObject?.songAlbum as Long
 
-        if(albumId<=0L) holder.trackArt!!.setImageResource(R.drawable.now_playing_bar_eq_image)
+        if(albumId<=0L) holder.trackArt!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
@@ -67,7 +69,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 //        else holder.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.contentHolder?.setOnClickListener({
+        holder.contentHolder?.setOnClickListener {
 
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
@@ -110,7 +112,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
                     .beginTransaction()
                     .replace(R.id.details_fragment, songPlayingFragment)
                     .commit()
-        })
+        }
     }
 
     /*This has the same implementation which we did for the navigation drawer adapter*/

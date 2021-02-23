@@ -3,8 +3,10 @@ package com.apps.kunalfarmah.echo.repository
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.database.CacheMapper
 import com.apps.kunalfarmah.echo.database.dao.SongsDao
@@ -23,8 +25,7 @@ constructor(
 
     suspend fun fetchSongs(){
         var songs = getSongsFromPhone()
-        for(song in songs)
-            songsDao.insert(cacheMapper.mapToEntity(song))
+            songsDao.insertAll(cacheMapper.mapToEntityList(songs))
     }
 
     suspend fun getAllSongs(): List<Songs> {
@@ -46,18 +47,20 @@ constructor(
             val songData = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val dateAdded = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
+            val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
 
             while (songCursor.moveToNext()) {
                 var currentID = songCursor.getLong(songId)
                 var currTitle = songCursor.getString(songTitle)
                 var currArtist = songCursor.getString(songArtist)
+                var album = songCursor.getString(songAlbumName)
                 var currData = songCursor.getString(songData)
                 var currdate = songCursor.getLong(dateAdded)
                 var currAlbum = songCursor.getLong(songAlbum)
 
 
                 try {
-                    arralist.add(Songs(currentID, currTitle, currArtist, currData, currdate, currAlbum))
+                    arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
                     Toast.makeText(context,"Not Enough RAM to Allocate Memory and Collect Your Songs :(", Toast.LENGTH_SHORT).show()

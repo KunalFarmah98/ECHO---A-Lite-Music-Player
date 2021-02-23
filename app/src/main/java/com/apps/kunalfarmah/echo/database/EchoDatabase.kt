@@ -12,6 +12,7 @@ import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_PA
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_TITLE
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.TABLE_NAME
 import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM_NAME
 
 
 /*This class is created for managing the database for our application
@@ -42,13 +43,15 @@ class EchoDatabase : SQLiteOpenHelper {
         val COLUMN_SONG_ARTIST = "SongArtist"
         val COLUMN_SONG_PATH = "SongPath"
         val COLUMN_SONG_ALBUM = "SongAlbum"
+        val COLUMN_SONG_ALBUM_NAME = "SongAlbumName"
+
     }
 
     @SuppressLint("SQLiteString")
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE " + TABLE_NAME + "( " + COLUMN_ID +
                 " INTEGER," + COLUMN_SONG_ARTIST + " STRING," + COLUMN_SONG_TITLE + " STRING,"
-                + COLUMN_SONG_PATH + " STRING," + COLUMN_SONG_ALBUM + " NUMERIC);")
+                + COLUMN_SONG_PATH + " STRING," + COLUMN_SONG_ALBUM + " NUMERIC" + COLUMN_SONG_ALBUM_NAME + " STRING);")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -62,7 +65,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     constructor(context: Context?) : super(context,Staticated.DB_NAME, null, Staticated.DB_VERSION)
 
-    fun storeAsFavorite(id: Int?, artist: String?, songTitle: String?, path: String?, album: Long?) {
+    fun storeAsFavorite(id: Int?, artist: String?, songTitle: String?, path: String?, album: Long?, albumName: String?) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(COLUMN_ID, id)
@@ -70,6 +73,7 @@ class EchoDatabase : SQLiteOpenHelper {
         contentValues.put(COLUMN_SONG_TITLE, songTitle)
         contentValues.put(COLUMN_SONG_PATH, path)
         contentValues.put(COLUMN_SONG_ALBUM, album)
+        contentValues.put(COLUMN_SONG_ALBUM_NAME, albumName)
         db.insert(TABLE_NAME, null, contentValues)
         db.close()
     }
@@ -104,7 +108,8 @@ class EchoDatabase : SQLiteOpenHelper {
                     var _title = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_TITLE))
                     var _songPath = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_PATH))
                     var _songAlbum = cSor.getInt(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM))
-                    _songList.add(Songs(_id.toLong(), _title, _artist, _songPath, 0,_songAlbum.toLong()))
+                    var _songAlbumName = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM_NAME))
+                    _songList.add(Songs(_id.toLong(), _title, _artist, _songAlbumName,_songPath, 0,_songAlbum.toLong()))
                 }
 
                 /*This task is performed till there are items present*/

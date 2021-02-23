@@ -43,4 +43,5 @@ or pulling down the notification panel to do the same.</string>
     connecting to your device to a computer</string>
     <string name="link_help">Alternatively you can use this link to get detailed info on how to modify android\'s internal files:</string>
     <string name="help">Help</string>
+    <string name="album">album</string>
 </resources>
