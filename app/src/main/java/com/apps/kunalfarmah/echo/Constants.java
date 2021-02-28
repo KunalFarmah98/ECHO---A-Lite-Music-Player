@@ -12,6 +12,7 @@ public class Constants {
         String INIT_ACTION = "com.apps.kunalfarmah.action.init";
         String PREV_ACTION = "com.apps.kunalfarmah.action.prev";
         String PLAY_ACTION = "com.apps.kunalfarmah.action.play";
+        String PAUSE_ACTION = "com.apps.kunalfarmah.action.pause";
         String NEXT_ACTION = "com.apps.kunalfarmah.action.next";
         String STARTFOREGROUND_ACTION = "com.apps.kunalfarmah.action.startforeground";
         String STOPFOREGROUND_ACTION = "com.apps.kunalfarmah.action.stopforeground";

@@ -2,7 +2,7 @@ package com.apps.kunalfarmah.echo.di
 
 import android.content.Context
 import com.apps.kunalfarmah.echo.database.CacheMapper
-import com.apps.kunalfarmah.echo.database.dao.SongsDao
+import com.apps.kunalfarmah.echo.database.dao.EchoDao
 import com.apps.kunalfarmah.echo.repository.SongsRepository
 import dagger.Module
 import dagger.Provides
@@ -19,10 +19,10 @@ object RepositoryModule {
     @Provides
     fun provideSongsRepository(
             @ApplicationContext context: Context,
-            songsDao: SongsDao,
+            echoDao: EchoDao,
             cacheMapper: CacheMapper
     ): SongsRepository {
-        return SongsRepository(context, songsDao, cacheMapper)
+        return SongsRepository(context, echoDao, cacheMapper)
     }
 }
 

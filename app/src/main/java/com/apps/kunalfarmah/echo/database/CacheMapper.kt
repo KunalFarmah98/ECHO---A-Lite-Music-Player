@@ -1,7 +1,9 @@
 package com.apps.kunalfarmah.echo.database
 
 
+import com.apps.kunalfarmah.echo.SongAlbum
 import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.database.entity.SongAlbumEntity
 import com.apps.kunalfarmah.echo.database.entity.SongsEntity
 import com.apps.kunalfarmah.echo.util.EntityMapper
 import javax.inject.Inject
@@ -23,6 +25,13 @@ constructor() :
         )
     }
 
+     fun mapFromAlbumEntity(entity: SongAlbumEntity): SongAlbum {
+        return SongAlbum(
+                name = entity.albumName,
+                id = entity.albumId
+        )
+    }
+
     override fun mapToEntity(domainModel: Songs): SongsEntity {
         return SongsEntity(
                 songID = domainModel.songID,
@@ -37,6 +46,10 @@ constructor() :
 
     fun mapFromEntityList(entities: List<SongsEntity>): List<Songs> {
         return entities.map { mapFromEntity(it) }
+    }
+
+    fun mapFromAlbumEntityList(entities: List<SongAlbumEntity>): List<SongAlbum> {
+        return entities.map { mapFromAlbumEntity(it) }
     }
 
     fun mapToEntityList(songs: List<Songs>): List<SongsEntity> {

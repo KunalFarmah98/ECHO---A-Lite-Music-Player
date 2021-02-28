@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.apps.kunalfarmah.echo.adapter.FavoriteAdapter
@@ -27,9 +28,12 @@ import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.databinding.FragmentFavoriteBinding
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment.Staticated.setArtist
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment.Staticated.setTitle
+import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class FavoriteFragment : Fragment() {
 
 
@@ -49,8 +53,11 @@ class FavoriteFragment : Fragment() {
     lateinit var binding: FragmentFavoriteBinding
     lateinit var song: SongPlayingFragment
 
+    val viewModel: SongsViewModel by viewModels()
+
     @SuppressLint("StaticFieldLeak")
     companion object Statified {
+        val TAG = "FavoriteFragment"
         var mediaPlayer: MediaPlayer? = null
         var noNext: Boolean? = true
         var songAlbum: Long? = null
@@ -91,6 +98,13 @@ class FavoriteFragment : Fragment() {
 
         binding.songTitle.isSelected = true
         binding.songArtist.isSelected = true
+
+        viewModel.isSongPlaying.observe(viewLifecycleOwner,{
+            if(it)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
+            else
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
+        })
 
 //        MainActivity.Statified.MainorFavOn=true
 
@@ -236,8 +250,6 @@ class FavoriteFragment : Fragment() {
         return arrayList
     }
 
-    // TODO: BOTTOM BAR DOESN'T GET ALBUM ART FIX
-
     /*The bottom bar setup function is used to place the bottom bar on the favorite screen when we come back from the song playing screen to the favorite screen*/
     fun bottomBarSetup() {
         try {
@@ -277,11 +289,11 @@ class FavoriteFragment : Fragment() {
             * if the song was playing then only the bottom bar is placed, else not placed*/
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
                 binding.nowPlayingBottomBar.visibility = View.VISIBLE
-                binding.playPause.setBackgroundResource(R.drawable.pause_icon)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             } else {
                 binding.nowPlayingBottomBar.visibility = View.VISIBLE
-                binding.playPause.setBackgroundResource(R.drawable.play_icon)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
             }
 
@@ -358,7 +370,7 @@ class FavoriteFragment : Fragment() {
                 * and then change the button to play button*/
                 SongPlayingFragment.Statified.mediaPlayer?.pause()
 //                trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int
-                binding.playPause.setBackgroundResource(R.drawable.play_icon)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
 
                 var play = Intent(context, EchoNotification::class.java)
                 play.action = Constants.ACTION.CHANGE_TO_PLAY
@@ -383,7 +395,7 @@ class FavoriteFragment : Fragment() {
 //                    SongPlayingFragment.Statified.mediaPlayer?.previous()
 
 
-                    binding.playPause.setBackgroundResource(R.drawable.pause_icon)
+                    binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 
                     var serviceIntent = Intent(myActivity, EchoNotification::class.java)
 
@@ -411,7 +423,7 @@ class FavoriteFragment : Fragment() {
                     SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
                     if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         SongPlayingFragment.Statified.mediaPlayer?.start()
-                    binding.playPause.setBackgroundResource(R.drawable.pause_icon)
+                    binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 
 //                if (main?.notify == true) {
 //                    var play = Intent(context, EchoNotification::class.java)

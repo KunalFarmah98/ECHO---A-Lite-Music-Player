@@ -47,6 +47,7 @@ class MainScreenFragment : Fragment() {
 
     @SuppressLint("StaticFieldLeak")
     companion object Statified {
+        val TAG = "MainScreenFragment"
         var mediaPlayer: MediaPlayer? = null
         var noNext: Boolean = true
         var songAlbum: Long? = null
@@ -107,6 +108,13 @@ class MainScreenFragment : Fragment() {
             getSongsList = viewModel.songsList.value
             setView()
         })
+
+        viewModel.isSongPlaying.observe(viewLifecycleOwner,{
+            if(it)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
+            else
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
+        })
         return binding.root
     }
 
@@ -132,8 +140,8 @@ class MainScreenFragment : Fragment() {
 
     fun setView() {
         val prefs = activity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)
-        val action_sort_ascending = prefs?.getString("action_sort_ascending", "true")
-        val action_sort_recent = prefs?.getString("action_sort_recent", "false")
+        val action_sort_ascending = prefs?.getString("action_sort_ascending", "false")
+        val action_sort_recent = prefs?.getString("action_sort_recent", "true")
 
         if (getSongsList == null || getSongsList?.size == 0) {
             binding.noSongs.visibility = View.VISIBLE
@@ -169,7 +177,7 @@ class MainScreenFragment : Fragment() {
 
         val searchItem = menu.findItem(R.id.action_search)
         var searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Enter Song or Artist to Search"
+        searchView.queryHint = "Search Song, Artist, Album"
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -182,9 +190,12 @@ class MainScreenFragment : Fragment() {
                 for (songs in getSongsList!!) {
                     var name = songs.songTitle.toLowerCase()
                     var artist = songs.artist.toLowerCase()
+                    var album = songs.album.toString()
                     if (name.contains(name_to_saerch, true))
                         newList?.add(songs)
                     else if (artist.contains(name_to_saerch, true))
+                        newList?.add(songs)
+                    else if(album.contains(name_to_saerch, true))
                         newList?.add(songs)
 
                 }
@@ -235,11 +246,19 @@ class MainScreenFragment : Fragment() {
 
             bottomBarClickHandler()
             songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+            var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+            if (artist.equals("<unknown>", ignoreCase = true))
+                binding.songArtist.visibility = View.GONE
+            else
+                binding.songArtist.text = artist
             songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
             setAlbumArt(songAlbum)
             SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener {
                 binding.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
-                binding.songArtist.text = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+                if (artist.equals("<unknown>", ignoreCase = true))
+                    binding.songArtist.visibility = View.GONE
+                else
+                    binding.songArtist.text = artist
                 songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
                 try {
                     setAlbumArt(songAlbum)
@@ -251,11 +270,11 @@ class MainScreenFragment : Fragment() {
 
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
                 binding.nowPlayingBottomBarMain.visibility = View.VISIBLE
-                binding.playPause.setBackgroundResource(R.drawable.pause_icon)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             } else {
                 binding.nowPlayingBottomBarMain.visibility = View.VISIBLE
-                binding.playPause.setBackgroundResource(R.drawable.play_icon)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
             }
         } catch (e: Exception) {
@@ -312,7 +331,7 @@ class MainScreenFragment : Fragment() {
                 * and then change the button to play button*/
                 SongPlayingFragment.Statified.mediaPlayer?.pause()
 //                trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int
-                binding.playPause.setBackgroundResource(R.drawable.play_icon)
+                binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
 
                 var play = Intent(context, EchoNotification::class.java)
                 play.action = Constants.ACTION.CHANGE_TO_PLAY
@@ -341,8 +360,7 @@ class MainScreenFragment : Fragment() {
 //                    SongPlayingFragment.Statified.mediaPlayer?.previous()
 
 
-                    binding.playPause.setBackgroundResource(R.drawable.pause_icon)
-
+                    binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
                     var serviceIntent = Intent(myActivity, EchoNotification::class.java)
 
                     serviceIntent.putExtra("title", binding.songTitle.text.toString())
@@ -369,7 +387,7 @@ class MainScreenFragment : Fragment() {
                     SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
                     if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         SongPlayingFragment.Statified.mediaPlayer?.start()
-                    binding.playPause.setBackgroundResource(R.drawable.pause_icon)
+                    binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 
 //                if (main?.notify == true) {
 //                    var play = Intent(context, EchoNotification::class.java)

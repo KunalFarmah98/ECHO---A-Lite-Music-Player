@@ -21,12 +21,16 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviderKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
+import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
 import com.bumptech.glide.Glide;
 
 import java.io.FileDescriptor;
@@ -34,15 +38,22 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
 
 /**
  * http://www.tutorialsface.com/2015/08/android-custom-notification-tutorial/
  * https://stackoverflow.com/questions/22789588/how-to-update-notification-with-remoteviews
  */
 
+@AndroidEntryPoint
 public class EchoNotification extends Service {
 
 
+    @Inject
+    SongsViewModel songsViewModel;
     ArrayList<String> thoughts;
 
     MainActivity main;
@@ -81,7 +92,6 @@ public class EchoNotification extends Service {
         msong = new SongPlayingFragment();
         main = new MainActivity();
         thoughts = new ArrayList<String>();
-
         thoughts.add("ECHO TIME!");
         thoughts.add("FUN TIME!");
         thoughts.add("LOST DREAMS!");
@@ -142,11 +152,12 @@ public class EchoNotification extends Service {
                 msong.setPlay(msong.playorpause());
 
                 if (msong.getPlay() == false) {
-
+                    songsViewModel.setPlayStatus(false);
                     views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                     smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
-                } else {
 
+                } else {
+                    songsViewModel.setPlayStatus(true);
                     views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                     smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 }
@@ -156,10 +167,12 @@ public class EchoNotification extends Service {
                 setAlbumArt();
 
             } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
+                songsViewModel.setPlayStatus(true);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
             } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
+                songsViewModel.setPlayStatus(false);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
@@ -413,7 +426,7 @@ public class EchoNotification extends Service {
 
 
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-            status.icon = R.drawable.now_playing_bar_eq_image;
+            status.icon = R.mipmap.ic_launcher;
             status.contentIntent = pendingIntent;
 
 
@@ -428,7 +441,7 @@ public class EchoNotification extends Service {
             status.bigContentView = views;
             status.visibility=Notification.VISIBILITY_PUBLIC;
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-            status.icon = R.drawable.now_playing_bar_eq_image;
+            status.icon = R.mipmap.ic_launcher;
             status.contentIntent = pendingIntent;
             status.priority = Notification.PRIORITY_MAX;
 
@@ -445,7 +458,7 @@ public class EchoNotification extends Service {
             status.bigContentView = views;
 
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-            status.icon = R.drawable.now_playing_bar_eq_image;
+            status.icon = R.mipmap.ic_launcher;
             status.contentIntent = pendingIntent;
             status.priority = Notification.PRIORITY_MAX;
 

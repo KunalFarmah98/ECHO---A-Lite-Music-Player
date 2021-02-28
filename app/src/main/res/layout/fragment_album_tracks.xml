@@ -1,44 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".online.ui.albums.AlbumsFragment">
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Tags: "
-            android:textColor="#ffffff"
-            android:textSize="17sp"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:nestedScrollingEnabled="true" />
-    </LinearLayout>
-
+    android:background="@color/colorPrimary"
+    tools:context=".fragment.AlbumTracksFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/Albums"
+        android:id="@+id/tracks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/_50sdp"
         android:layout_above="@id/now_playing_bottom_bar_main"
-        android:background="@color/colorPrimary"
-        android:scrollbars="vertical"/>
+        tools:listitem="@layout/row_custom_mainscreen_adapter"/>
+
 
     <RelativeLayout
         android:id="@+id/now_playing_bottom_bar_main"
@@ -134,4 +110,5 @@
             android:textColor="#ffffff" />
 
     </RelativeLayout>
+
 </RelativeLayout>

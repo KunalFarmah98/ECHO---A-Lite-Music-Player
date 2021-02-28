@@ -1,36 +1,45 @@
 package com.apps.kunalfarmah.echo.repository
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.os.Build
 import android.provider.MediaStore
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import com.apps.kunalfarmah.echo.SongAlbum
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.database.CacheMapper
-import com.apps.kunalfarmah.echo.database.dao.SongsDao
+import com.apps.kunalfarmah.echo.database.dao.EchoDao
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
 class SongsRepository
 constructor(
         @ApplicationContext private val context: Context,
-        private val songsDao: SongsDao,
+        private val echoDao: EchoDao,
         private val cacheMapper: CacheMapper
 ){
 
     suspend fun fetchSongs(){
         var songs = getSongsFromPhone()
-            songsDao.insertAll(cacheMapper.mapToEntityList(songs))
+            echoDao.insertAll(cacheMapper.mapToEntityList(songs))
     }
 
     suspend fun getAllSongs(): List<Songs> {
-        return cacheMapper.mapFromEntityList(songsDao.getSongs())
+        return cacheMapper.mapFromEntityList(echoDao.getSongs())
     }
+
+    suspend fun fetchAlbums(){
+        var albums = echoDao.getAllAlbums()
+        echoDao.insertAllAlbums(albums)
+    }
+
+    suspend fun getAlbums(): List<SongAlbum>{
+       return cacheMapper.mapFromAlbumEntityList(echoDao.getAlbums())
+    }
+
+    suspend fun getSongsByAlbum(id:Long?) :List<Songs>{
+        return cacheMapper.mapFromEntityList(echoDao.getSongsByAlbum(id))
+    }
+
 
     @SuppressLint("Recycle")
     fun getSongsFromPhone(): ArrayList<Songs> {
@@ -41,6 +50,7 @@ constructor(
         var songCursor = contentResolver?.query(songURI, null, null, null, null)
 
         if (songCursor != null && songCursor.moveToFirst()) {
+            // getting column indices to query
             val songId = songCursor.getColumnIndex(MediaStore.Audio.Media._ID)
             val songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
             val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
@@ -50,6 +60,7 @@ constructor(
             val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
 
             while (songCursor.moveToNext()) {
+                // getting the data from the indices
                 var currentID = songCursor.getLong(songId)
                 var currTitle = songCursor.getString(songTitle)
                 var currArtist = songCursor.getString(songArtist)

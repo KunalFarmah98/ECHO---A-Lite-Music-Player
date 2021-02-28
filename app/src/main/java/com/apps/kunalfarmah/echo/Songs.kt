@@ -30,7 +30,7 @@ class Songs(var songID :Long, var songTitle:String, var artist:String, var album
 
             val songtwo = song2.dateAdded.toDouble()
 
-            songone.compareTo(songtwo)
+            songtwo.compareTo(songone)
         }
     }
 

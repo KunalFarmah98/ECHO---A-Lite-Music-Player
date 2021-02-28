@@ -5,10 +5,10 @@
 
 
     <item android:id="@+id/action_search"
-        android:title="Search"
+        android:title="@string/search"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
         android:id="@+id/action_sort"
@@ -20,11 +20,11 @@
             <item
                 android:id="@+id/action_sort_recent"
 
-                android:title="By Recently Added" />
+                android:title="@string/by_recently_added" />
 
             <item
                 android:id="@+id/acton_sort_ascending"
-                android:title="By Name" />
+                android:title="@string/by_name" />
         </menu>
     </item>
 
