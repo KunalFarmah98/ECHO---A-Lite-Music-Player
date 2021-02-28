@@ -9,6 +9,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -28,6 +29,7 @@ import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import androidx.appcompat.widget.SearchView
 
 
 @AndroidEntryPoint
@@ -115,6 +117,14 @@ class MainScreenFragment : Fragment() {
             else
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
         })
+
+        binding.help.text = (Html.fromHtml("<u>Need Help?</u>"))
+        binding.help.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.details_fragment,HelpFragment(),HelpFragment.TAG)
+                    .addToBackStack(HelpFragment.TAG)
+                    .commit()
+        }
         return binding.root
     }
 

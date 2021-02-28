@@ -26,6 +26,7 @@
         android:visibility="gone">
 
         <LinearLayout
+            android:id="@+id/contols"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -80,6 +81,7 @@
             android:layout_below="@+id/nowPlaying"
             android:layout_alignStart="@id/nowPlaying"
             android:layout_alignLeft="@+id/nowPlaying"
+            android:layout_toLeftOf="@id/contols"
             android:layout_marginTop="@dimen/_3sdp"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"

@@ -267,6 +267,12 @@ class SongPlayingFragment : Fragment() {
             FavoriteFragment.Staticated.setTitle()
             FavoriteFragment.Staticated.setArtist()
 
+            AlbumTracksFragment.setTitle()
+            AlbumTracksFragment.setArtist()
+
+            OfflineAlbumsFragment.setTitle()
+            OfflineAlbumsFragment.setArtist()
+
 
             var play = Intent(myActivity, EchoNotification::class.java)
             play.action = Constants.ACTION.PREV_UPDATE
@@ -274,7 +280,7 @@ class SongPlayingFragment : Fragment() {
             play.putExtra("artist", currentSongHelper?.songArtist)
             play.putExtra("album", currentSongHelper?.songAlbum)
             myActivity?.startService(play)
-            setData()
+//            setData()
            }
 
         fun previous_song() {
@@ -356,7 +362,7 @@ class SongPlayingFragment : Fragment() {
 
             try {
                 myActivity?.startService(play)
-                setData()
+//                setData()
             }
             catch (e:Exception){ }
         }
@@ -597,12 +603,18 @@ class SongPlayingFragment : Fragment() {
             FavoriteFragment.Staticated.setTitle()
             FavoriteFragment.Staticated.setArtist()
 
+            AlbumTracksFragment.setTitle()
+            AlbumTracksFragment.setArtist()
+
+            OfflineAlbumsFragment.setTitle()
+            OfflineAlbumsFragment.setArtist()
+
             if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
             } else {
                 fab?.setBackgroundResource(R.drawable.favorite_off)
             }
-            setData()
+//            setData()
         }
 
     }
@@ -1310,6 +1322,12 @@ class SongPlayingFragment : Fragment() {
 
         FavoriteFragment.Staticated.setTitle()
         FavoriteFragment.Staticated.setArtist()
+
+        AlbumTracksFragment.setTitle()
+        AlbumTracksFragment.setArtist()
+
+        OfflineAlbumsFragment.setTitle()
+        OfflineAlbumsFragment.setArtist()
 
         var play = Intent(myActivity, EchoNotification::class.java)
         play.action = Constants.ACTION.NEXT_UPDATE

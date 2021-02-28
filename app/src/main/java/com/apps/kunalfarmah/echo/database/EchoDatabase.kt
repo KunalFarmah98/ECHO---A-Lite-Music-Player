@@ -34,7 +34,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     object Staticated{
         val DB_NAME = "FavoriteDatabase"
-        var DB_VERSION = 12
+        var DB_VERSION = 15
 
 
         val TABLE_NAME = "FavoriteTable"
@@ -56,7 +56,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         if(oldVersion<newVersion){
-            db?.execSQL("DROP TABLE IF EXISTS "+ TABLE_NAME)
+            db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
             onCreate(db)
         }
     }

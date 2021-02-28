@@ -121,12 +121,24 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/msg1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="You don't have any Songs in the Music Folder at the moment.\nAdd songs to continue enjoying the music"
+                android:text="@string/you_don_t_have_any_songs_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music"
                 android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/msg1"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/need_help"/>
 
 
         </RelativeLayout>

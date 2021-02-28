@@ -14,6 +14,10 @@ import com.apps.kunalfarmah.echo.activity.MainActivity
 
 class HelpFragment : Fragment() {
 
+    companion object{
+        val TAG = "Help Fragment"
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         var v = inflater.inflate(R.layout.fragment_help, container, false)

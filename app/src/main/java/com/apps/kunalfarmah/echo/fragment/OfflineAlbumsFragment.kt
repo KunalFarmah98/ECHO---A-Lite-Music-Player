@@ -5,10 +5,13 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.view.*
-import android.widget.SearchView
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,27 +25,52 @@ import com.bumptech.glide.Glide
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import androidx.appcompat.widget.SearchView
 
 @AndroidEntryPoint
+@SuppressLint("StaticFieldLeak")
 class OfflineAlbumsFragment : Fragment() {
 
     val viewModel: SongsViewModel by viewModels()
-    var binding: FragmentAlbumsBinding?=null
+    var binding: FragmentAlbumsBinding? = null
     var trackPosition: Int = 0
     var song: SongPlayingFragment? = null
     var args: Bundle? = null
     var main: MainActivity? = null
-    var list: List<SongAlbum>?=null
-    var mAdapter: OfflineAlbumsAdapter?=null
+    var list: List<SongAlbum>? = null
+    var mAdapter: OfflineAlbumsAdapter? = null
+
+
+    companion object {
+
+        val TAG = "OfflineAlbumsFragment"
+        var mediaPlayer: MediaPlayer? = null
+        var noNext: Boolean = true
+        var songAlbum: Long? = null
+        var songImg: ImageView? = null
+        var songArtist: TextView? = null
+        var songTitle: TextView? = null
+
+        fun setTitle() {
+            if (null != songTitle)
+                songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+        }
+
+        fun setArtist() {
+            if (null != songArtist) {
+                var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+                if (artist.equals("<unknown>", ignoreCase = true))
+                    songArtist?.visibility = View.GONE
+                else
+                    songArtist?.text = artist
+            }
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.getAllAlbums()
         super.onCreate(savedInstanceState)
-    }
-
-    companion object{
-        val TAG = "OfflineAlbumsFragment"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -52,20 +80,36 @@ class OfflineAlbumsFragment : Fragment() {
         setHasOptionsMenu(true)
         main = MainActivity()
         try {
+            activity?.title = "Albums"
             activity?.actionBar?.title = "Albums"
-        }
-        catch (e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
 
+        }
+        binding!!.help.text = (Html.fromHtml("<u>Need Help?</u>"))
+        binding!!.help.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.details_fragment, HelpFragment(), HelpFragment.TAG)
+                    .addToBackStack(HelpFragment.TAG)
+                    .commit()
         }
         viewModel.albumsList.observe(viewLifecycleOwner, {
             list = viewModel.albumsList.value
-            mAdapter = OfflineAlbumsAdapter(activity as Context,list!!)
-            binding!!.Albums.layoutManager = (GridLayoutManager(requireContext(),2))
+            if(list.isNullOrEmpty()){
+                binding!!.noSongs.visibility = View.VISIBLE
+                binding!!.Albums.visibility = View.GONE
+                return@observe
+            }
+            binding!!.noSongs.visibility = View.GONE
+            binding!!.Albums.visibility = View.VISIBLE
+            mAdapter = OfflineAlbumsAdapter(activity as Context, list!!)
+            binding!!.Albums.layoutManager = (GridLayoutManager(requireContext(), 2))
             binding!!.Albums.setHasFixedSize(true)
             binding!!.Albums.setItemViewCacheSize(10)
             binding!!.Albums.adapter = mAdapter
         })
         bottomBarSetup()
+        songArtist = binding!!.songArtist
+        songTitle = binding!!.songTitle
         return binding!!.root
     }
 
@@ -87,11 +131,11 @@ class OfflineAlbumsFragment : Fragment() {
 
                 for (albums in list!!) {
                     var album = albums._name
-                    if(album.contains(name_to_saerch, true))
+                    if (album.contains(name_to_saerch, true))
                         newList?.add(albums)
 
                 }
-                if(null!=mAdapter)
+                if (null != mAdapter)
                     mAdapter!!.filter_data(newList)
                 return true
             }
@@ -113,13 +157,13 @@ class OfflineAlbumsFragment : Fragment() {
         try {
 
             bottomBarClickHandler()
-            MainScreenFragment.songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+            songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
             var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
             if (artist.equals("<unknown>", ignoreCase = true))
                 binding!!.songArtist.visibility = View.GONE
             else
                 binding!!.songArtist.text = artist
-            MainScreenFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+            songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
             setAlbumArt(MainScreenFragment.songAlbum)
             SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener {
                 binding!!.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
@@ -127,7 +171,7 @@ class OfflineAlbumsFragment : Fragment() {
                     binding!!.songArtist.visibility = View.GONE
                 else
                     binding!!.songArtist.text = artist
-                MainScreenFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+                songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
                 try {
                     setAlbumArt(MainScreenFragment.songAlbum)
                 } catch (e: java.lang.Exception) {
@@ -155,7 +199,7 @@ class OfflineAlbumsFragment : Fragment() {
         binding!!.nowPlayingBottomBarMain.setOnClickListener {
 
             /*Using the same media player object*/
-            MainScreenFragment.mediaPlayer = SongPlayingFragment.Statified.mediaPlayer
+            mediaPlayer = SongPlayingFragment.Statified.mediaPlayer
             val songPlayingFragment = SongPlayingFragment()
             args = Bundle()
 
@@ -214,7 +258,7 @@ class OfflineAlbumsFragment : Fragment() {
 
                 if (main?.getnotify_val() == false) {
 
-                    MainScreenFragment.noNext = false
+                    noNext = false
 
 
                     song = SongPlayingFragment()
@@ -295,6 +339,12 @@ class OfflineAlbumsFragment : Fragment() {
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
         Glide.with(requireContext()).load(uri).into(binding!!.songImg)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setTitle()
+        setArtist()
     }
 
 }

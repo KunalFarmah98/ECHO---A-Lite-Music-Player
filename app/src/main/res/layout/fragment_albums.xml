@@ -41,6 +41,35 @@
         android:scrollbars="vertical"/>
 
     <RelativeLayout
+        android:id="@+id/noSongs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/msg1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/you_don_t_have_any_albums_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/msg1"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_centerHorizontal="true"
+            android:text="@string/need_help"/>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/now_playing_bottom_bar_main"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_80sdp"

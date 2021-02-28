@@ -5,12 +5,15 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
+class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
 
 
     var albumId: Long = id!!
@@ -38,6 +41,32 @@ class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
     var song: SongPlayingFragment? = null
     var args: Bundle? = null
     var main: MainActivity? = null
+
+    companion object {
+        val TAG = "AlbumTracksFragment"
+        var mediaPlayer: MediaPlayer? = null
+        var noNext: Boolean = true
+        var songAlbum: Long? = null
+        var songImg: ImageView? = null
+        var songArtist: TextView? = null
+        var songTitle: TextView? = null
+
+        fun setTitle() {
+            if (null != songTitle)
+                songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+        }
+
+        fun setArtist() {
+            if (null != songArtist) {
+                var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
+                if (artist.equals("<unknown>", ignoreCase = true))
+                    songArtist?.visibility = View.GONE
+                else
+                    songArtist?.text = artist
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.getAlbumSongs(albumId)
         super.onCreate(savedInstanceState)
@@ -51,22 +80,22 @@ class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
 
         try {
             activity?.actionBar?.title = albumName
-        }
-        catch (e:java.lang.Exception){
+            activity?.title = albumName
+        } catch (e: java.lang.Exception) {
 
         }
+
         viewModel.albumSongsList.observe(viewLifecycleOwner, {
             var list = viewModel.albumSongsList.value
             if (!list.isNullOrEmpty())
                 setView(list as ArrayList<Songs>)
         })
         bottomBarSetup()
+        songArtist = binding!!.songArtist
+        songTitle = binding!!.songTitle
         return binding!!.root
     }
 
-    companion object {
-        val TAG = "AlbumTracksFragment"
-    }
 
     fun setView(list: ArrayList<Songs>) {
         binding!!.tracks.layoutManager = LinearLayoutManager(context)
@@ -82,23 +111,23 @@ class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
         try {
 
             bottomBarClickHandler()
-            MainScreenFragment.songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
+            songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
             var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
             if (artist.equals("<unknown>", ignoreCase = true))
                 binding!!.songArtist.visibility = View.GONE
             else
                 binding!!.songArtist.text = artist
-            MainScreenFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
-            setAlbumArt(MainScreenFragment.songAlbum)
+            songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+            setAlbumArt(songAlbum)
             SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener {
                 binding!!.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
                 if (artist.equals("<unknown>", ignoreCase = true))
                     binding!!.songArtist.visibility = View.GONE
                 else
                     binding!!.songArtist.text = artist
-                MainScreenFragment.songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
+                songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
                 try {
-                    setAlbumArt(MainScreenFragment.songAlbum)
+                    setAlbumArt(songAlbum)
                 } catch (e: java.lang.Exception) {
 
                 }
@@ -124,7 +153,7 @@ class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
         binding!!.nowPlayingBottomBarMain.setOnClickListener {
 
             /*Using the same media player object*/
-            MainScreenFragment.mediaPlayer = SongPlayingFragment.Statified.mediaPlayer
+            mediaPlayer = SongPlayingFragment.Statified.mediaPlayer
             val songPlayingFragment = SongPlayingFragment()
             args = Bundle()
 
@@ -183,7 +212,7 @@ class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
 
                 if (main?.getnotify_val() == false) {
 
-                    MainScreenFragment.noNext = false
+                    noNext = false
 
 
                     song = SongPlayingFragment()
@@ -264,5 +293,11 @@ class AlbumTracksFragment(id: Long?, name:String) : Fragment() {
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
         Glide.with(requireContext()).load(uri).into(binding!!.songImg)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setTitle()
+        setArtist()
     }
 }

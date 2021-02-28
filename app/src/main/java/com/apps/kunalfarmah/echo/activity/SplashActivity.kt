@@ -108,6 +108,12 @@ class SplashActivity : AppCompatActivity() {
 
         // observe song list, if it has songs, go ahead
         viewModel.songsList.observe(this, {
+            if(viewModel.isDataReady.value==true) {
+                val startAct = Intent(this@SplashActivity, MainActivity::class.java)
+                startActivity(startAct)
+                this.finish()
+                return@observe
+            }
             if (!viewModel.songsList.value.isNullOrEmpty()) {
                 var pref: SharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
                 var value = pref.getString("mode", "offline")

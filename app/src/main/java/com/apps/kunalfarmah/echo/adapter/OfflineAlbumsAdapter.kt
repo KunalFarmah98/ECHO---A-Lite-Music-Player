@@ -30,7 +30,12 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
 
         @SuppressLint("UseCompatLoadingForDrawables")
         fun bind(album: SongAlbum) {
-            binding!!.name.text = album._name
+            var name = album._name
+
+            if(name.equals("<unknown>",true)){
+                name = "Unknown Album"
+            }
+            binding!!.name.text = name
             if (album._id <= 0L) binding!!.image!!.setImageDrawable(itemView.context!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
             val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")
@@ -51,7 +56,7 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
             (mContext as MainActivity).supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.details_fragment, AlbumTracksFragment(album._id, album._name), AlbumTracksFragment.TAG)
-                    .addToBackStack("SongPlayingFragment")
+                    .addToBackStack(AlbumTracksFragment.TAG)
                     .commit()
         }
     }

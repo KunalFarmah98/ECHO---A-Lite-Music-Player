@@ -32,6 +32,7 @@ import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import androidx.appcompat.widget.SearchView
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {

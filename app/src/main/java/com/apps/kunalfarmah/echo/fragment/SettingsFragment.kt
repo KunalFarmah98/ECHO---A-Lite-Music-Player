@@ -41,6 +41,9 @@ class SettingsFragment : Fragment() {
 
 
 
+    companion object{
+        val TAG = "SettingsFragment"
+    }
 
     /*Here the change in switch will lead to turning on and off of a setting so we need to persist the changes
     * This will be done with the help of Shared preferences*/
