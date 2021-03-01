@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:padding="@dimen/_5sdp"
     android:clickable="true"
-    tools:context="com.apps.kunalfarmah.echo.fragments.AboutUSFragment">
+    tools:context="com.apps.kunalfarmah.echo.fragment.AboutUSFragment">
 
     <TextView
         android:id="@+id/dev"

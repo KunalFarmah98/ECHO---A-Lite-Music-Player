@@ -7,6 +7,7 @@ class CurrentSongHelper{
     var songArtist: String? = null
     var songpath:String?=null
     var songAlbum:Long? = null
+    var album:String? = null
 
     var songId: Long? = 0
 

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "366057500982",
+    "project_id": "echo---a-lite-music-player",
+    "storage_bucket": "echo---a-lite-music-player.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366057500982:android:cb8f755072df969d48c397",
+        "android_client_info": {
+          "package_name": "com.apps.kunalfarmah.echo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366057500982-ki5mi7369m5nrg4cf7ug595ms5167kbh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apps.kunalfarmah.echo",
+            "certificate_hash": "943c3dd5ae28a9017bd7bde9668049ecf3d5c64b"
+          }
+        },
+        {
+          "client_id": "366057500982-ghcc21kvfgescs6lp6r9bl64330c04vh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrVBaNxNDDoyg1aK5yZua-eOKwPCo_6ys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366057500982-ghcc21kvfgescs6lp6r9bl64330c04vh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

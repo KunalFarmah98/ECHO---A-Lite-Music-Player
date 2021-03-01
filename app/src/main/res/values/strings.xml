@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ECHO</string>
+    <string name="app_name">ECHO - A Lite Music Player</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -27,4 +27,31 @@ or pulling down the notification panel to do the same.</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="help_1">I care for your privacy and this app doesn\'t access data from any directory other than the
+        Music, Audio, Alarms and Ringtone folders that are meant to
+    host audio files. In order to have a seamless experience make sure that all the song files are located in one of these
+    folders.</string>
+    <string name="help_1_1">As this is an offline music player, it only works with songs stored offline on your device in the Music or Audio Folder.</string>
+    <string name="help1_q1">(i) Do you have audio files (.mp3,.wav,.wma) stored offline on your device?</string>
+    <string name="help1_q2">(ii) Still not seeing any song file in the list?</string>
+    <string name="help_2"> In order to have a seamless experience, it is recommended that all your music files are in the Music or Audio folders of your device.</string>
+    <string name="help_3"> Some custom OS / OEM manufacturers use a different name for the folders storing music files
+    In that case the app should still be able to find the song files for you. If in case, you still get a blank list of songs, you can manually create a "Music" folder without quotes in your internal storage\'s root
+    directory and copy your music files there.</string>
+    <string name="help_3_1">You can go to your file manager, navigate to internal storage, press the 3 vertical dots on the top right corner of the screen and select new folder.
+    Name that folder as Music in the exact same style and copy your song files to that folder using either your file manager or by
+    connecting to your device to a computer.</string>
+    <string name="link_help">Alternatively you can use this link to get detailed info on how to modify android\'s internal files:</string>
+    <string name="help">Help</string>
+    <string name="album">album</string>
+    <string name="all_songs">All Songs</string>
+    <string name="albums">Albums</string>
+    <string name="favorites">Favorites</string>
+    <string name="by_recently_added">By Recently Added</string>
+    <string name="by_name">By Name</string>
+    <string name="search">Search</string>
+    <string name="need_help">Need Help?</string>
+    <string name="you_don_t_have_any_songs_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music">You don\'t have any Songs in the Music Folder at the moment.\nAdd songs to continue enjoying the music.</string>
+    <string name="you_don_t_have_any_albums_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music">You don\'t have any Albums in the Music Folder at the moment.\nAdd songs or albums to continue enjoying the music.</string>
+
 </resources>

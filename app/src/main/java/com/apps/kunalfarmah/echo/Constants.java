@@ -5,24 +5,24 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class Constants {
+    public static final String SETTINGS_APP_SETTINGS = "ECHO_A_LITE_MUSIC_PLAYER";
+
     public interface ACTION {
-        String MAIN_ACTION = "com.marothiatechs.customnotification.action.main";
-        String INIT_ACTION = "com.marothiatechs.customnotification.action.init";
-        String PREV_ACTION = "com.marothiatechs.customnotification.action.prev";
-        String PLAY_ACTION = "com.marothiatechs.customnotification.action.play";
-        String NEXT_ACTION = "com.marothiatechs.customnotification.action.next";
-        String STARTFOREGROUND_ACTION = "com.marothiatechs.customnotification.action.startforeground";
-        String STOPFOREGROUND_ACTION = "com.marothiatechs.customnotification.action.stopforeground";
-        String CHANGE_TO_PAUSE = "com.marothiatechs.customnotification.action.changetopause";
-        String CHANGE_TO_PLAY = "com.marothiatechs.customnotification.action.changetoplay";
-        String NEXT_UPDATE = "com.marothiatechs.customnotification.action.nextupdate";
-        String NEXT_UPDATE_SHUFFLE = "com.marothiatechs.customnotification.action.nextupdateshuffle";
-        String PREV_UPDATE = "com.marothiatechs.customnotification.action.prevupdate";
-        String PREV_UPDATE_SHUFFLE = "com.marothiatechs.customnotification.action.prevupdateshuffle";
-
-
-
-
+        String MAIN_ACTION = "com.apps.kunalfarmah.action.main";
+        String INIT_ACTION = "com.apps.kunalfarmah.action.init";
+        String PREV_ACTION = "com.apps.kunalfarmah.action.prev";
+        String PLAY_ACTION = "com.apps.kunalfarmah.action.play";
+        String PAUSE_ACTION = "com.apps.kunalfarmah.action.pause";
+        String NEXT_ACTION = "com.apps.kunalfarmah.action.next";
+        String STARTFOREGROUND_ACTION = "com.apps.kunalfarmah.action.startforeground";
+        String STOPFOREGROUND_ACTION = "com.apps.kunalfarmah.action.stopforeground";
+        String CHANGE_TO_PAUSE = "com.apps.kunalfarmah.action.changetopause";
+        String CHANGE_TO_PLAY = "com.apps.kunalfarmah.action.changetoplay";
+        String NEXT_UPDATE = "com.apps.kunalfarmah.action.nextupdate";
+        String NEXT_UPDATE_SHUFFLE = "com.apps.kunalfarmah.action.nextupdateshuffle";
+        String PREV_UPDATE = "com.apps.kunalfarmah.action.prevupdate";
+        String PREV_UPDATE_SHUFFLE = "com.apps.kunalfarmah.action.prevupdateshuffle";
+        String CLOSE = "com.apps.kunalfarmah.action.close";
     }
 
     public interface NOTIFICATION_ID {
@@ -40,5 +40,8 @@ public class Constants {
         }
         return bm;
     }
+
+    public static final String  API_KEY = "96575af11bc84f955ad52eb7c0a951ad";
+    public static final String SECRET  = "985c2b381395c365681141fb3864c973";
 
 }

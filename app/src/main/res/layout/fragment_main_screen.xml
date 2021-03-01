@@ -1,78 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_main"
     android:layout_width="match_parent"
-    android:clickable="true"
+    android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:id="@+id/content_main">
+    android:clickable="true">
 
     <RelativeLayout
+        android:id="@+id/visible_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/visible_layout">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="false"
-            android:id="@+id/ContentMain"
-            android:layout_above="@id/hiddenBarMainScreen1">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_above="@id/now_playing_bottom_bar_main"
+            android:animateLayoutChanges="false"/>
 
         <RelativeLayout
+            android:id="@+id/now_playing_bottom_bar_main"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_80sdp"
-            android:id="@+id/hiddenBarMainScreen1"
-            android:forceDarkAllowed="false"
             android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:background="@color/colorPrimary">
+            android:background="@drawable/bg_gradient"
+            android:forceDarkAllowed="false"
+            android:visibility="gone">
 
-            <ImageButton
+            <LinearLayout
+                android:id="@+id/controls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/play_pause"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="31dp"
-                android:background="@drawable/pause_icon"/>
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/next"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/play_next_icon" />
+
+                <ImageView
+                    android:id="@+id/play_pause"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="20dp"
+                    app:srcCompat="@drawable/pause_icon" />
+
+            </LinearLayout>
+
             <ImageView
+                android:id="@+id/song_img"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
-                android:id="@+id/defaultMusic"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/_11sdp"
-                android:minHeight="0dp"
                 android:minWidth="0dp"
-                android:background="@drawable/now_playing_bar_eq_image"/>
+                android:minHeight="0dp"
+                app:srcCompat="@drawable/now_playing_bar_eq_image" />
 
 
             <TextView
+                android:id="@+id/nowPlaying"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Now Playing"
-                android:id="@+id/nowPlaying"
-                android:textSize="@dimen/_14sdp"
-                android:layout_toRightOf="@+id/defaultMusic"
-                android:textColor="#bdbdbdbd"
                 android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_toRightOf="@+id/song_img"
+                android:text="Now Playing"
+                android:textColor="#bdbdbdbd"
+                android:textSize="@dimen/_14sdp" />
 
             <TextView
                 android:id="@+id/song_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/nowPlaying"
-                android:layout_alignStart="@id/nowPlaying"
                 android:layout_below="@+id/nowPlaying"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_alignStart="@id/nowPlaying"
+                android:layout_alignLeft="@+id/nowPlaying"
+                android:layout_marginTop="@dimen/_3sdp"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
+                android:maxWidth="@dimen/_150sdp"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:maxWidth="@dimen/_150sdp"
+                android:layout_toLeftOf="@id/controls"
                 android:text="my name is kunal"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ffffff" />
@@ -81,34 +98,73 @@
                 android:id="@+id/song_artist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/nowPlaying"
-                android:layout_alignStart="@id/nowPlaying"
                 android:layout_below="@+id/song_title"
-                android:layout_marginTop="5dp"
+                android:layout_alignStart="@id/nowPlaying"
+                android:layout_alignLeft="@+id/nowPlaying"
+                android:layout_marginTop="@dimen/_3sdp"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
+                android:maxWidth="@dimen/_150sdp"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:visibility="gone"
-                android:maxWidth="@dimen/_150sdp"
-                android:text="..."
+                android:layout_toLeftOf="@id/controls"
+                android:text="my name is kunal"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#ffffff" />
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/noSongs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/noSongs"
             android:visibility="gone">
+
+            <TextView
+                android:id="@+id/msg1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/you_don_t_have_any_songs_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/msg1"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_centerHorizontal="true"
+                android:text="@string/need_help"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:visibility="visible" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/progress"
                 android:layout_centerInParent="true"
-                android:text="You don't have any Downloaded Songs at the moment"
-                android:textColor="#ffffff"/>
+                android:gravity="center"
+                android:text="Loading Downloaded Songs from Music and Audio Folders"
+                android:textColor="#ffffff" />
 
 
         </RelativeLayout>
