@@ -112,6 +112,7 @@ class SplashActivity : AppCompatActivity() {
                 val startAct = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(startAct)
                 this.finish()
+                viewModel.isDataReady.value = false
                 return@observe
             }
             if (!viewModel.songsList.value.isNullOrEmpty()) {

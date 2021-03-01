@@ -3,16 +3,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:padding="@dimen/_10sdp"
-    android:layout_margin="@dimen/_5sdp"
+    android:layout_margin="@dimen/_10sdp"
     android:background="@drawable/border"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/now_playing_bar_eq_image"/>
+        android:layout_height="@dimen/_150sdp"
+        android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/name"

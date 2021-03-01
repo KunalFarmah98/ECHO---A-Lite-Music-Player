@@ -35,7 +35,6 @@
         android:id="@+id/Albums"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/_50sdp"
         android:layout_above="@id/now_playing_bottom_bar_main"
         android:background="@color/colorPrimary"
         android:scrollbars="vertical"/>

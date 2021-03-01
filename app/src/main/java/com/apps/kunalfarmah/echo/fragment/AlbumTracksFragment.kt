@@ -26,6 +26,7 @@ import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentAlbumTracksBinding
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -84,6 +85,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         } catch (e: java.lang.Exception) {
 
         }
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
 
         viewModel.albumSongsList.observe(viewLifecycleOwner, {
             var list = viewModel.albumSongsList.value
@@ -170,7 +172,8 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
 
             /*Here we put the additional string in the bundle
             * this tells us that the bottom bar was successfully setup*/
-            args?.putString("MainBottomBar", "success")
+            args?.putString("AlbumSongsBottomBar", "success")
+            args?.putString("AlbumName",albumName)
 
             /*Here we pass the bundle object to the song playing fragment*/
             songPlayingFragment.arguments = args
@@ -292,7 +295,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(requireContext()).load(uri).into(binding!!.songImg)
+        Glide.with(requireContext()).load(uri).placeholder(R.drawable.echo_icon).into(binding!!.songImg)
     }
 
     override fun onResume() {

@@ -24,6 +24,7 @@ import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.TAG
 import com.bumptech.glide.Glide
 import java.io.FileDescriptor
 
@@ -110,7 +111,8 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
             (mContext as FragmentActivity).supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.details_fragment, songPlayingFragment)
+                    .replace(R.id.details_fragment, songPlayingFragment, SongPlayingFragment.Statified.TAG)
+                    .addToBackStack(SongPlayingFragment.Statified.TAG)
                     .commit()
         }
     }

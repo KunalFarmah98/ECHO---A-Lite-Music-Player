@@ -43,6 +43,7 @@ import kotlinx.android.synthetic.main.main_content.*
 class MainActivity : AppCompatActivity() {
 
     var song: SongPlayingFragment? = null
+    var bottomNav: BottomNavigationView? = null
 
     //setting up a broadcast receiver to close the activity when notification is closed
 
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     var navigationDrawerIconsList: ArrayList<String> = arrayListOf()
 
     /*Images which will be used inside navigation drawer*/
-    var images_for_navdrawer = intArrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.ic_baseline_help_24,  R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp, R.drawable.baseline_album_white_24dp)
+    var images_for_navdrawer = intArrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp, R.drawable.baseline_feedback_white_36dp, R.drawable.baseline_album_white_24dp)
 
     object Statified {
         var drawerLayout: DrawerLayout? = null
@@ -110,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         navigationDrawerIconsList.add("Help")
         navigationDrawerIconsList.add("Share")
         navigationDrawerIconsList.add("Rate App")
+        navigationDrawerIconsList.add("Report and Feedback")
+
 
 
         val toggle = ActionBarDrawerToggle(this@MainActivity, Statified.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -143,10 +146,10 @@ class MainActivity : AppCompatActivity() {
                 mIntentFilter
         )
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        bottomNav.selectedItemId = R.id.navigation_main_screen
+        bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNav!!.selectedItemId = R.id.navigation_main_screen
 
-        bottomNav.setOnNavigationItemSelectedListener {
+        bottomNav!!.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_main_screen -> {
                     supportFragmentManager
@@ -173,7 +176,9 @@ class MainActivity : AppCompatActivity() {
                     return@setOnNavigationItemSelectedListener true
 
                 }
-                else -> {return@setOnNavigationItemSelectedListener false}
+                else -> {
+                    return@setOnNavigationItemSelectedListener false
+                }
             }
         }
 
@@ -192,6 +197,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun movToHome() {
+        bottomNav!!.selectedItemId = R.id.navigation_main_screen
+    }
+
     override fun onBackPressed() {
 
 
@@ -199,21 +208,32 @@ class MainActivity : AppCompatActivity() {
             Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
         }
 
-        var fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
 
-        if(fragment!=null && fragment.isVisible) {
+        if(supportFragmentManager.findFragmentByTag(SongPlayingFragment.Statified.TAG)==null)
+            MainScreenFragment.position = 0
+
+
+        var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
+
+        if (fragment != null && fragment.isVisible) {
+            finish()
+            return
+        }
+
+        fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
+
+        if (fragment != null && fragment.isVisible) {
             bottom_nav.selectedItemId = R.id.navigation_main_screen
             return
         }
 
         fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
-        if(fragment!=null && fragment.isVisible) {
+        if (fragment != null && fragment.isVisible) {
             bottom_nav.selectedItemId = R.id.navigation_main_screen
+            OfflineAlbumsFragment.postion=0
             return
         }
         super.onBackPressed()
-
-
 
 
         /* if(Statified.settingsOn){

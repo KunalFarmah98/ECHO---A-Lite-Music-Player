@@ -33,6 +33,7 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
@@ -89,7 +90,7 @@ class FavoriteFragment : Fragment() {
 
         setHasOptionsMenu(true)
         main = MainActivity()
-        activity?.title = "Favourites"
+        activity?.title = "Favorites"
         favoriteContent = EchoDatabase(myActivity)
         binding = FragmentFavoriteBinding.inflate(layoutInflater)
         MainActivity.Statified.settingsOn = true
@@ -99,7 +100,7 @@ class FavoriteFragment : Fragment() {
 
         binding.songTitle.isSelected = true
         binding.songArtist.isSelected = true
-
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
         viewModel.isSongPlaying.observe(viewLifecycleOwner,{
             if(it)
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
@@ -524,7 +525,7 @@ class FavoriteFragment : Fragment() {
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(requireContext()).load(uri).into(binding.songImg)
+        Glide.with(requireContext()).load(uri).placeholder(R.drawable.echo_icon).into(binding.songImg)
     }
 
     override fun onResume() {

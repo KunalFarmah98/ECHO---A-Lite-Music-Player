@@ -29,6 +29,7 @@ import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.Gson
 
 import java.io.FileDescriptor
@@ -85,7 +86,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.binding!!.album?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
+        mContext?.let { holder.binding!!.album?.let { it1 -> Glide.with(it).load(uri).diskCacheStrategy(DiskCacheStrategy.ALL).into(it1) } }
 
 
 
@@ -93,13 +94,15 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding!!.contentRow?.setOnClickListener {
             val songPlayingFragment = SongPlayingFragment()
-
+            MainScreenFragment.position = position
+            mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)!!.edit().putInt("listPosition",position).apply()
             var args = Bundle()
             args.putString("songArtist", songObject.artist)
             args.putString("songTitle", songObject.songTitle)
             args.putString("path", songObject.songData)
             args.putLong("SongID", songObject.songID)
             args.putLong("songAlbum", songObject.songAlbum!!)
+            args.putString("album", songObject.album)
             args.putInt("songPosition", position)
 
             args.putParcelableArrayList("songData", songDetails)  // sending the details as a parcel to the bundle
@@ -122,11 +125,12 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
             (mContext as MainActivity).supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.details_fragment, songPlayingFragment)
-                    .addToBackStack("SongPlayingFragment")
+                    .replace(R.id.details_fragment, songPlayingFragment,SongPlayingFragment.Statified.TAG)
+                    .addToBackStack(SongPlayingFragment.Statified.TAG)
                     .commit()
         }
     }
+
     /*This has the same implementation which we did for the navigation drawer adapter*/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)

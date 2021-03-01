@@ -2,6 +2,7 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.usage.UsageEvents
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -30,6 +31,10 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.math.max
 
 
 @AndroidEntryPoint
@@ -56,6 +61,7 @@ class MainScreenFragment : Fragment() {
         var songImg: ImageView? = null
         var songArtist: TextView? = null
         var songTitle: TextView? = null
+        var position: Int? = 0
     }
 
     object Staticated {
@@ -93,13 +99,14 @@ class MainScreenFragment : Fragment() {
         songArtist = binding.songArtist
         songImg = binding.songImg
         MainActivity.Statified.MainorFavOn = true
-       /* if (viewModel.songsList.value.isNullOrEmpty()) {
-            binding.loading.visibility = View.VISIBLE
-        }
-        viewModel.isDataReady.observe(viewLifecycleOwner,{
-            if(viewModel.isDataReady.value == true)
-                viewModel.getAllSongs()
-        })*/
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+        /* if (viewModel.songsList.value.isNullOrEmpty()) {
+             binding.loading.visibility = View.VISIBLE
+         }
+         viewModel.isDataReady.observe(viewLifecycleOwner,{
+             if(viewModel.isDataReady.value == true)
+                 viewModel.getAllSongs()
+         })*/
         if(!viewModel.songsList.value.isNullOrEmpty()){
             binding.loading.visibility = View.GONE
             getSongsList = viewModel.songsList.value
@@ -167,6 +174,7 @@ class MainScreenFragment : Fragment() {
             binding.recyclerView.isDrawingCacheEnabled = true
             binding.recyclerView.isAlwaysDrawnWithCacheEnabled = true
             binding.recyclerView.adapter = _MainScreenAdapter
+            binding.recyclerView.scrollToPosition(max(0, position!!-2))
         }
 
         if (getSongsList != null) {
@@ -179,7 +187,6 @@ class MainScreenFragment : Fragment() {
             }
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
@@ -442,6 +449,6 @@ class MainScreenFragment : Fragment() {
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(requireContext()).load(uri).into(binding.songImg)
+        Glide.with(requireContext()).load(uri).placeholder(R.drawable.echo_icon).into(binding.songImg)
     }
 }

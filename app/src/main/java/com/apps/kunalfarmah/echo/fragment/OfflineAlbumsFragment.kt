@@ -26,6 +26,7 @@ import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @AndroidEntryPoint
 @SuppressLint("StaticFieldLeak")
@@ -50,6 +51,7 @@ class OfflineAlbumsFragment : Fragment() {
         var songImg: ImageView? = null
         var songArtist: TextView? = null
         var songTitle: TextView? = null
+        var postion: Int? = 0
 
         fun setTitle() {
             if (null != songTitle)
@@ -85,6 +87,7 @@ class OfflineAlbumsFragment : Fragment() {
         } catch (e: java.lang.Exception) {
 
         }
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
         binding!!.help.text = (Html.fromHtml("<u>Need Help?</u>"))
         binding!!.help.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
@@ -106,6 +109,7 @@ class OfflineAlbumsFragment : Fragment() {
             binding!!.Albums.setHasFixedSize(true)
             binding!!.Albums.setItemViewCacheSize(10)
             binding!!.Albums.adapter = mAdapter
+            binding!!.Albums.scrollToPosition(postion!!)
         })
         bottomBarSetup()
         songArtist = binding!!.songArtist
@@ -216,7 +220,7 @@ class OfflineAlbumsFragment : Fragment() {
 
             /*Here we put the additional string in the bundle
             * this tells us that the bottom bar was successfully setup*/
-            args?.putString("MainBottomBar", "success")
+            args?.putString("AlbumsBottomBar", "success")
 
             /*Here we pass the bundle object to the song playing fragment*/
             songPlayingFragment.arguments = args
@@ -338,7 +342,7 @@ class OfflineAlbumsFragment : Fragment() {
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        Glide.with(requireContext()).load(uri).into(binding!!.songImg)
+        Glide.with(requireContext()).load(uri).placeholder(R.drawable.echo_icon).into(binding!!.songImg)
     }
 
     override fun onResume() {

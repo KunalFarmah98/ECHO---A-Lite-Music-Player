@@ -2,12 +2,14 @@ package com.apps.kunalfarmah.echo.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.provider.MediaStore
 import android.widget.Toast
 import com.apps.kunalfarmah.echo.SongAlbum
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.database.CacheMapper
 import com.apps.kunalfarmah.echo.database.dao.EchoDao
+import com.apps.kunalfarmah.echo.database.entity.FavoriteEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlin.collections.ArrayList
 
@@ -40,13 +42,34 @@ constructor(
         return cacheMapper.mapFromEntityList(echoDao.getSongsByAlbum(id))
     }
 
+    suspend fun insertFavorite(fav: Songs){
+        echoDao.insertFav(cacheMapper.mapToFavEntity(fav))
+    }
+
+    suspend fun getFavorite(id: Long): Songs{
+        return cacheMapper.mapFromFavEntity(echoDao.getFavoriteById(id))
+    }
+
+    suspend fun getAllFavorites(): List<Songs>{
+        return cacheMapper.mapFromFavEntityList(echoDao.getFavorites())
+    }
+
 
     @SuppressLint("Recycle")
     fun getSongsFromPhone(): ArrayList<Songs> {
 
         var arralist = ArrayList<Songs>()
         var contentResolver = context.contentResolver
-        var songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+
+        val songURI =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    MediaStore.Audio.Media.getContentUri(
+                            MediaStore.VOLUME_EXTERNAL
+                    )
+                } else {
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+//        var songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         var songCursor = contentResolver?.query(songURI, null, null, null, null)
 
         if (songCursor != null && songCursor.moveToFirst()) {

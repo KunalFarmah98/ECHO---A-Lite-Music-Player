@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class NotificationSetup : Fragment(){
@@ -23,7 +24,7 @@ class NotificationSetup : Fragment(){
         activity?.title="Setup"
         setHasOptionsMenu(true)
 
-
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         next=view?.findViewById(R.id.next)
 
 

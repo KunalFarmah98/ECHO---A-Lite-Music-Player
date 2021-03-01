@@ -42,7 +42,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
         this.mContext = _context
     }
 
-     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: NavViewHolder, position: Int) {
 
         /*Here we set the icon and the name of that icon with the setBackgroundResource() and the setText() method respectively*/
@@ -54,17 +54,13 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
 
             /*Loading the Main Screen Fragment as the first(remember that the index starts at 0) item is All songs and the fragment corresponding to it is the Main Screen fragment*/
             if (position == 0) {
-                val mainScreenFragment = MainScreenFragment()
-                (mContext as MainActivity).supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.details_fragment, mainScreenFragment, MainScreenFragment.TAG)
-                        .commit()
-            }
-            else if (position == 1) {
+                (mContext as MainActivity).movToHome()
+            } else if (position == 1) {
                 val settingsFragment = SettingsFragment()
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, settingsFragment, SettingsFragment.TAG)
+                        .addToBackStack(SettingsFragment.TAG)
                         .commit()
             } else if (position == 2) {
                 var intent = Intent(Intent.ACTION_VIEW)
@@ -74,6 +70,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                 (mContext as MainActivity).supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.details_fragment, HelpFragment(), HelpFragment.TAG)
+                        .addToBackStack(HelpFragment.TAG)
                         .commit()
             } else if (position == 4) {
                 val sendIntent = Intent()
@@ -99,6 +96,14 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
                             Uri.parse("http://play.google.com/store/apps/details?id=" + mContext!!.getPackageName())))
                 }
             } else if (position == 6) {
+                var feedback = Intent(Intent.ACTION_SENDTO)
+                var to = Array(1) { "kunalfarmah98@gmail.com" }
+                feedback.data = Uri.parse("mailto:")
+                feedback.putExtra(Intent.EXTRA_EMAIL, to)
+                feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
+                mContext!!.startActivity(feedback)
+
+            } else if (position == 7) {
                 var pref: SharedPreferences = mContext!!.getSharedPreferences("Mode", Context.MODE_PRIVATE)
                 var editor = pref.edit()
                 editor.putString("mode", "online")
@@ -116,8 +121,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.row_custom_navidrawer, parent, false)
 
-        val returnThis = NavViewHolder(itemView)
-        return returnThis
+        return NavViewHolder(itemView)
     }
 
 
@@ -140,7 +144,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getImageUri(): Uri{
+    fun getImageUri(): Uri {
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val bm = BitmapFactory.decodeResource(mContext?.resources, R.drawable.echo_icon)
