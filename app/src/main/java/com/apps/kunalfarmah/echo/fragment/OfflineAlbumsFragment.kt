@@ -168,7 +168,7 @@ class OfflineAlbumsFragment : Fragment() {
             else
                 binding!!.songArtist.text = artist
             songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
-            setAlbumArt(MainScreenFragment.songAlbum)
+            setAlbumArt(songAlbum)
             SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener {
                 binding!!.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
                 if (artist.equals("<unknown>", ignoreCase = true))
@@ -177,7 +177,7 @@ class OfflineAlbumsFragment : Fragment() {
                     binding!!.songArtist.text = artist
                 songAlbum = SongPlayingFragment.Statified.currentSongHelper?.songAlbum
                 try {
-                    setAlbumArt(MainScreenFragment.songAlbum)
+                    setAlbumArt(songAlbum)
                 } catch (e: java.lang.Exception) {
 
                 }
@@ -347,6 +347,7 @@ class OfflineAlbumsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        bottomBarSetup()
         setTitle()
         setArtist()
     }

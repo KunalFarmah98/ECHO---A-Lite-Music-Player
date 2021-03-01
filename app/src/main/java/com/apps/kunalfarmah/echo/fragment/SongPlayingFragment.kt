@@ -868,15 +868,10 @@ class SongPlayingFragment : Fragment() {
 
 
         if (fromFavbotomBar != null) {
-            // i.e the favorite fragment is used
-
-            myActivity?.title = "Favorites"
-
+            myActivity?.title = "Now Playing"
             Statified.mediaPlayer = FavoriteFragment.Statified.mediaPlayer
         } else if (fromMainbottomBar != null) {
-
             myActivity?.title = "Now Playing"
-
             Statified.mediaPlayer = MainScreenFragment.Statified.mediaPlayer
         }
         else if (fromAlbumbottomBar != null) {
