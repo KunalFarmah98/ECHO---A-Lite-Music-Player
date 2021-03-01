@@ -27,8 +27,10 @@ import androidx.lifecycle.ViewModelProviderKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
+import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment;
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
+import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
 import com.bumptech.glide.Glide;
@@ -116,6 +118,11 @@ public class EchoNotification extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         try {
+
+            if(null == intent){
+                stopForeground(true);
+                stopSelf();
+            }
 
 
             if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
@@ -496,18 +503,35 @@ public class EchoNotification extends Service {
     void setAlbumArt(){
         Long albumId = albumID;
         if(albumId<=0L) Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                .getResources().getDrawable(R.drawable.now_playing_bar_eq_image));
+                .getResources().getDrawable(R.drawable.echo_icon));
         Uri sArtworkUri = Uri
                 .parse("content://media/external/audio/albumart");
         Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).into(Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()));
+        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()));
+
 
         if(albumId<=0L) Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext().getResources()
-                .getDrawable(R.drawable.now_playing_bar_eq_image));
+                .getDrawable(R.drawable.echo_icon));
          sArtworkUri = Uri
                 .parse("content://media/external/audio/albumart");
         uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).into(Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()));
+        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()));
+
+
+        if(albumId<=0L) Objects.requireNonNull(OfflineAlbumsFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
+                .getResources().getDrawable(R.drawable.echo_icon));
+        sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart");
+        uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(OfflineAlbumsFragment.Statified.getSongImg()));
+
+
+        if(albumId<=0L) Objects.requireNonNull(AlbumTracksFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
+                .getResources().getDrawable(R.drawable.echo_icon));
+        sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart");
+        uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(AlbumTracksFragment.Statified.getSongImg()));
     }
 
 

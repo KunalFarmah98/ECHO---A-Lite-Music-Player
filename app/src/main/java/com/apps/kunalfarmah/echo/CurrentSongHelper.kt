@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo
 
-import android.graphics.Bitmap
 
 class CurrentSongHelper{
     var songTitle: String? = null

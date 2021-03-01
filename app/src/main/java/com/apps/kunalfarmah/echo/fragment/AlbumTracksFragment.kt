@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -43,7 +44,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
     var args: Bundle? = null
     var main: MainActivity? = null
 
-    companion object {
+    companion object Statified{
         val TAG = "AlbumTracksFragment"
         var mediaPlayer: MediaPlayer? = null
         var noNext: Boolean = true
@@ -62,8 +63,19 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 if (artist.equals("<unknown>", ignoreCase = true))
                     songArtist?.visibility = View.GONE
-                else
+                else {
+                    songArtist?.visibility = View.VISIBLE
                     songArtist?.text = artist
+                }
+            }
+        }
+
+        fun setAlbumArt() {
+            if(null!= songImg) {
+                val sArtworkUri: Uri = Uri
+                        .parse("content://media/external/audio/albumart")
+                val uri: Uri = ContentUris.withAppendedId(sArtworkUri, SongPlayingFragment.Statified.currentSongHelper?.songAlbum!!)
+                songImg!!.setImageURI(uri)
             }
         }
     }
@@ -92,10 +104,21 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
             if (!list.isNullOrEmpty())
                 setView(list as ArrayList<Songs>)
         })
-        bottomBarSetup()
+        binding!!.songArtist.isSelected = true
+        binding!!.songTitle.isSelected = true
         songArtist = binding!!.songArtist
         songTitle = binding!!.songTitle
+        songImg = binding!!.songImg
         return binding!!.root
+    }
+
+    /* It is used to do the final initialization once the other things are in place*/
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
+
+        bottomBarSetup()
+
     }
 
 
@@ -283,6 +306,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
                 song!!.playNext("PlayNextLikeNormalShuffle")
             else
                 song!!.playNext("PlayNextNormal")
+            binding!!.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
         }
 
 
@@ -291,7 +315,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
     @SuppressLint("UseCompatLoadingForDrawables")
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum as Long
-        if (albumId <= 0L) binding!!.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if (albumId <= 0L) binding!!.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.echo_icon))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
@@ -302,5 +326,6 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         super.onResume()
         setTitle()
         setArtist()
+        setAlbumArt()
     }
 }

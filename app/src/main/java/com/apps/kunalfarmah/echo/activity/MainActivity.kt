@@ -14,6 +14,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,6 +36,7 @@ import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.online.ui.albums.AlbumsFragment
+import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.main_content.*
@@ -42,6 +44,7 @@ import kotlinx.android.synthetic.main.main_content.*
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    val viewModel: SongsViewModel by viewModels()
     var song: SongPlayingFragment? = null
     var bottomNav: BottomNavigationView? = null
 
@@ -101,6 +104,7 @@ class MainActivity : AppCompatActivity() {
 
         song = SongPlayingFragment()
 
+        viewModel.init()
         /*This syntax is used to access the objects inside the class*/
         MainActivity.Statified.drawerLayout = findViewById(R.id.drawer_layout)
 

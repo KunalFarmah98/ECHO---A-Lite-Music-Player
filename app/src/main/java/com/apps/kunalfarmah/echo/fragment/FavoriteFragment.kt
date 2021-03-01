@@ -75,12 +75,14 @@ class FavoriteFragment : Fragment() {
         }
 
         fun setArtist() {
-            if (null != MainScreenFragment.songArtist) {
+            if (null != songArtist) {
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 if (artist.equals("<unknown>", ignoreCase = true))
-                    MainScreenFragment.songArtist?.visibility = View.GONE
-                else
-                    MainScreenFragment.songArtist?.text = artist
+                    songArtist?.visibility = View.GONE
+                else {
+                    songArtist?.visibility = View.VISIBLE
+                    songArtist?.text = artist
+                }
             }
         }
     }
@@ -453,6 +455,7 @@ class FavoriteFragment : Fragment() {
                 song!!.playNext("PlayNextLikeNormalShuffle")
             else
                 song!!.playNext("PlayNextNormal")
+            binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
         }
     }
 
@@ -521,7 +524,7 @@ class FavoriteFragment : Fragment() {
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum as Long
 
-        if (albumId <= 0L) binding.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if (albumId <= 0L) binding.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.echo_icon))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)

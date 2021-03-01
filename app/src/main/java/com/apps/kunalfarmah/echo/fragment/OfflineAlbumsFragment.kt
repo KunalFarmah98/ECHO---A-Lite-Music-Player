@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.text.Html
 import android.view.*
 import android.widget.ImageView
@@ -27,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.FileDescriptor
 
 @AndroidEntryPoint
 @SuppressLint("StaticFieldLeak")
@@ -42,7 +45,7 @@ class OfflineAlbumsFragment : Fragment() {
     var mAdapter: OfflineAlbumsAdapter? = null
 
 
-    companion object {
+    companion object Statified {
 
         val TAG = "OfflineAlbumsFragment"
         var mediaPlayer: MediaPlayer? = null
@@ -63,8 +66,19 @@ class OfflineAlbumsFragment : Fragment() {
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 if (artist.equals("<unknown>", ignoreCase = true))
                     songArtist?.visibility = View.GONE
-                else
+                else {
+                    songArtist?.visibility = View.VISIBLE
                     songArtist?.text = artist
+                }
+            }
+        }
+
+        fun setAlbumArt() {
+            if(null!= songImg) {
+                val sArtworkUri: Uri = Uri
+                        .parse("content://media/external/audio/albumart")
+                val uri: Uri = ContentUris.withAppendedId(sArtworkUri, SongPlayingFragment.Statified.currentSongHelper?.songAlbum!!)
+                songImg!!.setImageURI(uri)
             }
         }
     }
@@ -111,12 +125,22 @@ class OfflineAlbumsFragment : Fragment() {
             binding!!.Albums.adapter = mAdapter
             binding!!.Albums.scrollToPosition(postion!!)
         })
-        bottomBarSetup()
+        binding!!.songArtist.isSelected = true
+        binding!!.songTitle.isSelected = true
         songArtist = binding!!.songArtist
         songTitle = binding!!.songTitle
+        songImg = binding!!.songImg
         return binding!!.root
     }
 
+    /* It is used to do the final initialization once the other things are in place*/
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
+
+        bottomBarSetup()
+
+    }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         inflater.inflate(R.menu.main, menu)
@@ -330,6 +354,7 @@ class OfflineAlbumsFragment : Fragment() {
                 song!!.playNext("PlayNextLikeNormalShuffle")
             else
                 song!!.playNext("PlayNextNormal")
+            binding!!.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
         }
 
 
@@ -338,7 +363,7 @@ class OfflineAlbumsFragment : Fragment() {
     @SuppressLint("UseCompatLoadingForDrawables")
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum as Long
-        if (albumId <= 0L) binding!!.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if (albumId <= 0L) binding!!.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.echo_icon))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
@@ -347,9 +372,9 @@ class OfflineAlbumsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        bottomBarSetup()
         setTitle()
         setArtist()
+        setAlbumArt()
     }
 
 }

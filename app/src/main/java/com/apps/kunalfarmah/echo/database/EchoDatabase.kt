@@ -21,7 +21,7 @@ class EchoDatabase : SQLiteOpenHelper {
 
     object Staticated{
         val DB_NAME = "FavoriteDatabase"
-        var DB_VERSION = 13
+        var DB_VERSION = 14
 
 
         val TABLE_NAME = "FavoriteTable"
@@ -81,6 +81,8 @@ class EchoDatabase : SQLiteOpenHelper {
                     var _songPath = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_PATH))
                     var _songAlbum = cSor.getInt(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM))
                     var _songAlbumName = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM_NAME))
+                    if(_songAlbumName.isNullOrEmpty())
+                        _songAlbumName = "<unknown>"
                     _songList.add(Songs(_id.toLong(), _title, _artist, _songAlbumName,_songPath, 0,_songAlbum.toLong()))
                 }
 

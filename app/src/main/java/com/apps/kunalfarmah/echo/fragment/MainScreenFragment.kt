@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -65,6 +66,7 @@ class MainScreenFragment : Fragment() {
     }
 
     object Staticated {
+
         fun setTitle() {
             if (null != songTitle)
                 songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
@@ -75,8 +77,10 @@ class MainScreenFragment : Fragment() {
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 if(artist.equals("<unknown>",ignoreCase = true))
                     songArtist?.visibility = View.GONE
-                else
+                else {
+                    songArtist?.visibility = View.VISIBLE
                     songArtist?.text = artist
+                }
             }
         }
     }
@@ -431,6 +435,7 @@ class MainScreenFragment : Fragment() {
                 song!!.playNext("PlayNextLikeNormalShuffle")
             else
                 song!!.playNext("PlayNextNormal")
+            binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
         }
 
 
@@ -445,7 +450,7 @@ class MainScreenFragment : Fragment() {
     @SuppressLint("UseCompatLoadingForDrawables")
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum as Long
-        if (albumId <= 0L) binding.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if (albumId <= 0L) binding.songImg.setImageDrawable(context?.resources?.getDrawable(R.drawable.echo_icon))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)

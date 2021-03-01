@@ -3,6 +3,7 @@ package com.apps.kunalfarmah.echo.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.Sensor
@@ -57,7 +58,6 @@ import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.fragment_about.*
 import java.io.FileDescriptor
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -66,6 +66,8 @@ import java.util.concurrent.TimeUnit
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
+    var repeat:SharedPreferences?=null
+    var shuffle: SharedPreferences?=null
 
 
 //    var receiver:BroadcastReceiver?=null
@@ -271,9 +273,11 @@ class SongPlayingFragment : Fragment() {
 
             AlbumTracksFragment.setTitle()
             AlbumTracksFragment.setArtist()
+            AlbumTracksFragment.setAlbumArt()
 
             OfflineAlbumsFragment.setTitle()
             OfflineAlbumsFragment.setArtist()
+            OfflineAlbumsFragment.setAlbumArt()
 
 
             var play = Intent(myActivity, EchoNotification::class.java)
@@ -303,8 +307,8 @@ class SongPlayingFragment : Fragment() {
                 currentSongHelper?.isPlaying = true
             } else {
 
-                /*If loop was ON, then play the same ong again*/
-                if (currentSongHelper?.isLoop as Boolean) {
+                /*If loop was ON, then play the same song again*/
+                if (myActivity!!.getSharedPreferences(MY_PREFS_LOOP,MODE_PRIVATE).getBoolean("feature",false) as Boolean) {
                     currentSongHelper?.isPlaying = true
                     var nextSong = fetchSongs?.get(currentPosition)
                     currentSongHelper?.currentPosition = currentPosition
@@ -609,9 +613,11 @@ class SongPlayingFragment : Fragment() {
 
             AlbumTracksFragment.setTitle()
             AlbumTracksFragment.setArtist()
+            AlbumTracksFragment.setAlbumArt()
 
             OfflineAlbumsFragment.setTitle()
             OfflineAlbumsFragment.setArtist()
+            OfflineAlbumsFragment.setAlbumArt()
 
             if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
@@ -667,7 +673,6 @@ class SongPlayingFragment : Fragment() {
     }
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -945,7 +950,7 @@ class SongPlayingFragment : Fragment() {
         var prefsForShuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
 
         /*Here we extract the value of preferences and check if shuffle was ON or not*/
-        var isShuffleAllowed = prefsForShuffle?.getBoolean("feaure", false)
+        var isShuffleAllowed = prefsForShuffle?.getBoolean("feature", false)
         if (isShuffleAllowed as Boolean) {
 
             /*if shuffle was found activated, then we change the icon color and tun loop OFF*/
@@ -1075,41 +1080,30 @@ class SongPlayingFragment : Fragment() {
 
         shufflebutton?.setOnClickListener {
 
-            /*Initializing the shared preferences in private mode
-            * edit() used so that we can overwrite the preferences*/
-            var editorShuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)?.edit()
-            var editorLoop = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)?.edit()
+            var shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
+            var isShuffle = shuffle!!.getBoolean("feature",false)
+            var repeat = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
 
-            if (currentSongHelper?.isShuffle as Boolean) {
-                shufflebutton?.setBackgroundResource(R.drawable.shuffle_white_icon)
+            // turning off shuffle
+            if(isShuffle){
+                shuffle.edit().putBoolean("feature",false).apply()
+                shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
                 currentSongHelper?.isShuffle = false
-
-                /*If shuffle was activated previously, then we deactivate it*/
-                /*The putBoolean() method is used for saving the boolean value against the key which is feature here*/
-
-                /*Now the preferences agains the block Shuffle feature will have a key: feature and its value: false*/
-                editorShuffle?.putBoolean("feature", false)
-                editorShuffle?.apply()
-            } else {
-
+            }
+            // turning on shuffle, repeat must be disabled now
+            else{
+                shuffle.edit().putBoolean("feature",true).apply()
+                shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
+                repeat!!.edit().putBoolean("feature",false).apply()
+                loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
                 currentSongHelper?.isShuffle = true
                 currentSongHelper?.isLoop = false
-                shufflebutton?.setBackgroundResource(R.drawable.shuffle_icon)
-                loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-
-                /*Else shuffle is activated and if loop was activated then loop is deactivated*/
-                editorShuffle?.putBoolean("feature", true)
-                editorShuffle?.apply()
-
-
-                /*Similar to shuffle, the loop feature has a key:feature and its value:false*/
-                editorLoop?.putBoolean("feature", false)
-                editorLoop?.apply()
             }
+
         }
 
 
-        nextbutton?.setOnClickListener({
+        nextbutton?.setOnClickListener {
             currentSongHelper?.isPlaying = true
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             play = true
@@ -1134,11 +1128,11 @@ class SongPlayingFragment : Fragment() {
 //            play.putExtra("title", currentSongHelper?.songTitle)
 //            play.putExtra("artist", currentSongHelper?.songArtist)
 //            activity?.startService(play)
-        })
+        }
 
 
 
-        previousbutton?.setOnClickListener({
+        previousbutton?.setOnClickListener {
 
 
             /*We set the player to be playing by setting isPlaying to be true*/
@@ -1169,38 +1163,32 @@ class SongPlayingFragment : Fragment() {
 //            activity?.startService(play)
 
 
-        })
+        }
 
 
 
 
 
-        loopbutton?.setOnClickListener({
+        loopbutton?.setOnClickListener {
 
-            /*The operation on preferences is completely analogous to shuffle, no addition is there*/
-            var editorShuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)?.edit()
-            var editorLoop = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)?.edit()
+            var shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
+            var repeat = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
+            var isRepeat = repeat!!.getBoolean("feature",false)
 
-            if (currentSongHelper?.isLoop as Boolean) {
-
+            if (isRepeat) {
                 currentSongHelper?.isLoop = false
                 loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-                editorLoop?.putBoolean("feature", false)
-                editorLoop?.apply()
+                repeat.edit().putBoolean("feature",false).apply()
 
             } else {
-
                 currentSongHelper?.isLoop = true
                 currentSongHelper?.isShuffle = false
                 loopbutton?.setBackgroundResource(R.drawable.loop_icon)
                 shufflebutton?.setBackgroundResource(R.drawable.shuffle_white_icon)
-                editorShuffle?.putBoolean("feature", false)
-                editorShuffle?.apply()
-                editorLoop?.putBoolean("feature", true)
-                editorLoop?.apply()
-
+                shuffle!!.edit().putBoolean("feature", false).apply()
+                repeat.edit().putBoolean("feature", true).apply()
             }
-        })
+        }
 
         /*Here we handle the click event on the play/pause button*/
         playpausebutton?.setOnClickListener {
@@ -1282,6 +1270,10 @@ class SongPlayingFragment : Fragment() {
 
                     mLastShakeTime = curTime
 
+                    if(!mediaPlayer!!.isPlaying)
+                        return
+
+
                     if (isAllowed as Boolean && isshuffled as Boolean != true) {
                         playNext("PlayNextNormal")
                     } else if (isAllowed && isshuffled as Boolean)
@@ -1342,9 +1334,11 @@ class SongPlayingFragment : Fragment() {
 
         AlbumTracksFragment.setTitle()
         AlbumTracksFragment.setArtist()
+        AlbumTracksFragment.setAlbumArt()
 
         OfflineAlbumsFragment.setTitle()
         OfflineAlbumsFragment.setArtist()
+        OfflineAlbumsFragment.setAlbumArt()
 
         var play = Intent(myActivity, EchoNotification::class.java)
         play.action = Constants.ACTION.NEXT_UPDATE
