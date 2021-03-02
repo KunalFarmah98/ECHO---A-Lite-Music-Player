@@ -38,6 +38,10 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensor
 import com.apps.kunalfarmah.echo.online.ui.albums.AlbumsFragment
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.main_content.*
 
@@ -47,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     val viewModel: SongsViewModel by viewModels()
     var song: SongPlayingFragment? = null
     var bottomNav: BottomNavigationView? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     //setting up a broadcast receiver to close the activity when notification is closed
 
@@ -99,6 +104,8 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        FirebaseApp.initializeApp(this)
+        firebaseAnalytics = Firebase.analytics
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
