@@ -374,7 +374,7 @@ class OfflineAlbumsFragment : Fragment() {
         super.onResume()
         setTitle()
         setArtist()
-        setAlbumArt()
+//        setAlbumArt()
     }
 
 }

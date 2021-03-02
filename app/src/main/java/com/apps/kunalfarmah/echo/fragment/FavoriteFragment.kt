@@ -185,9 +185,9 @@ class FavoriteFragment : Fragment() {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {
             /*Whichever action item is selected, we save the preferences and perform the operation of comparison*/
-            val editor = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
-            editor?.putString("action_sort_ascending", "true")
-            editor?.putString("action_sort_recent", "false")
+            val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            editor?.putString(getString(R.string.sort_by_name), "true")
+            editor?.putString(getString(R.string.sort_by_recent), "false")
             editor?.apply()
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.nameComparator)
@@ -195,9 +195,9 @@ class FavoriteFragment : Fragment() {
             _FavouriteAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
-            val editortwo = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
-            editortwo?.putString("action_sort_recent", "true")
-            editortwo?.putString("action_sort_ascending", "false")
+            val editortwo = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            editortwo?.putString(getString(R.string.sort_by_recent), "true")
+            editortwo?.putString(getString(R.string.sort_by_name), "false")
             editortwo?.apply()
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.dateComparator)

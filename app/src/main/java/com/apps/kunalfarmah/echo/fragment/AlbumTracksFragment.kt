@@ -326,6 +326,6 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         super.onResume()
         setTitle()
         setArtist()
-        setAlbumArt()
+//        setAlbumArt()
     }
 }

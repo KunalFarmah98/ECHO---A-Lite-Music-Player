@@ -160,9 +160,9 @@ class MainScreenFragment : Fragment() {
     }
 
     fun setView() {
-        val prefs = activity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)
-        val action_sort_ascending = prefs?.getString("action_sort_ascending", "false")
-        val action_sort_recent = prefs?.getString("action_sort_recent", "true")
+        val prefs = activity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)
+        val action_sort_ascending = prefs?.getString(getString(R.string.sort_by_name), "false")
+        val action_sort_recent = prefs?.getString(getString(R.string.sort_by_recent), "true")
 
         if (getSongsList == null || getSongsList?.size == 0) {
             binding.noSongs.visibility = View.VISIBLE
@@ -239,9 +239,9 @@ class MainScreenFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {
-            val editor = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
-            editor?.putString("action_sort_ascending", "true")
-            editor?.putString("action_sort_recent", "false")
+            val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            editor?.putString(getString(R.string.sort_by_name), "true")
+            editor?.putString(getString(R.string.sort_by_recent), "false")
             editor?.apply()
             if (getSongsList != null) {
                 Collections.sort(getSongsList, Songs.Statified.nameComparator)
@@ -249,9 +249,9 @@ class MainScreenFragment : Fragment() {
             _MainScreenAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
-            val editor = myActivity?.getSharedPreferences("action_sort", Context.MODE_PRIVATE)?.edit()
-            editor?.putString("action_sort_recent", "true")
-            editor?.putString("action_sort_ascending", "false")
+            val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            editor?.putString(getString(R.string.sort_by_recent), "true")
+            editor?.putString(getString(R.string.sort_by_name), "false")
             editor?.apply()
             if (getSongsList != null) {
                 Collections.sort(getSongsList, Songs.Statified.dateComparator)

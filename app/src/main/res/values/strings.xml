@@ -53,5 +53,8 @@ or pulling down the notification panel to do the same.</string>
     <string name="need_help">Need Help?</string>
     <string name="you_don_t_have_any_songs_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music">You don\'t have any Songs in the Music Folder at the moment.\nAdd songs to continue enjoying the music.</string>
     <string name="you_don_t_have_any_albums_in_the_music_folder_at_the_moment_nadd_songs_to_continue_enjoying_the_music">You don\'t have any Albums in the Music Folder at the moment.\nAdd songs or albums to continue enjoying the music.</string>
+    <string name="sort_by_name">action_sort_ascending</string>
+    <string name="sort_by_recent">action_sort_recent</string>
+    <string name="sorting">action_sort</string>
 
 </resources>
