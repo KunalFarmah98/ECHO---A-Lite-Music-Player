@@ -68,12 +68,12 @@ class MainScreenFragment : Fragment() {
     object Staticated {
 
         fun setTitle() {
-            if (null != songTitle)
+            if (null != songTitle && null!=SongPlayingFragment.Statified.currentSongHelper)
                 songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
         }
 
         fun setArtist() {
-            if (null != songArtist){
+            if (null != songArtist && null!=SongPlayingFragment.Statified.currentSongHelper){
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 if(artist.equals("<unknown>",ignoreCase = true))
                     songArtist?.visibility = View.GONE

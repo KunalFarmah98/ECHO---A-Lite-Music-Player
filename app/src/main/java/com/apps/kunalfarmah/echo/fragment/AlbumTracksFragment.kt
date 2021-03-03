@@ -54,12 +54,12 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         var songTitle: TextView? = null
 
         fun setTitle() {
-            if (null != songTitle)
+            if (null != songTitle && null!= SongPlayingFragment.Statified.currentSongHelper)
                 songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
         }
 
         fun setArtist() {
-            if (null != songArtist) {
+            if (null != songArtist && null!= SongPlayingFragment.Statified.currentSongHelper) {
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
                 if (artist.equals("<unknown>", ignoreCase = true))
                     songArtist?.visibility = View.GONE
@@ -71,11 +71,18 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         }
 
         fun setAlbumArt() {
-            if(null!= songImg) {
+            if(null!= songImg && null!= SongPlayingFragment.Statified.currentSongHelper) {
                 val sArtworkUri: Uri = Uri
                         .parse("content://media/external/audio/albumart")
                 val uri: Uri = ContentUris.withAppendedId(sArtworkUri, SongPlayingFragment.Statified.currentSongHelper?.songAlbum!!)
-                songImg!!.setImageURI(uri)
+                if(null==uri || uri.toString().isEmpty())
+                   songImg!!.setImageResource(R.drawable.echo_icon)
+                else
+                    songImg!!.setImageURI(uri)
+
+                if(null== OfflineAlbumsFragment.songImg!!.drawable){
+                    OfflineAlbumsFragment.songImg!!.setImageResource(R.drawable.echo_icon)
+                }
             }
         }
     }

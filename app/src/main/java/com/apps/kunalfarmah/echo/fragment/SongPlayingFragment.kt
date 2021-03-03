@@ -218,9 +218,15 @@ class SongPlayingFragment : Fragment() {
                 currentPosition = currentPosition - 1
 
             } else if (check.equals("PlayNextLikeNormalShuffle", true)) {
-                var randomObject = Random()                                                              // initialising a random object of the random class
-                var randomPosition = randomObject.nextInt(fetchSongs?.size?.minus(1) as Int)                // setting range of random to size+1
-                currentPosition = randomPosition
+                var n  = fetchSongs?.size?.minus(1) as Int
+                if(n==0) {
+                    currentPosition = 0
+                }
+                else {
+                    var randomObject = Random()                                                              // initialising a random object of the random class
+                    var randomPosition = randomObject.nextInt(fetchSongs?.size?.minus(1) as Int)                // setting range of random to size+1
+                    currentPosition = randomPosition
+                }
             }
 
             /*If the current position becomes less than 1, we make it 0 as there is no index as -1*/
@@ -577,9 +583,15 @@ class SongPlayingFragment : Fragment() {
                 currentPosition = currentPosition + 1
 
             } else if (check.equals("PlayNextLikeNormalShuffle", true)) {
-                var randomObject = Random()                                                              // initialising a random object of the random class
-                var randomPosition = randomObject.nextInt(fetchSongs?.size?.plus(1) as Int)                // setting range of random to size+1
-                currentPosition = randomPosition
+                var n  = fetchSongs?.size?.plus(1) as Int
+                if(n==0) {
+                    currentPosition = 0
+                }
+                else {
+                    var randomObject = Random()                                                              // initialising a random object of the random class
+                    var randomPosition = randomObject.nextInt(fetchSongs?.size?.plus(1) as Int)                // setting range of random to size+1
+                    currentPosition = randomPosition
+                }
             }
             if (currentPosition == fetchSongs?.size) {    // if the currentposition exceeds the size, start over
                 currentPosition = 0
