@@ -2,6 +2,7 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -289,6 +290,10 @@ class FavoriteFragment : Fragment() {
                 SongPlayingFragment.Staticated.onSongComplete()
             }
 
+            if(!isMyServiceRunning(EchoNotification::class.java, requireContext())) {
+                binding.nowPlayingBottomBar.visibility = View.GONE
+                return
+            }
             /*While coming back from the song playing screen
             * if the song was playing then only the bottom bar is placed, else not placed*/
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
@@ -535,5 +540,15 @@ class FavoriteFragment : Fragment() {
         super.onResume()
         setTitle()
         setArtist()
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

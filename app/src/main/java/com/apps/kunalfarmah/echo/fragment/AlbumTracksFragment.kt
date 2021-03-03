@@ -1,6 +1,7 @@
 package com.apps.kunalfarmah.echo.fragment
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -52,7 +53,6 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         var songImg: ImageView? = null
         var songArtist: TextView? = null
         var songTitle: TextView? = null
-
         fun setTitle() {
             if (null != songTitle && null!= SongPlayingFragment.Statified.currentSongHelper)
                 songTitle?.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
@@ -166,6 +166,10 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
                 SongPlayingFragment.Staticated.onSongComplete()
             }
 
+            if(!isMyServiceRunning(EchoNotification::class.java, requireContext())) {
+                binding!!.nowPlayingBottomBarMain.visibility = View.GONE
+                return
+            }
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
                 binding!!.nowPlayingBottomBarMain.visibility = View.VISIBLE
                 binding!!.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
@@ -334,5 +338,15 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         setTitle()
         setArtist()
 //        setAlbumArt()
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

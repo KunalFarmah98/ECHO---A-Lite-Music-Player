@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,6 +27,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.apps.kunalfarmah.echo.Constants;
 import com.apps.kunalfarmah.echo.R;
+import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment;
+import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
+import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
+import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;

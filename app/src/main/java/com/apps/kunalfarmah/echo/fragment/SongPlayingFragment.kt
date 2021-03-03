@@ -62,7 +62,6 @@ import java.io.FileDescriptor
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
@@ -314,7 +313,7 @@ class SongPlayingFragment : Fragment() {
             } else {
 
                 /*If loop was ON, then play the same song again*/
-                if (myActivity!!.getSharedPreferences(MY_PREFS_LOOP,MODE_PRIVATE).getBoolean("feature",false) as Boolean) {
+                if (myActivity!!.getSharedPreferences(MY_PREFS_LOOP, MODE_PRIVATE).getBoolean("feature", false) as Boolean) {
                     currentSongHelper?.isPlaying = true
                     var nextSong = fetchSongs?.get(currentPosition)
                     currentSongHelper?.currentPosition = currentPosition
@@ -1093,20 +1092,20 @@ class SongPlayingFragment : Fragment() {
         shufflebutton?.setOnClickListener {
 
             var shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-            var isShuffle = shuffle!!.getBoolean("feature",false)
+            var isShuffle = shuffle!!.getBoolean("feature", false)
             var repeat = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
 
             // turning off shuffle
             if(isShuffle){
-                shuffle.edit().putBoolean("feature",false).apply()
+                shuffle.edit().putBoolean("feature", false).apply()
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
                 currentSongHelper?.isShuffle = false
             }
             // turning on shuffle, repeat must be disabled now
             else{
-                shuffle.edit().putBoolean("feature",true).apply()
+                shuffle.edit().putBoolean("feature", true).apply()
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
-                repeat!!.edit().putBoolean("feature",false).apply()
+                repeat!!.edit().putBoolean("feature", false).apply()
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
                 currentSongHelper?.isShuffle = true
                 currentSongHelper?.isLoop = false
@@ -1185,12 +1184,12 @@ class SongPlayingFragment : Fragment() {
 
             var shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
             var repeat = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
-            var isRepeat = repeat!!.getBoolean("feature",false)
+            var isRepeat = repeat!!.getBoolean("feature", false)
 
             if (isRepeat) {
                 currentSongHelper?.isLoop = false
                 loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-                repeat.edit().putBoolean("feature",false).apply()
+                repeat.edit().putBoolean("feature", false).apply()
 
             } else {
                 currentSongHelper?.isLoop = true
@@ -1220,15 +1219,17 @@ class SongPlayingFragment : Fragment() {
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
             } else {
-                if (reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                if (reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                     Statified.mediaPlayer?.start()
-                play = true
-                currentSongHelper?.isPlaying = true
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                    MainScreenAdapter.Statified.stopPlayingCalled=true
+                    play = true
+                    currentSongHelper?.isPlaying = true
+                    playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 
-                var play = Intent(activity, EchoNotification::class.java)
-                play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                activity?.startService(play)
+                    var play = Intent(activity, EchoNotification::class.java)
+                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                    activity?.startService(play)
+                }
 
             }
         }

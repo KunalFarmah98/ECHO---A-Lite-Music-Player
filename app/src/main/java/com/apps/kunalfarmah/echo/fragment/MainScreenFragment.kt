@@ -2,7 +2,7 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.usage.UsageEvents
+import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -12,29 +12,27 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.view.*
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.Constants
+import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.apps.kunalfarmah.echo.EchoNotification
+import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentMainScreenBinding
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment.Staticated.setArtist
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment.Staticated.setTitle
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.math.max
 
 
@@ -75,7 +73,7 @@ class MainScreenFragment : Fragment() {
         fun setArtist() {
             if (null != songArtist && null!=SongPlayingFragment.Statified.currentSongHelper){
                 var artist = SongPlayingFragment.Statified.currentSongHelper?.songArtist
-                if(artist.equals("<unknown>",ignoreCase = true))
+                if(artist.equals("<unknown>", ignoreCase = true))
                     songArtist?.visibility = View.GONE
                 else {
                     songArtist?.visibility = View.VISIBLE
@@ -122,17 +120,17 @@ class MainScreenFragment : Fragment() {
             setView()
         })
 
-        viewModel.isSongPlaying.observe(viewLifecycleOwner,{
-            if(it)
+        viewModel.isSongPlaying.observeForever {
+            if (it)
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
             else
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
-        })
+        }
 
         binding.help.text = (Html.fromHtml("<u>Need Help?</u>"))
         binding.help.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.details_fragment,HelpFragment(),HelpFragment.TAG)
+                    .replace(R.id.details_fragment, HelpFragment(), HelpFragment.TAG)
                     .addToBackStack(HelpFragment.TAG)
                     .commit()
         }
@@ -148,7 +146,6 @@ class MainScreenFragment : Fragment() {
         super.onAttach(activity)
         myActivity = activity
     }
-
 
     /* It is used to do the final initialization once the other things are in place*/
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -178,7 +175,7 @@ class MainScreenFragment : Fragment() {
             binding.recyclerView.isDrawingCacheEnabled = true
             binding.recyclerView.isAlwaysDrawnWithCacheEnabled = true
             binding.recyclerView.adapter = _MainScreenAdapter
-            binding.recyclerView.scrollToPosition(max(0, position!!-2))
+            binding.recyclerView.scrollToPosition(max(0, position!! - 2))
         }
 
         if (getSongsList != null) {
@@ -216,7 +213,7 @@ class MainScreenFragment : Fragment() {
                         newList?.add(songs)
                     else if (artist.contains(name_to_saerch, true))
                         newList?.add(songs)
-                    else if(album.contains(name_to_saerch, true))
+                    else if (album.contains(name_to_saerch, true))
                         newList?.add(songs)
 
                 }
@@ -289,6 +286,10 @@ class MainScreenFragment : Fragment() {
                 SongPlayingFragment.Staticated.onSongComplete()
             }
 
+            if(!isMyServiceRunning(EchoNotification::class.java, requireContext())) {
+                binding!!.nowPlayingBottomBarMain.visibility = View.GONE
+                return
+            }
             if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
                 binding.nowPlayingBottomBarMain.visibility = View.VISIBLE
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
@@ -455,5 +456,15 @@ class MainScreenFragment : Fragment() {
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
         Glide.with(requireContext()).load(uri).placeholder(R.drawable.echo_icon).into(binding.songImg)
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }
