@@ -101,7 +101,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             var serviceIntent = Intent(mContext, EchoNotification::class.java)
 
             serviceIntent.putExtra("title", songObject.songTitle)
-            serviceIntent.putExtra("artist", songObject.songTitle)
+            serviceIntent.putExtra("artist", songObject.artist)
             serviceIntent.putExtra("album", songObject.songAlbum!!)
 
             serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
