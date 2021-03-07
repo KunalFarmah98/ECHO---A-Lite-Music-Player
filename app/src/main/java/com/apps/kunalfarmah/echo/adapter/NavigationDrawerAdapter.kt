@@ -22,7 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.BuildConfig
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.apps.kunalfarmah.echo.fragment.*
+import com.apps.kunalfarmah.echo.fragment.HelpFragment
+import com.apps.kunalfarmah.echo.fragment.SettingsFragment
 import com.apps.kunalfarmah.echo.online.OnlineActivity
 import java.io.*
 import java.util.*
@@ -75,11 +76,22 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
             } else if (position == 4) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
+                sendIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
                         "Hey check out an awesome offline music player app, ECHO - A LITE MUSIC PLAYER at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
-                sendIntent.putExtra(Intent.EXTRA_STREAM, getImageUri())
-                sendIntent.type = "image/*"
-                mContext!!.startActivity(sendIntent)
+                var uri:Uri? = null
+                try {
+                    uri = getImageUri()
+                }catch(e:Exception){
+                    uri = null
+                }
+                if(null!=uri) {
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, getImageUri())
+                    sendIntent.type = "image/*"
+                }
+                else
+                    sendIntent.type = "text/*"
+                mContext!!.startActivity(Intent.createChooser(sendIntent, "Share With"))
             } else if (position == 5) {
                 val uri = Uri.parse("market://details?id=" + mContext!!.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
@@ -148,7 +160,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
         val builder = VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val bm = BitmapFactory.decodeResource(mContext?.resources, R.drawable.echo_icon)
-        val extStorageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
+        val extStorageDirectory = Environment.getExternalStorageDirectory().toString()
         val file = File(extStorageDirectory, "ECHO.png")
         if (!file.exists()) {
             var outStream: OutputStream? = null
