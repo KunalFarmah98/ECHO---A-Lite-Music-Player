@@ -5,7 +5,6 @@ import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -19,10 +18,10 @@ import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.apps.kunalfarmah.echo.Constants
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentAlbumTracksBinding
@@ -75,7 +74,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
                 val sArtworkUri: Uri = Uri
                         .parse("content://media/external/audio/albumart")
                 val uri: Uri = ContentUris.withAppendedId(sArtworkUri, SongPlayingFragment.Statified.currentSongHelper?.songAlbum!!)
-                if(null==uri || uri.toString().isEmpty())
+                if(SongPlayingFragment.Statified.currentSongHelper?.songAlbum!! <0 ||null==uri || uri.toString().isEmpty())
                    songImg!!.setImageResource(R.drawable.echo_icon)
                 else
                     songImg!!.setImageURI(uri)
@@ -107,9 +106,8 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
 
         viewModel.albumSongsList.observe(viewLifecycleOwner, {
-            var list = viewModel.albumSongsList.value
-            if (!list.isNullOrEmpty())
-                setView(list as ArrayList<Songs>)
+            if (!it.isNullOrEmpty())
+                setView(it as ArrayList<Songs>)
         })
         binding!!.songArtist.isSelected = true
         binding!!.songTitle.isSelected = true

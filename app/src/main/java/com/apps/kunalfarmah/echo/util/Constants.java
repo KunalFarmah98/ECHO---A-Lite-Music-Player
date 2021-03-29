@@ -1,8 +1,10 @@
-package com.apps.kunalfarmah.echo;
+package com.apps.kunalfarmah.echo.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import com.apps.kunalfarmah.echo.R;
 
 public class Constants {
     public static final String SETTINGS_APP_SETTINGS = "ECHO_A_LITE_MUSIC_PLAYER";

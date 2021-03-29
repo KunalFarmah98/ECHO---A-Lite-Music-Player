@@ -25,22 +25,14 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 
-import com.apps.kunalfarmah.echo.Constants;
 import com.apps.kunalfarmah.echo.R;
-import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment;
-import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
-import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
-import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 public class AppUtil {

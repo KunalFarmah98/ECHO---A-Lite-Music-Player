@@ -54,6 +54,9 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.seekBar
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shufflebutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlaying
+import com.apps.kunalfarmah.echo.model.Songs
+import com.apps.kunalfarmah.echo.util.Constants
+import com.apps.kunalfarmah.echo.util.CurrentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
@@ -174,7 +177,7 @@ class SongPlayingFragment : Fragment() {
     object Staticated {
 
         lateinit var sharedPreferences: SharedPreferences
-        lateinit var currSong:Songs
+        lateinit var currSong: Songs
 
         var MY_PREFS_SHUFFLE = "Shuffle feature"
         var MY_PREFS_LOOP = "Loop feature"
@@ -601,7 +604,11 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songArtist = nextSong?.artist
             currentSongHelper?.songAlbum = nextSong?.songAlbum
             currentSongHelper?.album = nextSong?.album
-            currentSongHelper?.songId = nextSong?.songID as Long
+            if(null==currentSongHelper?.songId) {
+                return
+            }
+            else
+                currentSongHelper?.songId = nextSong?.songID as Long
 
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 

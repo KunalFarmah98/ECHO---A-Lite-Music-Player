@@ -21,7 +21,7 @@ import java.util.List;
 import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Track;
 
-import static com.apps.kunalfarmah.echo.Constants.API_KEY;
+import static com.apps.kunalfarmah.echo.util.Constants.API_KEY;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
     public static List<Track> Tracks;

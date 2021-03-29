@@ -1,17 +1,12 @@
 package com.apps.kunalfarmah.echo.viewModel
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.apps.kunalfarmah.echo.SongAlbum
-import com.apps.kunalfarmah.echo.Songs
-import com.apps.kunalfarmah.echo.database.entity.SongAlbumEntity
+import com.apps.kunalfarmah.echo.model.SongAlbum
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.repository.SongsRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SongsViewModel
@@ -44,9 +39,9 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
     val albumsList: MutableLiveData<List<SongAlbum>>
         get() = _albumsList
 
-    lateinit var list: List<Songs>
-    lateinit var listAlbums: List<SongAlbum>
-    lateinit var albumSongs: List<Songs>
+    private var list: List<Songs>?=null
+    private var listAlbums: List<SongAlbum>?=null
+    private var albumSongs: List<Songs>?=null
 
 
     fun init() {
@@ -78,13 +73,13 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         isSongPlaying.value = play
     }
 
-    fun addFavorite(fav:Songs){
+    fun addFavorite(fav: Songs){
         viewModelScope.launch {
             songsRepository.insertFavorite(fav)
         }
     }
 
-    lateinit var fav:Songs
+    lateinit var fav: Songs
     fun checkIfFavoriteExsits(id:Long){
         viewModelScope.launch {
             fav =  songsRepository.getFavorite(id)

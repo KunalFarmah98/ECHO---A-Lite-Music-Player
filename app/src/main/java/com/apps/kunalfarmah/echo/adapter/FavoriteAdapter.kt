@@ -17,14 +17,13 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.apps.kunalfarmah.echo.Constants
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.TAG
 import com.bumptech.glide.Glide
 import java.io.FileDescriptor
 

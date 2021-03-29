@@ -21,9 +21,6 @@ import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviderKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
@@ -32,6 +29,7 @@ import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
+import com.apps.kunalfarmah.echo.util.Constants;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
 import com.bumptech.glide.Glide;
 

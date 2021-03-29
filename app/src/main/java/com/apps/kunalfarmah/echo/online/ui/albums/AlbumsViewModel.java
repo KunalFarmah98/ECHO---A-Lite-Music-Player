@@ -14,7 +14,7 @@ import de.umass.lastfm.Caller;
 import de.umass.lastfm.Tag;
 
 
-import static com.apps.kunalfarmah.echo.Constants.API_KEY;
+import static com.apps.kunalfarmah.echo.util.Constants.API_KEY;
 
 public class AlbumsViewModel extends AndroidViewModel {
 

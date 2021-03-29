@@ -1,8 +1,8 @@
 package com.apps.kunalfarmah.echo.database
 
 
-import com.apps.kunalfarmah.echo.SongAlbum
-import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.model.SongAlbum
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.database.entity.FavoriteEntity
 import com.apps.kunalfarmah.echo.database.entity.SongAlbumEntity
 import com.apps.kunalfarmah.echo.database.entity.SongsEntity

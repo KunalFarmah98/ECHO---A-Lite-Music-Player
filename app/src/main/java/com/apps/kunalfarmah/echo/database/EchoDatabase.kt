@@ -11,7 +11,7 @@ import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_AR
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_PATH
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_TITLE
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.TABLE_NAME
-import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM_NAME
 
 class EchoDatabase : SQLiteOpenHelper {

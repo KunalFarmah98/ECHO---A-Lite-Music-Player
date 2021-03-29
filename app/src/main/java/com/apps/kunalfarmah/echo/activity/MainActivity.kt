@@ -26,7 +26,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.apps.kunalfarmah.echo.Constants
+import com.apps.kunalfarmah.echo.util.Constants
 
 
 import com.apps.kunalfarmah.echo.activity.MainActivity.Statified.notify
@@ -35,10 +35,8 @@ import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
-import com.apps.kunalfarmah.echo.online.ui.albums.AlbumsFragment
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase

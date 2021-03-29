@@ -5,11 +5,10 @@ import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
 import android.widget.Toast
-import com.apps.kunalfarmah.echo.SongAlbum
-import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.model.SongAlbum
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.database.CacheMapper
 import com.apps.kunalfarmah.echo.database.dao.EchoDao
-import com.apps.kunalfarmah.echo.database.entity.FavoriteEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlin.collections.ArrayList
 
@@ -46,7 +45,7 @@ constructor(
         echoDao.insertFav(cacheMapper.mapToFavEntity(fav))
     }
 
-    suspend fun getFavorite(id: Long): Songs{
+    suspend fun getFavorite(id: Long): Songs {
         return cacheMapper.mapFromFavEntity(echoDao.getFavoriteById(id))
     }
 

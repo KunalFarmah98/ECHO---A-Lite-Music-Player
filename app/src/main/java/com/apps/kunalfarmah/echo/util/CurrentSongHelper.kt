@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.echo
+package com.apps.kunalfarmah.echo.util
 
 
 class CurrentSongHelper{

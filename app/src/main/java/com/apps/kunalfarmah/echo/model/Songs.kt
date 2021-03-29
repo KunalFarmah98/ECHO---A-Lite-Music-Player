@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.echo
+package com.apps.kunalfarmah.echo.model
 
 
 import android.os.Parcel

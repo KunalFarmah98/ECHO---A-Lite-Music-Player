@@ -5,12 +5,10 @@ import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.text.Html
 import android.view.*
 import android.widget.ImageView
@@ -29,8 +27,9 @@ import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
+import com.apps.kunalfarmah.echo.model.SongAlbum
+import com.apps.kunalfarmah.echo.util.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.io.FileDescriptor
 
 @AndroidEntryPoint
 @SuppressLint("StaticFieldLeak")
@@ -79,7 +78,7 @@ class OfflineAlbumsFragment : Fragment() {
                 val sArtworkUri: Uri = Uri
                         .parse("content://media/external/audio/albumart")
                 val uri: Uri = ContentUris.withAppendedId(sArtworkUri, SongPlayingFragment.Statified.currentSongHelper?.songAlbum!!)
-                if(null==uri || uri.toString().isEmpty())
+                if(SongPlayingFragment.Statified.currentSongHelper?.songAlbum!! <0 || null==uri || uri.toString().isEmpty())
                     songImg!!.setImageResource(R.drawable.echo_icon)
                 else
                     songImg!!.setImageURI(uri)
@@ -118,15 +117,14 @@ class OfflineAlbumsFragment : Fragment() {
                     .commit()
         }
         viewModel.albumsList.observe(viewLifecycleOwner, {
-            list = viewModel.albumsList.value
-            if(list.isNullOrEmpty()){
+            if(it.isNullOrEmpty()){
                 binding!!.noSongs.visibility = View.VISIBLE
                 binding!!.Albums.visibility = View.GONE
                 return@observe
             }
             binding!!.noSongs.visibility = View.GONE
             binding!!.Albums.visibility = View.VISIBLE
-            mAdapter = OfflineAlbumsAdapter(activity as Context, list!!)
+            mAdapter = OfflineAlbumsAdapter(activity as Context, it)
             binding!!.Albums.layoutManager = (GridLayoutManager(requireContext(), 2))
             binding!!.Albums.setHasFixedSize(true)
             binding!!.Albums.setItemViewCacheSize(10)

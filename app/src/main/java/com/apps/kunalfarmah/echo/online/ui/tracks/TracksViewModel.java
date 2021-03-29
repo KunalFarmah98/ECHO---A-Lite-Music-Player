@@ -15,7 +15,7 @@ import de.umass.lastfm.Track;
 
 
 
-import static com.apps.kunalfarmah.echo.Constants.API_KEY;
+import static com.apps.kunalfarmah.echo.util.Constants.API_KEY;
 
 public class TracksViewModel extends AndroidViewModel {
 

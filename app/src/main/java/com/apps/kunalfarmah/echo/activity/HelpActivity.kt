@@ -1,15 +1,10 @@
 package com.apps.kunalfarmah.echo.activity
 
-import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import com.apps.kunalfarmah.echo.Constants
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.fragment.HelpFragment
 

@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.apps.kunalfarmah.echo.adapter.FavoriteAdapter
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
-import com.apps.kunalfarmah.echo.Constants
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.database.EchoDatabase
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.Songs
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.databinding.FragmentFavoriteBinding
@@ -244,6 +244,11 @@ class FavoriteFragment : Fragment() {
                 var currentData = songCursor.getString(songData)
                 var currentDate = songCursor.getLong(dateIndex)
                 var currAlbum = songCursor.getLong(songAlbum)
+
+                if(null==currentArtist)
+                    currentArtist = ""
+                if(null==currAlbum)
+                    currAlbum = 0
                 /*Adding the fetched songs to the arraylist*/
                 arrayList.add(Songs(currentId, currentTitle, currentArtist,album, currentData, currentDate, currAlbum))
             }

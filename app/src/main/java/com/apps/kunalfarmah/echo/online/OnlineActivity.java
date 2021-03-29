@@ -28,7 +28,7 @@ import java.util.List;
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.Tag;
 
-import static com.apps.kunalfarmah.echo.Constants.API_KEY;
+import static com.apps.kunalfarmah.echo.util.Constants.API_KEY;
 
 public class OnlineActivity extends AppCompatActivity {
     List<Tag> tags;
