@@ -117,6 +117,7 @@ class OfflineAlbumsFragment : Fragment() {
                     .commit()
         }
         viewModel.albumsList.observe(viewLifecycleOwner, {
+            list=it
             if(it.isNullOrEmpty()){
                 binding!!.noSongs.visibility = View.VISIBLE
                 binding!!.Albums.visibility = View.GONE
