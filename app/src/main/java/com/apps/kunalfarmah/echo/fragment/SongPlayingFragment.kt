@@ -604,7 +604,7 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songArtist = nextSong?.artist
             currentSongHelper?.songAlbum = nextSong?.songAlbum
             currentSongHelper?.album = nextSong?.album
-            if(null==currentSongHelper?.songId) {
+            if(null==currentSongHelper?.songId || null==nextSong?.songID) {
                 return
             }
             else
