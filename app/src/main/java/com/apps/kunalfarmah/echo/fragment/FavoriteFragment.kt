@@ -35,6 +35,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.lang.reflect.Executable
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
@@ -244,11 +245,10 @@ class FavoriteFragment : Fragment() {
                 var currentData = songCursor.getString(songData)
                 var currentDate = songCursor.getLong(dateIndex)
                 var currAlbum = songCursor.getLong(songAlbum)
-
                 if(null==currentArtist)
                     currentArtist = ""
-                if(null==currAlbum)
-                    currAlbum = 0
+                if(null==album)
+                    album = ""
                 /*Adding the fetched songs to the arraylist*/
                 arrayList.add(Songs(currentId, currentTitle, currentArtist,album, currentData, currentDate, currAlbum))
             }

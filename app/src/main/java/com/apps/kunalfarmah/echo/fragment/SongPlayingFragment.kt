@@ -1078,8 +1078,16 @@ class SongPlayingFragment : Fragment() {
 
                 /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
                 fab?.setBackgroundResource(R.drawable.favorite_on)
-                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, currentSongHelper?.songAlbum,
-                        currentSongHelper?.album)
+                var album = currentSongHelper?.album
+                if(null==album){
+                    album=""
+                }
+                var songAlbum = currentSongHelper?.songAlbum
+                if(null==songAlbum){
+                    songAlbum = 0
+                }
+                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, songAlbum,
+                        album)
                 Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
         }
