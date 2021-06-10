@@ -5,15 +5,18 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
+import android.widget.ImageView
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import androidx.fragment.app.Fragment
+import com.apps.kunalfarmah.echo.activity.SettingsActivity
+import com.apps.kunalfarmah.echo.activity.WizardActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class NotificationSetup : Fragment(){
 
-    var next:ImageButton?=null
+    var next:ImageView?=null
     var act:Activity?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +27,6 @@ class NotificationSetup : Fragment(){
         activity?.title="Setup"
         setHasOptionsMenu(true)
 
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         next=view?.findViewById(R.id.next)
 
 
@@ -62,10 +64,10 @@ class NotificationSetup : Fragment(){
 
             val wizard = Wizard()
 
-            (context as MainActivity).supportFragmentManager
+            (context as WizardActivity).supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.details_fragment, wizard)
-//                    .addToBackStack("Settings")
+                    .replace(R.id.fragment, wizard)
+                    .addToBackStack("Wizard")
                     .commit()
 
         })

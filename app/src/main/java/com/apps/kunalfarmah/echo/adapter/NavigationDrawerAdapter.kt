@@ -21,20 +21,20 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.BuildConfig
 import com.apps.kunalfarmah.echo.R
+import com.apps.kunalfarmah.echo.activity.HelpActivity
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.apps.kunalfarmah.echo.fragment.HelpFragment
-import com.apps.kunalfarmah.echo.fragment.SettingsFragment
+import com.apps.kunalfarmah.echo.activity.SettingsActivity
 import com.apps.kunalfarmah.echo.online.OnlineActivity
 import java.io.*
 import java.util.*
 
 
-class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntArray, _context: Context)
+class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array<Int>, _context: Context)
     : RecyclerView.Adapter<NavigationDrawerAdapter.NavViewHolder>() {
 
 
     var contentList: ArrayList<String>? = null
-    var getImages: IntArray? = null
+    var getImages: Array<Int>? = null
     var mContext: Context? = null
 
     init {
@@ -57,22 +57,13 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: IntAr
             if (position == 0) {
                 (mContext as MainActivity).movToHome()
             } else if (position == 1) {
-                val settingsFragment = SettingsFragment()
-                (mContext as MainActivity).supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.details_fragment, settingsFragment, SettingsFragment.TAG)
-                        .addToBackStack(SettingsFragment.TAG)
-                        .commit()
+                mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
             } else if (position == 2) {
                 var intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://kunal-farmah.jimdosite.com")
                 mContext!!.startActivity(intent)
             } else if (position == 3) {
-                (mContext as MainActivity).supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.details_fragment, HelpFragment(), HelpFragment.TAG)
-                        .addToBackStack(HelpFragment.TAG)
-                        .commit()
+                mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
             } else if (position == 4) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND

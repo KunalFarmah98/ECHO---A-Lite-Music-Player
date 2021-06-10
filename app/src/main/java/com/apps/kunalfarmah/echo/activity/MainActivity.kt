@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     var navigationDrawerIconsList: ArrayList<String> = arrayListOf()
 
     /*Images which will be used inside navigation drawer*/
-    var images_for_navdrawer = intArrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp, R.drawable.baseline_feedback_white_36dp, R.drawable.baseline_album_white_24dp)
+    var images_for_navdrawer = arrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp, R.drawable.baseline_feedback_white_36dp, R.drawable.baseline_album_white_24dp)
 
     object Statified {
         var drawerLayout: DrawerLayout? = null
@@ -242,62 +242,6 @@ class MainActivity : AppCompatActivity() {
             return
         }
         super.onBackPressed()
-
-
-        /* if(Statified.settingsOn){
-
-             val mainScreenFragment = MainScreenFragment()
-             this.supportFragmentManager
-                     .beginTransaction()
-                     .replace(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
-                     .commit()
-
-             Statified.settingsOn=false
-
-         }
-
-         else if(Statified.AboutOn){
-
-
-             val mainScreenFragment = MainScreenFragment()
-             this.supportFragmentManager
-                     .beginTransaction()
-                     .replace(R.id.details_fragment, mainScreenFragment, "MainScreenFragment")
-                     .commit()
-
-             Statified.AboutOn=false
-
-         }
-         else if(Statified.MainorFavOn){
-
-             var index = supportFragmentManager.backStackEntryCount-2
-
-             if(index<0){
-                 super.onBackPressed()
-             }
-
-             else if(index>=0){
-
-                 var backEntry = supportFragmentManager.getBackStackEntryAt(index)
-                 var name = backEntry.name
-
-
-                 if (name.equals("SongPlayingFragment", true)) {
-                     Statified.MainorFavOn = false
-                     finish()
-                 }
-
-                 else{
-                     super.onBackPressed()
-                 }
-             }
-
-
-         }
-
-         else {
-             super.onBackPressed()
-         }*/
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

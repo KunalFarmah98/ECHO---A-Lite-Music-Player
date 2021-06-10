@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HelpFragment : Fragment() {
 
@@ -27,7 +26,6 @@ class HelpFragment : Fragment() {
 
         activity?.title = "Help"
         MainActivity.Statified.settingsOn=true
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
 
 
         (v.findViewById<TextView>(R.id.link)).setOnClickListener {

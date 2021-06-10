@@ -8,6 +8,8 @@
     <color name="second">#4e1741</color>
     <color name="third">#74204d</color>
     <color name="four">#9d2a58</color>
+
+    <color name="splashStatusBar">#9b2a58</color>
     
     <array name="rainbow">
         <item>

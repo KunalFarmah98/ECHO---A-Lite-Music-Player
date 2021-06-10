@@ -3,6 +3,7 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,18 +15,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.apps.kunalfarmah.echo.activity.SettingsActivity
+import com.apps.kunalfarmah.echo.activity.WizardActivity
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 /*The settings fragment class is used for handling the events inside the settings fragment*/
 
 class SettingsFragment : Fragment() {
@@ -60,7 +52,6 @@ class SettingsFragment : Fragment() {
         setHasOptionsMenu(true)
 
         activity?.title = "Settings"
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
 
 
         /*Linking switch to its view*/
@@ -108,36 +99,34 @@ class SettingsFragment : Fragment() {
         shakeSwitch?.isChecked = isAllowed as Boolean
 
         /*Now we handle the change events i.e. when the switched is turned ON or OFF*/
-        shakeSwitch?.setOnCheckedChangeListener({ compoundButton, b ->
+        shakeSwitch?.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
 
                 /*If the switch is turned on we then make the feature to be true*/
-                val editor = myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)?.edit()
+                val editor =
+                    myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)
+                        ?.edit()
                 editor?.putBoolean("feature", true)
                 editor?.apply()
             } else {
 
                 /*Else the feature remains false*/
-                val editor = myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)?.edit()
+                val editor =
+                    myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)
+                        ?.edit()
                 editor?.putBoolean("feature", false)
                 editor?.apply()
             }
-        })
+        }
 
 
-        aditional?.setOnClickListener({
+        aditional?.setOnClickListener {
 
 
-            val setup = NotificationSetup()
-
-            (context as MainActivity).supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.details_fragment, setup)
-//                    .addToBackStack("Additional")
-                    .commit()
+            startActivity(Intent(context, WizardActivity::class.java))
 
 
-        })
+        }
 
 
     }

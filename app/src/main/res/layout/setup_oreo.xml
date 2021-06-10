@@ -7,7 +7,7 @@
     android:clickable="true"
     android:focusable="true"
     
-    android:background="#ffffff">
+    android:background="@color/colorPrimaryDark">
 
 
     <TextView
@@ -18,18 +18,18 @@
         android:text="Disabling Pop-Up Notifications"
         
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/_20sdp" />
 
 
     <TextView
         android:id="@+id/intro"
         android:layout_marginLeft="@dimen/_5sdp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="#FFFFFF"
         android:padding="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_below="@+id/title"
-        
+
 
         android:textAlignment="textStart"
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:padding="@dimen/_5sdp"
         android:layout_below="@+id/intro"
         android:textAlignment="textStart"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/_15sdp"
@@ -53,16 +53,15 @@
         />
 
 
-    <ImageButton
+    <ImageView
         android:id="@+id/next"
         android:layout_below="@+id/sol"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_42sdp"
-        android:layout_alignParentBottom="true"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_centerHorizontal="true"
-        android:background="#ffffff"
+        android:layout_marginTop="@dimen/_50sdp"
         android:scaleType="fitXY"
-        android:src="@drawable/next" />
+        android:src="@drawable/baseline_next_plan_black_36dp" />
 
 
 

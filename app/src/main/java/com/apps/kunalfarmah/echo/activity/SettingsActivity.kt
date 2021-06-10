@@ -7,18 +7,19 @@ import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.fragment.HelpFragment
+import com.apps.kunalfarmah.echo.fragment.SettingsFragment
 
-class HelpActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_help)
+        setContentView(R.layout.activity_settings)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = "Help"
+        supportActionBar!!.title = "Settings"
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeButtonEnabled(true)
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment, HelpFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment, SettingsFragment()).commit()
     }
 
 
@@ -27,9 +28,10 @@ class HelpActivity : AppCompatActivity() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId==R.id.home)
-            finish();
+            finish()
         return super.onOptionsItemSelected(item)
     }
+
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return super.onSupportNavigateUp()

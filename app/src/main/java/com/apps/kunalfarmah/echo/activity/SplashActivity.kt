@@ -7,14 +7,17 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.apps.kunalfarmah.echo.online.OnlineActivity
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -30,6 +33,15 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewModel.getAllSongs()
         setContentView(R.layout.activity_splash)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.statusBarColor =
+                    ContextCompat.getColor(applicationContext, R.color.splashStatusBar);
+            }
+        }
+        catch (e:Exception){
+            Log.e("ERROR","Couldn't change status bar color")
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             permission_String = arrayOf(
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
