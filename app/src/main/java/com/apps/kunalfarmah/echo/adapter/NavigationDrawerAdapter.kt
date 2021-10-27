@@ -60,7 +60,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
             } else if (position == 2) {
                 var intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://kunal-farmah.jimdosite.com")
+                intent.data = Uri.parse("https://kunalfarmah.com")
                 mContext!!.startActivity(intent)
             } else if (position == 3) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java))

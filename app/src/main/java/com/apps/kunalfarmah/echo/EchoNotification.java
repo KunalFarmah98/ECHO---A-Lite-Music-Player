@@ -11,16 +11,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadata;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
+import android.support.v4.media.MediaMetadataCompat;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
@@ -403,7 +407,39 @@ public class EchoNotification extends Service {
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // Sets an ID for the notification, so it can be updated.
+            int notifyID = 1;
+            String CHANNEL_ID = "my_channel_011";// The id of the channel.
+            CharSequence name = "Notify";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
+
+            mChannel.setSound(null, null);
+            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            mChannel.enableVibration(false);
+
+            mNotificationManager.createNotificationChannel(mChannel);
+
+            MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
+            addMetaData(mediaSession);
+            // Create a MediaStyle object and supply your media session token to it.
+
+            Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
+
+            Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
+                    .setStyle(mediaStyle)
+                    .setSmallIcon(R.drawable.echo_icon);
+
+            addActions(builder);
+            status =builder.build();
+            mNotificationManager.notify(notifyID,status);
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -490,6 +526,25 @@ public class EchoNotification extends Service {
         return bm;
     }
 
+    public String getAlbumArtUri(Long album_id){
+        final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+        return ContentUris.withAppendedId(sArtworkUri, album_id).toString();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void addActions(Notification.Builder builder){
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void addMetaData(MediaSession mediaSession){
+        mediaSession.setMetadata(
+                new MediaMetadata.Builder()
+                        .putString(MediaMetadata.METADATA_KEY_TITLE, title)
+                        .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
+                        .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, getAlbumArtUri(albumID))
+                        .build()
+        );
+    }
 
 
     public void updateNotiUI() {

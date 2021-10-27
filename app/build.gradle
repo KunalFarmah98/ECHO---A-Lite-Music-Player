@@ -33,7 +33,7 @@ android {
     buildTypes {
         release {
             multiDexKeepFile file('multidex-config.txt')
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug{
@@ -67,10 +67,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'com.github.KunalFarmah98:lastfm-java:2.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.1'
-    implementation 'com.google.firebase:firebase-analytics-ktx:18.0.2'
-    implementation 'com.google.firebase:firebase-perf-ktx:20.0.0'
-    implementation 'com.google.firebase:firebase-core:18.0.2'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.3'
+    implementation 'com.google.firebase:firebase-analytics-ktx:19.0.2'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.0.3'
+    implementation 'com.google.firebase:firebase-core:19.0.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation "androidx.multidex:multidex:2.0.1"
     testImplementation 'junit:junit:4.12'
