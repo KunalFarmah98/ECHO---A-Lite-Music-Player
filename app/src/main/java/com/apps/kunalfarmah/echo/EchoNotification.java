@@ -299,7 +299,11 @@ public class EchoNotification extends Service {
         main.finishAffinity();
     }
     finally {
-        return START_STICKY;
+            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.Q)
+                return START_STICKY;
+            else{
+                return super.onStartCommand(intent, flags, startId);
+            }
     }
 
 }
@@ -505,9 +509,17 @@ public class EchoNotification extends Service {
         ArrayList<Notification.Action> actions = new ArrayList<>();
         mediaStyle.setShowActionsInCompactView(0,1,2);
 
+        Intent notificationIntent = new Intent(this,MainActivity.class);
+        notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
         Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
-                .setSmallIcon(R.drawable.echo_icon);
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent);
 
         addActions(builder);
 
