@@ -14,11 +14,13 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -66,6 +68,7 @@ public class EchoNotification extends Service {
     String title = "";
     String artist = "";
     Long albumID;
+    Long duration = 0l;
     SongPlayingFragment msong;
     RemoteViews views;
     RemoteViews smallviews;
@@ -131,6 +134,7 @@ public class EchoNotification extends Service {
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
                 albumID = intent.getLongExtra("album",-1);
+                duration = intent.getLongExtra("duration",0l);
                 main.setNotify_val(true);
 
                 showNotification();
@@ -503,6 +507,27 @@ public class EchoNotification extends Service {
 
         MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
         addMetaData(mediaSession);
+        mediaSession.setPlaybackState(
+                new PlaybackState.Builder()
+                        .setState(
+                                PlaybackState.STATE_PLAYING,
+
+                                // Playback position.
+                                // Used to update the elapsed time and the progress bar.
+                                mMediaPlayer.getCurrentPosition(),
+
+                                // Playback speed.
+                                // Determines the rate at which the elapsed time changes.
+                                1f
+                        )
+
+                        // isSeekable.
+                        // Adding the SEEK_TO action indicates that seeking is supported
+                        // and makes the seekbar position marker draggable. If this is not
+                        // supplied seek will be disabled but progress will still be shown.
+                        .setActions(PlaybackState.ACTION_SEEK_TO)
+                        .build()
+        );
         // Create a MediaStyle object and supply your media session token to it.
 
         Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
@@ -516,15 +541,21 @@ public class EchoNotification extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
+        Intent closeIntent = new Intent(this, EchoNotification.class);
+        closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+        PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
+                closeIntent, 0);
+
         Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent);
+                .setSmallIcon(R.drawable.echo_icon)
+                .setContentIntent(pendingIntent)
+                .setDeleteIntent(pcloseIntent);
 
         addActions(builder);
 
         status =builder.build();
-        mNotificationManager.notify(notifyID,status);
+        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
     }
 
     public static Bitmap getAlbumart(Context context,Long album_id){
@@ -595,6 +626,12 @@ public class EchoNotification extends Service {
                         "pause",
                         pnextIntent);
 
+        Notification.Action mCloseAction =
+                new Notification.Action(
+                        R.drawable.close_white,
+                        "close",
+                        pcloseIntent);
+
         builder.addAction(mPrevAction);
 
         if(SongPlayingFragment.Statified.INSTANCE.getMediaPlayer().isPlaying())
@@ -602,6 +639,7 @@ public class EchoNotification extends Service {
         else
             builder.addAction(mPlayAction);
         builder.addAction(mNextAction);
+        builder.addAction(mCloseAction);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -611,6 +649,7 @@ public class EchoNotification extends Service {
                         .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
                         .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, getAlbumArtUri(albumID))
+                        .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
                         .build()
         );
     }

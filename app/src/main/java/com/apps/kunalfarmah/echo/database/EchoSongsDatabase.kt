@@ -8,7 +8,7 @@ import com.apps.kunalfarmah.echo.database.entity.SongAlbumEntity
 import com.apps.kunalfarmah.echo.database.entity.SongArtistEntity
 import com.apps.kunalfarmah.echo.database.entity.SongsEntity
 
-@Database(entities = arrayOf(SongsEntity::class, SongAlbumEntity::class, SongArtistEntity::class, FavoriteEntity::class), version = 2, exportSchema = false)
+@Database(entities = arrayOf(SongsEntity::class, SongAlbumEntity::class, SongArtistEntity::class, FavoriteEntity::class), version = 3, exportSchema = false)
 abstract class EchoSongsDatabase : RoomDatabase() {
     abstract fun SongsDao(): EchoDao
 

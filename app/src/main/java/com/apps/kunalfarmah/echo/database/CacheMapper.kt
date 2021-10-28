@@ -22,7 +22,8 @@ constructor() :
                 songAlbum = entity.songAlbum,
                 artist = entity.artist,
                 album = entity.album,
-                dateAdded = entity.dateAdded
+                dateAdded = entity.dateAdded,
+                duration = entity.duration!!
         )
     }
 
@@ -34,7 +35,8 @@ constructor() :
                 songAlbum = entity.songAlbum,
                 artist = entity.artist,
                 album = entity.album,
-                dateAdded = entity.dateAdded
+                dateAdded = entity.dateAdded,
+                duration = entity.duration
         )
     }
 
@@ -53,7 +55,8 @@ constructor() :
                 artist = domainModel.artist,
                 album = domainModel.album,
                 songAlbum = domainModel.songAlbum,
-                dateAdded = domainModel.dateAdded
+                dateAdded = domainModel.dateAdded,
+                duration = domainModel.duration
         )
     }
 
@@ -65,7 +68,8 @@ constructor() :
                 artist = domainModel.artist,
                 album = domainModel.album,
                 songAlbum = domainModel.songAlbum,
-                dateAdded = domainModel.dateAdded
+                dateAdded = domainModel.dateAdded,
+                duration = domainModel.duration
         )
     }
 

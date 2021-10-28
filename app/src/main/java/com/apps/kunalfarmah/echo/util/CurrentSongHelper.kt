@@ -16,6 +16,7 @@ class CurrentSongHelper{
     var isLoop:Boolean=false
     var isShuffle:Boolean=false
     var trackPosition:Int = 0
+    var duration:Int = 0
 
 
 }
