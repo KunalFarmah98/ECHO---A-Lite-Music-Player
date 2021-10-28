@@ -19,7 +19,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
-import android.support.v4.media.MediaMetadataCompat;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -408,38 +407,9 @@ public class EchoNotification extends Service {
         }
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            // Sets an ID for the notification, so it can be updated.
-            int notifyID = 1;
-            String CHANNEL_ID = "my_channel_011";// The id of the channel.
-            CharSequence name = "Notify";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-
-
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
-
-            mChannel.setSound(null, null);
-            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            mChannel.enableVibration(false);
-
-            mNotificationManager.createNotificationChannel(mChannel);
-
-            MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
-            addMetaData(mediaSession);
-            // Create a MediaStyle object and supply your media session token to it.
-
-            Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
-
-            Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
-                    .setStyle(mediaStyle)
-                    .setSmallIcon(R.drawable.echo_icon);
-
-            addActions(builder);
-            status =builder.build();
-            mNotificationManager.notify(notifyID,status);
+            buildMediaNotification();
         }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -508,6 +478,43 @@ public class EchoNotification extends Service {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void buildMediaNotification(){
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // Sets an ID for the notification, so it can be updated.
+        int notifyID = 1;
+        String CHANNEL_ID = "my_channel_011";// The id of the channel.
+        CharSequence name = "Notify";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
+
+        mChannel.setSound(null, null);
+        mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        mChannel.enableVibration(false);
+
+        mNotificationManager.createNotificationChannel(mChannel);
+
+        MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
+        addMetaData(mediaSession);
+        // Create a MediaStyle object and supply your media session token to it.
+
+        Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
+        ArrayList<Notification.Action> actions = new ArrayList<>();
+        mediaStyle.setShowActionsInCompactView(0,1,2);
+
+        Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
+                .setStyle(mediaStyle)
+                .setSmallIcon(R.drawable.echo_icon);
+
+        addActions(builder);
+
+        status =builder.build();
+        mNotificationManager.notify(notifyID,status);
+    }
+
     public static Bitmap getAlbumart(Context context,Long album_id){
         Bitmap bm = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -533,6 +540,56 @@ public class EchoNotification extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void addActions(Notification.Builder builder){
+
+        Intent previousIntent = new Intent(this, EchoNotification.class);
+        previousIntent.setAction(Constants.ACTION.PREV_ACTION);
+        PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
+                previousIntent, 0);
+
+        Intent playIntent = new Intent(this, EchoNotification.class);
+        playIntent.setAction(Constants.ACTION.PLAY_ACTION);
+        PendingIntent pplayIntent = PendingIntent.getService(this, 0,
+                playIntent, 0);
+
+        Intent nextIntent = new Intent(this, EchoNotification.class);
+        nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
+        PendingIntent pnextIntent = PendingIntent.getService(this, 0,
+                nextIntent, 0);
+
+        Intent closeIntent = new Intent(this, EchoNotification.class);
+        closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+        PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
+                closeIntent, 0);
+        Notification.Action mPrevAction =
+                new Notification.Action(
+                        R.drawable.skip_previous_white,
+                        "pause",
+                        ppreviousIntent);
+
+        Notification.Action mPlayAction =
+                new Notification.Action(
+                        R.drawable.play_circle_white,
+                        "play",
+                        pplayIntent);
+        Notification.Action mPauseAction =
+                new Notification.Action(
+                        R.drawable.pause_circle_white,
+                        "pause",
+                        pplayIntent);
+
+        Notification.Action mNextAction =
+                new Notification.Action(
+                        R.drawable.skip_next_white,
+                        "pause",
+                        pnextIntent);
+
+        builder.addAction(mPrevAction);
+
+        if(SongPlayingFragment.Statified.INSTANCE.getMediaPlayer().isPlaying())
+            builder.addAction(mPauseAction);
+        else
+            builder.addAction(mPlayAction);
+        builder.addAction(mNextAction);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -549,7 +606,10 @@ public class EchoNotification extends Service {
 
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences("Notification",Context.MODE_PRIVATE).edit().putLong("albumId",albumID).apply();
-        this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q)
+            buildMediaNotification();
+        else
+            this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
