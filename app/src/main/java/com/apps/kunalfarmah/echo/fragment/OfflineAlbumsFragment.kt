@@ -38,7 +38,6 @@ class OfflineAlbumsFragment : Fragment() {
     val viewModel: SongsViewModel by viewModels()
     var binding: FragmentAlbumsBinding? = null
     var trackPosition: Int = 0
-    var song: SongPlayingFragment? = null
     var args: Bundle? = null
     var main: MainActivity? = null
     var list: List<SongAlbum>? = null
@@ -285,7 +284,7 @@ class OfflineAlbumsFragment : Fragment() {
                 play.action = Constants.ACTION.CHANGE_TO_PLAY
                 activity?.startService(play)
 
-                SongPlayingFragment.Staticated.upddateButton("pause")
+                SongPlayingFragment.Staticated.updateButton("pause")
             } else {
 
                 // using the same variable as it does similar work
@@ -296,14 +295,11 @@ class OfflineAlbumsFragment : Fragment() {
 
                     noNext = false
 
-
-                    song = SongPlayingFragment()
-
                     trackPosition = mediaPlayer.currentPosition as Int  // current postiton where the player as stopped
                     mediaPlayer.seekTo(trackPosition)
 
 //                    mediaPlayer.seekTo(-0)
-                    if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    if (SongPlayingFragment.Staticated.requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
 //                    mediaPlayer.previous()
 
@@ -323,7 +319,7 @@ class OfflineAlbumsFragment : Fragment() {
                     activity?.startService(play)
 
 //                    song!!.previous()
-                    SongPlayingFragment.Staticated.upddateButton("play")
+                    SongPlayingFragment.Staticated.updateButton("play")
 
                 } else if (main?.getnotify_val() == true) {
 
@@ -333,7 +329,7 @@ class OfflineAlbumsFragment : Fragment() {
                 * and change the button to pause button*/
                     trackPosition = mediaPlayer.currentPosition as Int  // current postiton where the player as stopped
                     mediaPlayer.seekTo(trackPosition)
-                    if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    if (SongPlayingFragment.Staticated.requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
                     binding!!.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 
@@ -348,20 +344,16 @@ class OfflineAlbumsFragment : Fragment() {
 
 
 
-                    SongPlayingFragment.Staticated.upddateButton("play")
+                    SongPlayingFragment.Staticated.updateButton("play")
 
                 }
             }
         }
-        val shuffle = context?.getSharedPreferences(SongPlayingFragment.Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-        val isshuffled = shuffle?.getBoolean("feature", false)
+        val shuffle = context?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)
+        val isshuffled = shuffle!!.getBoolean(Constants.SHUFFLE, false)
 
         binding!!.next.setOnClickListener {
-            song = SongPlayingFragment()
-            if (isshuffled!!)
-                song!!.playNext("PlayNextLikeNormalShuffle")
-            else
-                song!!.playNext("PlayNextNormal")
+            SongPlayingFragment.playNext(isshuffled)
             binding!!.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
         }
 

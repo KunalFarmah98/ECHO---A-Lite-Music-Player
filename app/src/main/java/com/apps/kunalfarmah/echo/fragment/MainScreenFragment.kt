@@ -47,7 +47,6 @@ class MainScreenFragment : Fragment() {
     var myActivity: Activity? = null
     var trackPosition: Int = 0
     var _MainScreenAdapter: MainScreenAdapter? = null
-    var song: SongPlayingFragment? = null
 
     private lateinit var binding: FragmentMainScreenBinding
 
@@ -356,7 +355,7 @@ class MainScreenFragment : Fragment() {
                 play.action = Constants.ACTION.CHANGE_TO_PLAY
                 activity?.startService(play)
 
-                SongPlayingFragment.Staticated.upddateButton("pause")
+                SongPlayingFragment.Staticated.updateButton("pause")
             } else {
 
                 // using the same variable as it does similar work
@@ -367,14 +366,11 @@ class MainScreenFragment : Fragment() {
 
                     Statified.noNext = false
 
-
-                    song = SongPlayingFragment()
-
                     trackPosition = mediaPlayer.currentPosition as Int  // current postiton where the player as stopped
                     mediaPlayer.seekTo(trackPosition)
 
 //                    mediaPlayer.seekTo(-0)
-                    if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    if (SongPlayingFragment.Staticated.requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
 //                    mediaPlayer.previous()
 
@@ -394,7 +390,7 @@ class MainScreenFragment : Fragment() {
                     activity?.startService(play)
 
 //                    song!!.previous()
-                    SongPlayingFragment.Staticated.upddateButton("play")
+                    SongPlayingFragment.Staticated.updateButton("play")
 
                 } else if (main?.getnotify_val() == true) {
 
@@ -404,7 +400,7 @@ class MainScreenFragment : Fragment() {
                 * and change the button to pause button*/
                     trackPosition = mediaPlayer.currentPosition as Int  // current postiton where the player as stopped
                     mediaPlayer.seekTo(trackPosition)
-                    if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    if (SongPlayingFragment.Staticated.requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
                     binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 
@@ -419,20 +415,17 @@ class MainScreenFragment : Fragment() {
 
 
 
-                    SongPlayingFragment.Staticated.upddateButton("play")
+                    SongPlayingFragment.Staticated.updateButton("play")
 
                 }
             }
         }
-        val shuffle = context?.getSharedPreferences(SongPlayingFragment.Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-        val isshuffled = shuffle?.getBoolean("feature", false)
+        val shuffle = context?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)
+
+        val isshuffled = shuffle!!.getBoolean(Constants.SHUFFLE, false)
 
         binding.next.setOnClickListener {
-            song = SongPlayingFragment()
-            if (isshuffled!!)
-                song!!.playNext("PlayNextLikeNormalShuffle")
-            else
-                song!!.playNext("PlayNextNormal")
+            SongPlayingFragment.playNext(isshuffled)
             binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
         }
 

@@ -28,6 +28,11 @@ public class Constants {
         String CLOSE = "com.apps.kunalfarmah.action.close";
     }
 
+    public static final String APP_PREFS = "APP_PREFS";
+    public static final String SHUFFLE = "SHUFFLE";
+    public static final String LOOP = "LOOP";
+    public static final String SHAKE_TO_CHANGE = "SHAKE_TO_CHANGE";
+
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;
     }

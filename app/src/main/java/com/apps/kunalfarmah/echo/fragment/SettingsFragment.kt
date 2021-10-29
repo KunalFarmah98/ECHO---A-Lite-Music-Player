@@ -3,6 +3,7 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +18,7 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SettingsActivity
 import com.apps.kunalfarmah.echo.activity.WizardActivity
+import com.apps.kunalfarmah.echo.util.Constants
 
 /*The settings fragment class is used for handling the events inside the settings fragment*/
 
@@ -38,11 +40,6 @@ class SettingsFragment : Fragment() {
         val TAG = "SettingsFragment"
     }
 
-    /*Here the change in switch will lead to turning on and off of a setting so we need to persist the changes
-    * This will be done with the help of Shared preferences*/
-    object Statified {
-        var MY_PREFS_NAME = "ShakeFeature"
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -91,9 +88,9 @@ class SettingsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val prefs = myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)
+        val prefs = context?.getSharedPreferences(Constants.APP_PREFS,MODE_PRIVATE)
 
-        var isAllowed = prefs?.getBoolean("feature", false)
+        var isAllowed = prefs?.getBoolean(Constants.SHAKE_TO_CHANGE, false)
 
         /*Checking the value of the feature as to whether it is ON or OFF*/
         shakeSwitch?.isChecked = isAllowed as Boolean
@@ -101,21 +98,12 @@ class SettingsFragment : Fragment() {
         /*Now we handle the change events i.e. when the switched is turned ON or OFF*/
         shakeSwitch?.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-
                 /*If the switch is turned on we then make the feature to be true*/
-                val editor =
-                    myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)
-                        ?.edit()
-                editor?.putBoolean("feature", true)
-                editor?.apply()
+                prefs!!.edit().putBoolean(Constants.SHAKE_TO_CHANGE,true).apply()
             } else {
-
                 /*Else the feature remains false*/
-                val editor =
-                    myActivity?.getSharedPreferences(Statified.MY_PREFS_NAME, Context.MODE_PRIVATE)
-                        ?.edit()
-                editor?.putBoolean("feature", false)
-                editor?.apply()
+                prefs!!.edit().putBoolean(Constants.SHAKE_TO_CHANGE,false).apply()
+
             }
         }
 
