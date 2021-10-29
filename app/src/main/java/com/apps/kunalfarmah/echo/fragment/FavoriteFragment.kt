@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -34,8 +33,8 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.lang.reflect.Executable
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
@@ -62,7 +61,6 @@ class FavoriteFragment : Fragment() {
     @SuppressLint("StaticFieldLeak")
     companion object Statified {
         val TAG = "FavoriteFragment"
-        var mediaPlayer: MediaPlayer? = null
         var noNext: Boolean? = true
         var songAlbum: Long? = null
         var songTitle: TextView? = null
@@ -280,7 +278,7 @@ class FavoriteFragment : Fragment() {
 
             /*If we are the on the favorite screen and not on the song playing screen when the song finishes
             * we want the changes in the song to reflect on the favorite screen hence we call the onSongComplete() function which help us in maintaining consistency*/
-            SongPlayingFragment.Statified.mediaPlayer?.setOnCompletionListener {
+            mediaPlayer?.setOnCompletionListener {
                 binding.songTitle.text = SongPlayingFragment.Statified.currentSongHelper?.songTitle
                 if (artist.equals("<unknown>", ignoreCase = true))
                     binding.songArtist.visibility = View.GONE
@@ -301,7 +299,7 @@ class FavoriteFragment : Fragment() {
             }
             /*While coming back from the song playing screen
             * if the song was playing then only the bottom bar is placed, else not placed*/
-            if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
+            if (mediaPlayer?.isPlaying as Boolean) {
                 binding.nowPlayingBottomBar.visibility = View.VISIBLE
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 //                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
@@ -340,7 +338,6 @@ class FavoriteFragment : Fragment() {
         binding.nowPlayingBottomBar.setOnClickListener {
 
             /*Using the same media player object*/
-            Statified.mediaPlayer = SongPlayingFragment.Statified.mediaPlayer
             val songPlayingFragment = SongPlayingFragment()
             var args = Bundle()
 
@@ -378,12 +375,12 @@ class FavoriteFragment : Fragment() {
         * This button is used to play or pause the media player*/
         binding.playPause.setOnClickListener {
 
-            if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
+            if (mediaPlayer?.isPlaying as Boolean) {
 
                 /*If the song was already playing, we then pause it and save the it's position
                 * and then change the button to play button*/
-                SongPlayingFragment.Statified.mediaPlayer?.pause()
-//                trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int
+                mediaPlayer?.pause()
+//                trackPosition = mediaPlayer?.currentPosition as Int
                 binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
 
                 var play = Intent(context, EchoNotification::class.java)
@@ -400,13 +397,13 @@ class FavoriteFragment : Fragment() {
                     FavoriteFragment.Statified.noNext = false
 
 
-                    trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int  // current postiton where the player as stopped
-                    SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
+                    trackPosition = mediaPlayer?.currentPosition as Int  // current postiton where the player as stopped
+                    mediaPlayer?.seekTo(trackPosition)
 
-//                    SongPlayingFragment.Statified.mediaPlayer?.seekTo(-0)
+//                    mediaPlayer?.seekTo(-0)
                     if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                        SongPlayingFragment.Statified.mediaPlayer?.start()
-//                    SongPlayingFragment.Statified.mediaPlayer?.previous()
+                        mediaPlayer?.start()
+//                    mediaPlayer?.previous()
 
 
                     binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
@@ -433,10 +430,10 @@ class FavoriteFragment : Fragment() {
                     /*If the music was already paused and we then click on the button
                 * it plays the song from the same position where it was paused
                 * and change the button to pause button*/
-                    trackPosition = SongPlayingFragment.Statified.mediaPlayer?.currentPosition as Int  // current postiton where the player as stopped
-                    SongPlayingFragment.Statified.mediaPlayer?.seekTo(trackPosition)
+                    trackPosition = mediaPlayer?.currentPosition as Int  // current postiton where the player as stopped
+                    mediaPlayer?.seekTo(trackPosition)
                     if (SongPlayingFragment.Staticated.reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                        SongPlayingFragment.Statified.mediaPlayer?.start()
+                        mediaPlayer?.start()
                     binding.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
 
 //                if (main?.notify == true) {

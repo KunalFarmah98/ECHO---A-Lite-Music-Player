@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.echo;
 
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,7 +11,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -38,6 +39,7 @@ import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.util.Constants;
+import com.apps.kunalfarmah.echo.util.MediaUtils;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
 import com.bumptech.glide.Glide;
 
@@ -64,15 +66,11 @@ public class EchoNotification extends Service {
     SongsViewModel songsViewModel;
     ArrayList<String> thoughts;
 
-     public final  String MY_PREFS_SHUFFLE = "Shuffle feature";
 
     MainActivity main;
-    static MediaPlayer mMediaPlayer;
-
 
     String title = "";
     String artist = "";
-    String artworkUri = "";
     Long albumID;
     SongPlayingFragment msong;
     RemoteViews views;
@@ -80,6 +78,7 @@ public class EchoNotification extends Service {
     ImageView imageView;
     String CHANNEL_ID = "Echo_Music";// The id of the channel.
     CharSequence name = "Echo-Notification";
+    Notification status;
 
 
     @Nullable
@@ -126,14 +125,13 @@ public class EchoNotification extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        try {
+//        try {
 
             if(null == intent){
                 stopForeground(true);
                 stopSelf();
+                Log.e("ECHONotification","intent is null");
             }
-
-            mMediaPlayer = msong.getMediaPlayer();
 
             if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
@@ -286,9 +284,6 @@ public class EchoNotification extends Service {
             }
             else if(intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)){
                 SongPlayingFragment.Statified.shufflebutton.callOnClick();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    buildMediaNotification();
-                }
             }
 
             else if (intent.getAction().equals(
@@ -301,8 +296,7 @@ public class EchoNotification extends Service {
 
                 msong.unregister();
 
-                mMediaPlayer = msong.getMediaPlayer();
-                mMediaPlayer.stop();
+                MediaUtils.INSTANCE.getMediaPlayer().stop();
 
                 try {
                     main.setNotify_val(false);
@@ -314,22 +308,18 @@ public class EchoNotification extends Service {
 
             }
 
-        }
+//        }
 
-    catch(Exception e) {
-        main.finishAffinity();
-    }
-    finally {
-            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.Q)
-                return START_STICKY;
-            else{
-                return super.onStartCommand(intent, flags, startId);
-            }
-    }
+//    catch(Exception e) {
+//        main.finishAffinity();
+//        Log.e("ECHONotification",e.getClass().getName()+" : "+e.getLocalizedMessage()+" : ");
+//        Log.e("ECHONotification","crash",e);
+//    }
+//    finally {
+            return START_STICKY;
+//    }
 
 }
-
-    Notification status;
 
     private void showNotification() {
 // Using RemoteViews to bind custom layouts into Notification
@@ -459,9 +449,7 @@ public class EchoNotification extends Service {
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
 
-        }
-
-        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.O ){
+        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.O ){
 
             status = new Notification.Builder(this).setWhen(0).setContentIntent(pOpenIntent).build();
             status.contentView=smallviews;
@@ -474,13 +462,8 @@ public class EchoNotification extends Service {
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
 
-        }
-
-
-        else {
+        } else {
             status = new Notification.Builder(this).setWhen(0).setContentIntent(pOpenIntent).build();
-
-
             status.contentView=smallviews;
             status.bigContentView = views;
 
@@ -510,7 +493,7 @@ public class EchoNotification extends Service {
 
         mNotificationManager.createNotificationChannel(mChannel);
 
-        MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
+        MediaSession mediaSession = new MediaSession(getBaseContext(),"EchoNotification");
         addMetaData(mediaSession);
 
 
@@ -596,14 +579,9 @@ public class EchoNotification extends Service {
         PendingIntent pShuffleIntent = PendingIntent.getService(this, 0,
                 shuffleIntent, 0);
 
-        SharedPreferences prefsForShuffle =getSharedPreferences(MY_PREFS_SHUFFLE, Context.MODE_PRIVATE);
-
-        /*Here we extract the value of preferences and check if shuffle was ON or not*/
-        boolean isShuffleAllowed = prefsForShuffle.getBoolean("feature", false);
-
         Notification.Action mShuffleAction =
                 new Notification.Action(
-                        isShuffleAllowed?R.drawable.shuffle_icon:R.drawable.shuffle_white_icon,
+                        R.drawable.shuffle_white_icon,
                         "shuffle",
                         pShuffleIntent);
 
@@ -639,7 +617,7 @@ public class EchoNotification extends Service {
         builder.addAction(mShuffleAction);
         builder.addAction(mPrevAction);
 
-        if(SongPlayingFragment.Statified.INSTANCE.getMediaPlayer().isPlaying())
+        if(MediaUtils.INSTANCE.getMediaPlayer().isPlaying())
             builder.addAction(mPauseAction);
         else
             builder.addAction(mPlayAction);
@@ -654,7 +632,7 @@ public class EchoNotification extends Service {
                         .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
                         .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, getAlbumArtUri(albumID))
-                        .putLong(MediaMetadata.METADATA_KEY_DURATION, mMediaPlayer.getDuration())
+                        .putLong(MediaMetadata.METADATA_KEY_DURATION, MediaUtils.INSTANCE.getMediaPlayer().getDuration())
                         .build()
         );
 
@@ -662,20 +640,10 @@ public class EchoNotification extends Service {
                 new PlaybackState.Builder()
                         .setState(
                                 PlaybackState.STATE_PLAYING,
-
-                                // Playback position.
-                                // Used to update the elapsed time and the progress bar. 
-                                (long) mMediaPlayer.getCurrentPosition(),
-
-                                // Playback speed. 
-                                // Determines the rate at which the elapsed time changes. 
-                                mMediaPlayer.getPlaybackParams().getSpeed()
+                                (long) MediaUtils.INSTANCE.getMediaPlayer().getCurrentPosition(),
+                                MediaUtils.INSTANCE.getMediaPlayer().getPlaybackParams().getSpeed()
                         )
-
-                        // isSeekable. 
-                        // Adding the SEEK_TO action indicates that seeking is supported 
-                        // and makes the seekbar position marker draggable. If this is not 
-                        // supplied seek will be disabled but progress will still be shown.
+                        // isSeekable.
                         .setActions(PlaybackState.ACTION_SEEK_TO)
                         .build()
         );
@@ -684,7 +652,7 @@ public class EchoNotification extends Service {
             @Override
             public void onSeekTo(long pos) {
                 super.onSeekTo(pos);
-                mMediaPlayer.seekTo((int)pos);
+                MediaUtils.INSTANCE.getMediaPlayer().seekTo((int)pos);
             }
         });
 

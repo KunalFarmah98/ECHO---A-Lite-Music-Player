@@ -37,6 +37,7 @@ import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Constants.ACTION.CLOSE) {
 
-                SongPlayingFragment.Statified.mediaPlayer?.stop()
+                mediaPlayer.stop()
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
                 song!!.unregister()
 

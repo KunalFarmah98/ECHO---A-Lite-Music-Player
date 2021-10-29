@@ -14,8 +14,8 @@ android {
         minSdkVersion 17
         targetSdkVersion 30
         multiDexEnabled true
-        versionCode 25
-        versionName "1.2.5"
+        versionCode 26
+        versionName "2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -39,10 +39,6 @@ android {
         debug{
             multiDexKeepFile file('multidex-config.txt')
         }
-    }
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
     }
     buildFeatures {
         viewBinding true
@@ -97,7 +93,7 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation "androidx.media:media:1.1.0"
+    implementation "androidx.media:media:1.4.3"
 
 }
 

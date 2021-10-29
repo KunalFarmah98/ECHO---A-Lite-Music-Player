@@ -14,7 +14,6 @@ import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.session.MediaSession
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -39,6 +38,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateT
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.ALbumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.audioVisualization
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.controlsView
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.currentPosition
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.currentSongHelper
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fab
@@ -47,7 +47,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fetchSon
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.glView
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.inform
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.loopbutton
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.mediaPlayer
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.nextbutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.playpausebutton
@@ -59,6 +58,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlayi
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
@@ -90,10 +90,8 @@ class SongPlayingFragment : Fragment() {
 
         val TAG = "SongPLayingFragment"
         var myActivity: Activity? = null
-        var mediaPlayer: MediaPlayer? = null
         var inform:Boolean=false
         var wasPlaying = false
-        var mediaSession: MediaSession ?= null
 
         var favoriteContent: EchoDatabase? = null
 
@@ -122,6 +120,7 @@ class SongPlayingFragment : Fragment() {
 
         var audioVisualization: AudioVisualization? = null
         var glView: GLAudioVisualizationView? = null
+        var controlsView: LinearLayout? =null
 
 
         /**
@@ -256,12 +255,12 @@ class SongPlayingFragment : Fragment() {
 
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
-            Statified.mediaPlayer?.reset()
+            mediaPlayer.reset()
             try {
-                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-                Statified.mediaPlayer?.prepare()
-                Statified.mediaPlayer?.start()
-                processInformation(Statified.mediaPlayer as MediaPlayer)
+                mediaPlayer.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+                processInformation(mediaPlayer as MediaPlayer)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -333,13 +332,13 @@ class SongPlayingFragment : Fragment() {
                     updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
 
-                    Statified.mediaPlayer?.reset()
+                    mediaPlayer.reset()
 
                     try {
-                        Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-                        Statified.mediaPlayer?.prepare()
-                        Statified.mediaPlayer?.start()
-                        processInformation(Statified.mediaPlayer as MediaPlayer)
+                        mediaPlayer.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
+                        mediaPlayer.prepare()
+                        mediaPlayer.start()
+                        processInformation(mediaPlayer as MediaPlayer)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -394,7 +393,7 @@ class SongPlayingFragment : Fragment() {
                         // Lower the volume while ducking.
                         mediaPlayer?.setVolume(0.2f, 0.2f)
                     (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) -> {
-                        if (Statified.mediaPlayer!!.isPlaying) {
+                        if (mediaPlayer!!.isPlaying) {
                             wasPlaying = true
                             mediaPlayer?.pause()
                             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -615,13 +614,13 @@ class SongPlayingFragment : Fragment() {
 
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
-            Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
+            mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
 
             try {
-                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-                Statified.mediaPlayer?.prepare()
-                Statified.mediaPlayer?.start()
-                processInformation(Statified.mediaPlayer as MediaPlayer)
+                mediaPlayer.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+                processInformation(mediaPlayer as MediaPlayer)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -663,7 +662,7 @@ class SongPlayingFragment : Fragment() {
 
     private val mNoisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (Statified.mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                 mediaPlayer?.pause()
                 inform=true
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -680,7 +679,7 @@ class SongPlayingFragment : Fragment() {
 
     private val mCallingReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (Statified.mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                 mediaPlayer?.pause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
@@ -743,10 +742,12 @@ class SongPlayingFragment : Fragment() {
 
         glView = view?.findViewById(R.id.visualizer_view)
 
+        controlsView = view?.findViewById(R.id.controls_layout);
+
         Statified.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
-                if (fromuser && Statified.mediaPlayer != null) {
-                    Statified.mediaPlayer?.seekTo(progress)
+                if (fromuser && mediaPlayer != null) {
+                    mediaPlayer.seekTo(progress)
                     if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.STARTFOREGROUND_ACTION
@@ -762,10 +763,6 @@ class SongPlayingFragment : Fragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Statified.mediaSession = MediaSession(requireContext(), "EchoNotification")
-        }
 
         return view
 
@@ -903,32 +900,28 @@ class SongPlayingFragment : Fragment() {
 
         if (fromFavbotomBar != null) {
             myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = FavoriteFragment.Statified.mediaPlayer
         } else if (fromMainbottomBar != null) {
             myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = MainScreenFragment.Statified.mediaPlayer
         }
         else if (fromAlbumbottomBar != null) {
             myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = OfflineAlbumsFragment.mediaPlayer
         }
         else if (fromAlbumSongsbottomBar != null) {
             myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = AlbumTracksFragment.mediaPlayer
         }else {
 
             // set up media player for default
             myActivity?.title = "Now Playing"
 
-            Statified.mediaPlayer = MediaPlayer()
-            Statified.mediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaPlayer = MediaPlayer()
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             //stopPlaying()
 
             try {
 
                 //setting the data source for the media player with the help of uri
-                Statified.mediaPlayer?.setDataSource(path)
-                Statified.mediaPlayer?.prepare()
+                mediaPlayer.setDataSource(path)
+                mediaPlayer.prepare()
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -941,14 +934,14 @@ class SongPlayingFragment : Fragment() {
             // other app had stopped playing song now , so u can do u stuff now .
 
             if(reuestAudiofocus()== AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            Statified.mediaPlayer?.start()
+            mediaPlayer.start()
 //            }
 
 
         }
 
         // precess all the information at the start of the song
-        processInformation(Statified.mediaPlayer as MediaPlayer)
+        processInformation(mediaPlayer as MediaPlayer)
 
         if (currentSongHelper?.isPlaying as Boolean && mediaPlayer?.isPlaying as Boolean) {
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
@@ -958,7 +951,7 @@ class SongPlayingFragment : Fragment() {
 
 
 
-        Statified.mediaPlayer?.setOnCompletionListener {
+        mediaPlayer.setOnCompletionListener {
             onSongComplete()
         }
 
@@ -1107,10 +1100,12 @@ class SongPlayingFragment : Fragment() {
             if(glView?.visibility==View.VISIBLE){
                 glView?.visibility = View.GONE
                 ALbumArt?.visibility= View.VISIBLE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
             }
             else {
                 glView?.visibility=View.VISIBLE
                 ALbumArt?.visibility=View.GONE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
             }
         }
 
@@ -1232,8 +1227,8 @@ class SongPlayingFragment : Fragment() {
 
             /*if the song is already playing and then play/pause button is tapped
             * then we pause the media player and also change the button to play button*/
-            if (Statified.mediaPlayer?.isPlaying as Boolean) {
-                Statified.mediaPlayer?.pause()
+            if (mediaPlayer.isPlaying as Boolean) {
+                mediaPlayer.pause()
                 play = false
                 currentSongHelper?.isPlaying = false
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -1246,7 +1241,7 @@ class SongPlayingFragment : Fragment() {
                 * change the image to pause icon*/
             } else {
                 if (reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    Statified.mediaPlayer?.start()
+                    mediaPlayer.start()
                     MainScreenAdapter.Statified.stopPlayingCalled=true
                     play = true
                     currentSongHelper?.isPlaying = true
@@ -1347,13 +1342,13 @@ class SongPlayingFragment : Fragment() {
 
         updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
-        Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
+        mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
 
         try {
-            Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-            Statified.mediaPlayer?.prepare()
-            Statified.mediaPlayer?.start()
-            processInformation(Statified.mediaPlayer as MediaPlayer)
+            mediaPlayer.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
+            mediaPlayer.prepare()
+            mediaPlayer.start()
+            processInformation(mediaPlayer as MediaPlayer)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1410,8 +1405,8 @@ class SongPlayingFragment : Fragment() {
     fun playorpause(): Boolean {
         var play = false
 
-        if (Statified.mediaPlayer?.isPlaying as Boolean) {
-            Statified.mediaPlayer?.pause()
+        if (mediaPlayer.isPlaying as Boolean) {
+            mediaPlayer.pause()
             currentSongHelper?.isPlaying = false
             play = false
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -1420,7 +1415,7 @@ class SongPlayingFragment : Fragment() {
             * change the image to pause icon*/
         } else {
             if(reuestAudiofocus()== AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            Statified.mediaPlayer?.start()
+            mediaPlayer.start()
             currentSongHelper?.isPlaying = true
             play = true
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
@@ -1431,7 +1426,7 @@ class SongPlayingFragment : Fragment() {
     }
 
     fun getMediaPlayer():MediaPlayer?{
-        return Statified.mediaPlayer
+        return mediaPlayer
     }
 
     fun unregister(){

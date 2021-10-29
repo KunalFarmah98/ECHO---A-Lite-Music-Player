@@ -60,7 +60,7 @@
                     android:clickable="true"
                     android:layout_marginRight="11dp"
                     android:layout_toLeftOf="@+id/favouriteButton"
-                    android:background="@drawable/music"
+                    android:background="@drawable/baseline_album"
                     />
 
                 <ImageButton
@@ -75,6 +75,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/controls_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"

@@ -10,6 +10,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlaying
 import com.apps.kunalfarmah.echo.EchoNotification
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 
 class CaptureBroadcast : BroadcastReceiver() {
 
@@ -30,9 +31,9 @@ class CaptureBroadcast : BroadcastReceiver() {
 
             try {
                 /*If the media player was playing we pause it and change the play/pause button*/
-                if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
+                if (mediaPlayer.isPlaying as Boolean) {
                     wasPlaying=true
-                    SongPlayingFragment.Statified.mediaPlayer?.pause()
+                    mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                     var play = Intent(myActivity, EchoNotification::class.java)
@@ -48,9 +49,9 @@ class CaptureBroadcast : BroadcastReceiver() {
 
         else if(intent?.action == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
             try {
-                if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
+                if (mediaPlayer.isPlaying as Boolean) {
                     wasPlaying=true
-                    SongPlayingFragment.Statified.mediaPlayer?.pause()
+                    mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                     var play = Intent(myActivity, EchoNotification::class.java)
@@ -77,9 +78,9 @@ class CaptureBroadcast : BroadcastReceiver() {
                     }
 
                     try {
-                        if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
+                        if (mediaPlayer.isPlaying as Boolean) {
                             wasPlaying=true
-                            SongPlayingFragment.Statified.mediaPlayer?.pause()
+                            mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                             var play = Intent(myActivity, EchoNotification::class.java)
@@ -93,9 +94,9 @@ class CaptureBroadcast : BroadcastReceiver() {
                 TelephonyManager.CALL_STATE_IDLE-> {
                     // not in call
                     try {
-                        if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean == false && SongPlayingFragment.Statified.inform==false && wasPlaying) {
+                        if (mediaPlayer.isPlaying as Boolean == false && SongPlayingFragment.Statified.inform==false && wasPlaying) {
 
-                            SongPlayingFragment.Statified.mediaPlayer?.start()
+                            mediaPlayer.start()
                             wasPlaying=false
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 
@@ -115,9 +116,9 @@ class CaptureBroadcast : BroadcastReceiver() {
                     //A call is dialing, active or on hold
 
                     try {
-                        if (SongPlayingFragment.Statified.mediaPlayer?.isPlaying as Boolean) {
+                        if (mediaPlayer.isPlaying as Boolean) {
                             wasPlaying=true
-                            SongPlayingFragment.Statified.mediaPlayer?.pause()
+                            mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                             var play = Intent(myActivity, EchoNotification::class.java)

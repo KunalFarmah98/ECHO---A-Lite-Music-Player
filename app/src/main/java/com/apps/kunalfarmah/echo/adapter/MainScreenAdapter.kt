@@ -22,6 +22,7 @@ import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.util.AppUtil
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
@@ -154,22 +155,11 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
 
     private fun stopPlaying() {
-        if (SongPlayingFragment.Statified.mediaPlayer != null) {
-
+        if (mediaPlayer != null) {
             stopPlayingCalled=true
-
-            SongPlayingFragment.Statified.mediaPlayer?.stop()
-            SongPlayingFragment.Statified.mediaPlayer?.reset()
-
-            FavoriteFragment.Statified.mediaPlayer?.stop()
-            FavoriteFragment.Statified.mediaPlayer?.reset()
-
-            MainScreenFragment.Statified.mediaPlayer?.stop()
-            MainScreenFragment.Statified.mediaPlayer?.reset()
-
+            mediaPlayer.stop()
+            mediaPlayer.reset()
         }
-
-
     }
 
 
