@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
-import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.net.Uri;
@@ -124,8 +123,6 @@ public class EchoNotification extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-//        try {
 
         if (null == intent) {
             stopForeground(true);
@@ -297,18 +294,7 @@ public class EchoNotification extends Service {
             stopSelf();
 
         }
-
-//        }
-
-//    catch(Exception e) {
-//        main.finishAffinity();
-//        Log.e("ECHONotification",e.getClass().getName()+" : "+e.getLocalizedMessage()+" : ");
-//        Log.e("ECHONotification","crash",e);
-//    }
-//    finally {
         return START_STICKY;
-//    }
-
     }
 
     private void showNotification() {
