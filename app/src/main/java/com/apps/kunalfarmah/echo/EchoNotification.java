@@ -490,7 +490,7 @@ public class EchoNotification extends Service {
         int notifyID = 1;
         String CHANNEL_ID = "my_channel_011";// The id of the channel.
         CharSequence name = "Notify";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
+        int importance = NotificationManager.IMPORTANCE_NONE;
 
 
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
