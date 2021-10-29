@@ -235,7 +235,6 @@ class FavoriteFragment : Fragment() {
             val dateIndex = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
             val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
-            val duration = songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
             /*moveToNext() returns the next row of the results. It returns null if there is no row after the current row*/
             while (songCursor.moveToNext()) {
 
@@ -246,14 +245,12 @@ class FavoriteFragment : Fragment() {
                 var currentData = songCursor.getString(songData)
                 var currentDate = songCursor.getLong(dateIndex)
                 var currAlbum = songCursor.getLong(songAlbum)
-                var duration = songCursor.getInt(duration)
-
                 if(null==currentArtist)
                     currentArtist = ""
                 if(null==album)
                     album = ""
                 /*Adding the fetched songs to the arraylist*/
-                arrayList.add(Songs(currentId, currentTitle, currentArtist,album, currentData, currentDate, currAlbum,duration))
+                arrayList.add(Songs(currentId, currentTitle, currentArtist,album, currentData, currentDate, currAlbum))
             }
         } else {
             return null

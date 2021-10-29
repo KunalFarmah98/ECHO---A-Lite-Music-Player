@@ -211,7 +211,7 @@ class SongPlayingFragment : Fragment() {
         
         fun setData(){
             currSong = Songs(songID = currentSongHelper?.songId!!, songTitle = currentSongHelper?.songTitle!!, album = currentSongHelper?.album!!, artist = currentSongHelper?.songArtist!!,
-                    songAlbum = currentSongHelper?.songAlbum!!, dateAdded = 0L, songData = "", duration = currentSongHelper?.duration!!)
+                    songAlbum = currentSongHelper?.songAlbum!!, dateAdded = 0L, songData = "")
         }
 
         /*The function playPrevious() is used to play the previous song again*/
@@ -253,7 +253,6 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songAlbum = nextSong?.songAlbum
             currentSongHelper?.album = nextSong?.album
             currentSongHelper?.songId = nextSong?.songID as Long
-            currentSongHelper?.duration = nextSong?.duration as Int
 
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
@@ -297,7 +296,6 @@ class SongPlayingFragment : Fragment() {
             play.putExtra("title", currentSongHelper?.songTitle)
             play.putExtra("artist", currentSongHelper?.songArtist)
             play.putExtra("album", currentSongHelper?.songAlbum)
-            play.putExtra("duration", currentSongHelper?.duration?.toLong())
             myActivity?.startService(play)
 //            setData()
            }
@@ -331,7 +329,6 @@ class SongPlayingFragment : Fragment() {
                     currentSongHelper?.songAlbum = nextSong?.songAlbum
                     currentSongHelper?.album = nextSong?.album
                     currentSongHelper?.songId = nextSong?.songID as Long
-                    currentSongHelper?.duration = nextSong?.duration as Int
 
                     updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
@@ -380,7 +377,6 @@ class SongPlayingFragment : Fragment() {
             play.putExtra("title", currentSongHelper?.songTitle)
             play.putExtra("artist", currentSongHelper?.songArtist)
             play.putExtra("album", currentSongHelper?.songAlbum)
-            play.putExtra("duration", currentSongHelper?.duration?.toLong())
 
             try {
                 myActivity?.startService(play)
@@ -614,10 +610,9 @@ class SongPlayingFragment : Fragment() {
             if(null==currentSongHelper?.songId || null==nextSong?.songID) {
                 return
             }
-            else {
+            else
                 currentSongHelper?.songId = nextSong?.songID as Long
-                currentSongHelper?.duration = nextSong?.duration as Int
-            }
+
             updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
             Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
@@ -856,7 +851,6 @@ class SongPlayingFragment : Fragment() {
         var _songId: Long? = null
         var _songAlbum:Long?=null
         var _album:String?=null
-        var _duration:Int=0
 
         try {
             path = arguments?.getString("path")
@@ -866,7 +860,6 @@ class SongPlayingFragment : Fragment() {
 //            var id = arguments?.getLong("SongID")
             _songId = arguments?.getLong("SongID")
             _album = arguments?.getString("album")
-            _duration = arguments?.getInt("duration")!!
 
 
             /*Here we fetch the received bundle data for current position and the list of all songs*/
@@ -881,7 +874,6 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper?.songAlbum = _songAlbum
             currentSongHelper?.album = _album
             currentSongHelper?.currentPosition = currentPosition
-            currentSongHelper?.duration = _duration
 
             ALbumArt?.setImageBitmap(getAlbumart(currentSongHelper?.songAlbum!!.toLong()))
             ALbumArt?.visibility=View.GONE
@@ -1098,8 +1090,7 @@ class SongPlayingFragment : Fragment() {
                     songAlbum = 0
                 }
                 favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, songAlbum,
-                        album, currentSongHelper?.duration
-                )
+                        album)
                 Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
         }
@@ -1345,7 +1336,6 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper?.songAlbum = nextSong?.songAlbum
         currentSongHelper?.album = nextSong?.album
         currentSongHelper?.songId = nextSong?.songID as Long
-        currentSongHelper?.duration = nextSong?.duration as Int
 
         updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
 
@@ -1386,7 +1376,6 @@ class SongPlayingFragment : Fragment() {
         play.putExtra("title", currentSongHelper?.songTitle)
         play.putExtra("artist", currentSongHelper?.songArtist)
         play.putExtra("album", currentSongHelper?.songAlbum)
-        play.putExtra("duration", currentSongHelper?.duration?.toLong())
 
         myActivity?.startService(play)
     }

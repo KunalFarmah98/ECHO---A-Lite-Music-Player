@@ -81,7 +81,6 @@ constructor(
             val dateAdded = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
             val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
-            val songDuration = songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
 
             while (songCursor.moveToNext()) {
                 // getting the data from the indices
@@ -92,11 +91,10 @@ constructor(
                 var currData = songCursor.getString(songData)
                 var currdate = songCursor.getLong(dateAdded)
                 var currAlbum = songCursor.getLong(songAlbum)
-                var duration = songCursor.getInt(songDuration)
 
 
                 try {
-                    arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum, duration))
+                    arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
                     Log.d("Error",e.message!!.toString());

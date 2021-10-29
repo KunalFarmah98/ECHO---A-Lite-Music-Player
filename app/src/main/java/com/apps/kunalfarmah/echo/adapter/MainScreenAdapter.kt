@@ -95,7 +95,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             args.putLong("songAlbum", songObject.songAlbum!!)
             args.putString("album", songObject.album)
             args.putInt("songPosition", position)
-            args.putInt("duration", songObject.duration)
 
             args.putParcelableArrayList("songData", songDetails)  // sending the details as a parcel to the bundle
 

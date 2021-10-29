@@ -21,6 +21,4 @@ data class SongsEntity(
         var dateAdded: Long,
         @ColumnInfo(name = "songAlbum")
         var songAlbum: Long?,
-        @ColumnInfo(name = "duration")
-        var duration: Int?,
 )
