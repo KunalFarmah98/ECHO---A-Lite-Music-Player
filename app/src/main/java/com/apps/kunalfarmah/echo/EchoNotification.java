@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,8 @@ import android.os.ParcelFileDescriptor;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
+import androidx.annotation.AnyRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -564,6 +567,9 @@ public class EchoNotification extends Service {
     }
 
     public String getAlbumArtUri(Long album_id){
+        Bitmap img = getAlbumart(getBaseContext(),albumID);
+        if(img==null)
+            return getUriToDrawable(getBaseContext(),R.drawable.echo_icon).toString();
         final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(sArtworkUri, album_id).toString();
     }
@@ -592,9 +598,9 @@ public class EchoNotification extends Service {
                 closeIntent, 0);
 
         Intent shuffleIntent = new Intent(this, EchoNotification.class);
-        closeIntent.setAction(Constants.ACTION.SHUFFLE_ACTION);
+        shuffleIntent.setAction(Constants.ACTION.SHUFFLE_ACTION);
         PendingIntent pShuffleIntent = PendingIntent.getService(this, 0,
-                closeIntent, 0);
+                shuffleIntent, 0);
 
         SharedPreferences prefsForShuffle =getSharedPreferences(MY_PREFS_SHUFFLE, Context.MODE_PRIVATE);
 
@@ -690,14 +696,15 @@ public class EchoNotification extends Service {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private int getPlaybackState() {
-        if(mMediaPlayer.isPlaying()){
-            return PlaybackState.STATE_PLAYING;
-        }
-        else
-            return PlaybackState.STATE_PAUSED;
+    private   Uri getUriToDrawable(@NonNull Context context,
+                                             @AnyRes int drawableId) {
+        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                + "://" + context.getResources().getResourcePackageName(drawableId)
+                + '/' + context.getResources().getResourceTypeName(drawableId)
+                + '/' + context.getResources().getResourceEntryName(drawableId) );
+        return imageUri;
     }
+
 
 
     public void updateNotiUI() {
