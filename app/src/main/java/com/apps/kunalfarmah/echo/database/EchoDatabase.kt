@@ -38,7 +38,7 @@ class EchoDatabase : SQLiteOpenHelper {
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE " + TABLE_NAME + "( " + COLUMN_ID +
                 " INTEGER," + COLUMN_SONG_ARTIST + " STRING," + COLUMN_SONG_TITLE + " STRING,"
-                + COLUMN_SONG_PATH + " STRING," + COLUMN_SONG_ALBUM + " NUMERIC," + COLUMN_SONG_ALBUM_NAME + " STRING);")
+                + COLUMN_SONG_PATH + " STRING," + COLUMN_SONG_ALBUM + " STRING," + COLUMN_SONG_ALBUM_NAME + " STRING);")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -59,7 +59,7 @@ class EchoDatabase : SQLiteOpenHelper {
         contentValues.put(COLUMN_SONG_ARTIST, artist)
         contentValues.put(COLUMN_SONG_TITLE, songTitle)
         contentValues.put(COLUMN_SONG_PATH, path)
-        contentValues.put(COLUMN_SONG_ALBUM, album)
+        contentValues.put(COLUMN_SONG_ALBUM, album.toString())
         contentValues.put(COLUMN_SONG_ALBUM_NAME, albumName)
         db.insert(TABLE_NAME, null, contentValues)
         db.close()
@@ -79,7 +79,7 @@ class EchoDatabase : SQLiteOpenHelper {
                     var _artist = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_ARTIST))
                     var _title = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_TITLE))
                     var _songPath = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_PATH))
-                    var _songAlbum = cSor.getInt(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM))
+                    var _songAlbum = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM))
                     var _songAlbumName = cSor.getString(cSor.getColumnIndexOrThrow(COLUMN_SONG_ALBUM_NAME))
                     if(_songAlbumName.isNullOrEmpty())
                         _songAlbumName = "<unknown>"

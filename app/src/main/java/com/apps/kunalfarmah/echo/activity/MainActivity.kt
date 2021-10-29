@@ -12,6 +12,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -192,6 +194,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            SongPlayingFragment.Staticated.mSensorManager?.registerListener(
+                SongPlayingFragment.Staticated.mSensorListener,
+                SongPlayingFragment.Staticated.mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }catch (e:Exception){
+        }
+    }
 
     override fun onDestroy() {
         try {

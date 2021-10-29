@@ -72,11 +72,14 @@ public class EchoNotification extends Service {
 
     String title = "";
     String artist = "";
+    String artworkUri = "";
     Long albumID;
     SongPlayingFragment msong;
     RemoteViews views;
     RemoteViews smallviews;
     ImageView imageView;
+    String CHANNEL_ID = "Echo_Music";// The id of the channel.
+    CharSequence name = "Echo-Notification";
 
 
     @Nullable
@@ -301,7 +304,11 @@ public class EchoNotification extends Service {
                 mMediaPlayer = msong.getMediaPlayer();
                 mMediaPlayer.stop();
 
-                main.setNotify_val(false);
+                try {
+                    main.setNotify_val(false);
+                    main.finishAffinity();
+                }
+                catch (Exception e){}
                 stopForeground(true);
                 stopSelf();
 
@@ -432,18 +439,12 @@ public class EchoNotification extends Service {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             // Sets an ID for the notification, so it can be updated.
-            int notifyID = 1;
-            String CHANNEL_ID = "my_channel_011";// The id of the channel.
-            CharSequence name = "Notify";
             int importance = NotificationManager.IMPORTANCE_HIGH;
 
-
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
-
             mChannel.setSound(null, null);
             mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             mChannel.enableVibration(false);
-
             mNotificationManager.createNotificationChannel(mChannel);
 
             status = new Notification.Builder(this, CHANNEL_ID).setOnlyAlertOnce(true)
@@ -452,12 +453,9 @@ public class EchoNotification extends Service {
             status.bigContentView = views;
             status.priority=Notification.PRIORITY_MAX;
             status.when =0;
-
-
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
             status.icon = R.mipmap.ic_launcher;
             status.contentIntent = pendingIntent;
-
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
 
@@ -501,10 +499,7 @@ public class EchoNotification extends Service {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Sets an ID for the notification, so it can be updated.
-        int notifyID = 1;
-        String CHANNEL_ID = "my_channel_011";// The id of the channel.
-        CharSequence name = "Notify";
-        int importance = NotificationManager.IMPORTANCE_NONE;
+        int importance = NotificationManager.IMPORTANCE_MIN;
 
 
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
@@ -521,7 +516,6 @@ public class EchoNotification extends Service {
 
         // Create a MediaStyle object and supply your media session token to it.
         Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
-        ArrayList<Notification.Action> actions = new ArrayList<>();
         mediaStyle.setShowActionsInCompactView(1,2,3);
 
         Intent notificationIntent = new Intent(this,MainActivity.class);
@@ -538,7 +532,7 @@ public class EchoNotification extends Service {
 
         Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
-                .setSmallIcon(R.drawable.echo_icon)
+                .setSmallIcon(R.drawable.ic_echo_icon)
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(pcloseIntent);
 
@@ -696,7 +690,7 @@ public class EchoNotification extends Service {
 
     }
 
-    private   Uri getUriToDrawable(@NonNull Context context,
+    private Uri getUriToDrawable(@NonNull Context context,
                                              @AnyRes int drawableId) {
         Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                 + "://" + context.getResources().getResourcePackageName(drawableId)
