@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -68,7 +67,6 @@ public class EchoNotification extends Service {
     String title = "";
     String artist = "";
     Long albumID;
-    Long duration = 0l;
     SongPlayingFragment msong;
     RemoteViews views;
     RemoteViews smallviews;
@@ -113,8 +111,6 @@ public class EchoNotification extends Service {
         thoughts.add("FULL ON");
         thoughts.add("SING ALONG");
         thoughts.add("PLAY ALONG");
-
-
         super.onCreate();
     }
 
@@ -128,13 +124,13 @@ public class EchoNotification extends Service {
                 stopSelf();
             }
 
+            mMediaPlayer = msong.getMediaPlayer();
 
             if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
                 albumID = intent.getLongExtra("album",-1);
-                duration = intent.getLongExtra("duration",0l);
                 main.setNotify_val(true);
 
                 showNotification();
@@ -507,29 +503,9 @@ public class EchoNotification extends Service {
 
         MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
         addMetaData(mediaSession);
-        mediaSession.setPlaybackState(
-                new PlaybackState.Builder()
-                        .setState(
-                                PlaybackState.STATE_PLAYING,
 
-                                // Playback position.
-                                // Used to update the elapsed time and the progress bar.
-                                mMediaPlayer.getCurrentPosition(),
 
-                                // Playback speed.
-                                // Determines the rate at which the elapsed time changes.
-                                1f
-                        )
-
-                        // isSeekable.
-                        // Adding the SEEK_TO action indicates that seeking is supported
-                        // and makes the seekbar position marker draggable. If this is not
-                        // supplied seek will be disabled but progress will still be shown.
-                        .setActions(PlaybackState.ACTION_SEEK_TO)
-                        .build()
-        );
         // Create a MediaStyle object and supply your media session token to it.
-
         Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
         ArrayList<Notification.Action> actions = new ArrayList<>();
         mediaStyle.setShowActionsInCompactView(0,1,2);
@@ -642,16 +618,56 @@ public class EchoNotification extends Service {
         builder.addAction(mCloseAction);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void addMetaData(MediaSession mediaSession){
         mediaSession.setMetadata(
                 new MediaMetadata.Builder()
                         .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
                         .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, getAlbumArtUri(albumID))
-                        .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
+                        .putLong(MediaMetadata.METADATA_KEY_DURATION, mMediaPlayer.getDuration())
                         .build()
         );
+
+        mediaSession.setPlaybackState(
+                new PlaybackState.Builder()
+                        .setState(
+                                PlaybackState.STATE_PLAYING,
+
+                                // Playback position.
+                                // Used to update the elapsed time and the progress bar. 
+                                (long) mMediaPlayer.getCurrentPosition(),
+
+                                // Playback speed. 
+                                // Determines the rate at which the elapsed time changes. 
+                                mMediaPlayer.getPlaybackParams().getSpeed()
+                        )
+
+                        // isSeekable. 
+                        // Adding the SEEK_TO action indicates that seeking is supported 
+                        // and makes the seekbar position marker draggable. If this is not 
+                        // supplied seek will be disabled but progress will still be shown.
+                        .setActions(PlaybackState.ACTION_SEEK_TO)
+                        .build()
+        );
+
+        mediaSession.setCallback(new MediaSession.Callback() {
+            @Override
+            public void onSeekTo(long pos) {
+                super.onSeekTo(pos);
+                mMediaPlayer.seekTo((int)pos);
+            }
+        });
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private int getPlaybackState() {
+        if(mMediaPlayer.isPlaying()){
+            return PlaybackState.STATE_PLAYING;
+        }
+        else
+            return PlaybackState.STATE_PAUSED;
     }
 
 
