@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
@@ -59,6 +60,8 @@ public class EchoNotification extends Service {
     @Inject
     SongsViewModel songsViewModel;
     ArrayList<String> thoughts;
+
+     public final  String MY_PREFS_SHUFFLE = "Shuffle feature";
 
     MainActivity main;
     static MediaPlayer mMediaPlayer;
@@ -274,7 +277,15 @@ public class EchoNotification extends Service {
                 updateNotiUI();
                 setAlbumArt();
 
-            } else if (intent.getAction().equals(
+            }
+            else if(intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)){
+                SongPlayingFragment.Statified.shufflebutton.callOnClick();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    buildMediaNotification();
+                }
+            }
+
+            else if (intent.getAction().equals(
                     Constants.ACTION.STOPFOREGROUND_ACTION)) {
 
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
@@ -508,7 +519,7 @@ public class EchoNotification extends Service {
         // Create a MediaStyle object and supply your media session token to it.
         Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
         ArrayList<Notification.Action> actions = new ArrayList<>();
-        mediaStyle.setShowActionsInCompactView(0,1,2);
+        mediaStyle.setShowActionsInCompactView(1,2,3);
 
         Intent notificationIntent = new Intent(this,MainActivity.class);
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
@@ -579,6 +590,23 @@ public class EchoNotification extends Service {
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
                 closeIntent, 0);
+
+        Intent shuffleIntent = new Intent(this, EchoNotification.class);
+        closeIntent.setAction(Constants.ACTION.SHUFFLE_ACTION);
+        PendingIntent pShuffleIntent = PendingIntent.getService(this, 0,
+                closeIntent, 0);
+
+        SharedPreferences prefsForShuffle =getSharedPreferences(MY_PREFS_SHUFFLE, Context.MODE_PRIVATE);
+
+        /*Here we extract the value of preferences and check if shuffle was ON or not*/
+        boolean isShuffleAllowed = prefsForShuffle.getBoolean("feature", false);
+
+        Notification.Action mShuffleAction =
+                new Notification.Action(
+                        isShuffleAllowed?R.drawable.shuffle_icon:R.drawable.shuffle_white_icon,
+                        "shuffle",
+                        pShuffleIntent);
+
         Notification.Action mPrevAction =
                 new Notification.Action(
                         R.drawable.skip_previous_white,
@@ -608,6 +636,7 @@ public class EchoNotification extends Service {
                         "close",
                         pcloseIntent);
 
+        builder.addAction(mShuffleAction);
         builder.addAction(mPrevAction);
 
         if(SongPlayingFragment.Statified.INSTANCE.getMediaPlayer().isPlaying())

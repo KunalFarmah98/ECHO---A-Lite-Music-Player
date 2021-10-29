@@ -109,7 +109,7 @@ class SongPlayingFragment : Fragment() {
         var previousbutton: ImageButton? = null
         var nextbutton: ImageButton? = null
         var loopbutton: ImageButton? = null
-        var shufflebutton: ImageButton? = null
+        lateinit var shufflebutton: ImageButton
 
         var ALbumArt : ImageView? = null
         var fab: ImageButton? = null
@@ -730,7 +730,7 @@ class SongPlayingFragment : Fragment() {
         previousbutton = view?.findViewById(R.id.previousbutton)
         nextbutton = view?.findViewById(R.id.nextbutton)
         loopbutton = view?.findViewById(R.id.loopButton)
-        shufflebutton = view?.findViewById(R.id.shuffleButton)
+        shufflebutton = view?.findViewById(R.id.shuffleButton)!!
 
 
         /*Linking it with the view*/
