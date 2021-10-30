@@ -39,7 +39,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.audioVisualization
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.controlsView
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.currentPosition
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.currentSongHelper
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fab
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.favoriteContent
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fetchSongs
@@ -55,9 +54,11 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shuffleb
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlaying
 import com.apps.kunalfarmah.echo.model.Songs
+import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
+import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
@@ -93,58 +94,48 @@ class SongPlayingFragment : Fragment() {
                 currentPosition = 0
             }
             var nextSong = fetchSongs?.get(currentPosition)
-            currentSongHelper?.songpath = nextSong?.songData
-            currentSongHelper?.songTitle = nextSong?.songTitle
-            currentSongHelper?.songArtist = nextSong?.artist
-            currentSongHelper?.songAlbum = nextSong?.songAlbum
-            currentSongHelper?.album = nextSong?.album
-            currentSongHelper?.songId = nextSong?.songID as Long
+            currentSongHelper.songpath = nextSong?.songData
+            currentSongHelper.songTitle = nextSong?.songTitle
+            currentSongHelper.songArtist = nextSong?.artist
+            currentSongHelper.songAlbum = nextSong?.songAlbum
+            currentSongHelper.album = nextSong?.album
+            currentSongHelper.songId = nextSong?.songID as Long
 
             updateTextViews(
-                currentSongHelper?.songTitle as String,
-                currentSongHelper?.songArtist as String
+                currentSongHelper.songTitle as String,
+                currentSongHelper.songArtist as String
             )
 
             mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
 
-            try {
+//            try {
                 mediaPlayer.setDataSource(
                     myActivity as Activity,
-                    Uri.parse(currentSongHelper?.songpath)
+                    Uri.parse(currentSongHelper.songpath)
                 )
                 mediaPlayer.prepare()
                 mediaPlayer.start()
                 processInformation(mediaPlayer)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
 
-            if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
             } else {
                 fab?.setBackgroundResource(R.drawable.favorite_off)
             }
 
+            BottomBarUtils.setTitle()
+            BottomBarUtils.setAlbumArt()
+            BottomBarUtils.setTitle()
 
-            MainScreenFragment.Staticated.setTitle()
-            MainScreenFragment.Staticated.setArtist()
-
-            FavoriteFragment.Staticated.setTitle()
-            FavoriteFragment.Staticated.setArtist()
-
-            AlbumTracksFragment.setTitle()
-            AlbumTracksFragment.setArtist()
-            AlbumTracksFragment.setAlbumArt()
-
-            OfflineAlbumsFragment.setTitle()
-            OfflineAlbumsFragment.setArtist()
-            OfflineAlbumsFragment.setAlbumArt()
 
             var play = Intent(myActivity, EchoNotification::class.java)
             play.action = Constants.ACTION.NEXT_UPDATE
-            play.putExtra("title", currentSongHelper?.songTitle)
-            play.putExtra("artist", currentSongHelper?.songArtist)
-            play.putExtra("album", currentSongHelper?.songAlbum)
+            play.putExtra("title", currentSongHelper.songTitle)
+            play.putExtra("artist", currentSongHelper.songArtist)
+            play.putExtra("album", currentSongHelper.songAlbum)
 
             myActivity?.startService(play)
         }
@@ -185,34 +176,34 @@ class SongPlayingFragment : Fragment() {
 
             /*Similar to the playNext() function defined above*/
             var nextSong = fetchSongs?.get(currentPosition)
-            currentSongHelper?.songpath = nextSong?.songData
-            currentSongHelper?.songTitle = nextSong?.songTitle
-            currentSongHelper?.songArtist = nextSong?.artist
-            currentSongHelper?.songAlbum = nextSong?.songAlbum
-            currentSongHelper?.album = nextSong?.album
-            currentSongHelper?.songId = nextSong?.songID as Long
+            currentSongHelper.songpath = nextSong?.songData
+            currentSongHelper.songTitle = nextSong?.songTitle
+            currentSongHelper.songArtist = nextSong?.artist
+            currentSongHelper.songAlbum = nextSong?.songAlbum
+            currentSongHelper.album = nextSong?.album
+            currentSongHelper.songId = nextSong?.songID as Long
 
             updateTextViews(
-                currentSongHelper?.songTitle as String,
-                currentSongHelper?.songArtist as String
+                currentSongHelper.songTitle as String,
+                currentSongHelper.songArtist as String
             )
 
             mediaPlayer.reset()
-            try {
+//            try {
                 mediaPlayer.setDataSource(
                     myActivity as Activity,
-                    Uri.parse(currentSongHelper?.songpath)
+                    Uri.parse(currentSongHelper.songpath)
                 )
                 mediaPlayer.prepare()
                 mediaPlayer.start()
                 processInformation(mediaPlayer as MediaPlayer)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
 
 
 
-            if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
             } else {
                 fab?.setBackgroundResource(R.drawable.favorite_off)
@@ -220,26 +211,16 @@ class SongPlayingFragment : Fragment() {
 
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 
-            MainScreenFragment.Staticated.setTitle()
-            MainScreenFragment.Staticated.setArtist()
-
-            FavoriteFragment.Staticated.setTitle()
-            FavoriteFragment.Staticated.setArtist()
-
-            AlbumTracksFragment.setTitle()
-            AlbumTracksFragment.setArtist()
-            AlbumTracksFragment.setAlbumArt()
-
-            OfflineAlbumsFragment.setTitle()
-            OfflineAlbumsFragment.setArtist()
-            OfflineAlbumsFragment.setAlbumArt()
+            BottomBarUtils.setTitle()
+            BottomBarUtils.setArtist()
+            BottomBarUtils.setAlbumArt()
 
 
             var play = Intent(myActivity, EchoNotification::class.java)
             play.action = Constants.ACTION.PREV_UPDATE
-            play.putExtra("title", currentSongHelper?.songTitle)
-            play.putExtra("artist", currentSongHelper?.songArtist)
-            play.putExtra("album", currentSongHelper?.songAlbum)
+            play.putExtra("title", currentSongHelper.songTitle)
+            play.putExtra("artist", currentSongHelper.songArtist)
+            play.putExtra("album", currentSongHelper.songAlbum)
             myActivity?.startService(play)
         }
     }
@@ -282,7 +263,6 @@ class SongPlayingFragment : Fragment() {
         var art: ImageButton? = null
 
         var currentPosition: Int = 0
-        var currentSongHelper: CurrentSongHelper? = null
 
         var fetchSongs: ArrayList<Songs>? = null
 
@@ -392,33 +372,33 @@ class SongPlayingFragment : Fragment() {
             /*If loop was ON, then play the same song again*/
             if (sharedPreferences?.getBoolean(Constants.LOOP, false) == true) {
                 var nextSong = fetchSongs?.get(currentPosition)
-                currentSongHelper?.currentPosition = currentPosition
-                currentSongHelper?.songpath = nextSong?.songData
-                currentSongHelper?.songTitle = nextSong?.songTitle
-                currentSongHelper?.songArtist = nextSong?.artist
-                currentSongHelper?.songAlbum = nextSong?.songAlbum
-                currentSongHelper?.album = nextSong?.album
-                currentSongHelper?.songId = nextSong?.songID as Long
+                currentSongHelper.currentPosition = currentPosition
+                currentSongHelper.songpath = nextSong?.songData
+                currentSongHelper.songTitle = nextSong?.songTitle
+                currentSongHelper.songArtist = nextSong?.artist
+                currentSongHelper.songAlbum = nextSong?.songAlbum
+                currentSongHelper.album = nextSong?.album
+                currentSongHelper.songId = nextSong?.songID as Long
 
                 updateTextViews(
-                    currentSongHelper?.songTitle as String,
-                    currentSongHelper?.songArtist as String
+                    currentSongHelper.songTitle as String,
+                    currentSongHelper.songArtist as String
                 )
 
 
                 mediaPlayer.reset()
 
-                try {
+//                try {
                     mediaPlayer.setDataSource(
                         myActivity as Activity,
-                        Uri.parse(currentSongHelper?.songpath)
+                        Uri.parse(currentSongHelper.songpath)
                     )
                     mediaPlayer.prepare()
                     mediaPlayer.start()
                     processInformation(mediaPlayer as MediaPlayer)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
             } else {
 
                 /*If loop was OFF then normally play the next song*/
@@ -426,7 +406,7 @@ class SongPlayingFragment : Fragment() {
             }
 
 
-            if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
             } else {
                 fab?.setBackgroundResource(R.drawable.favorite_off)
@@ -434,34 +414,27 @@ class SongPlayingFragment : Fragment() {
 
         // preventing next song from playing if activity was destroyed
 
-        if (MainScreenFragment.Statified.noNext == false)
+        if (!MainScreenFragment.noNext)
         {
             previousSong()
-            MainScreenFragment.Statified.noNext = true
-        } else if (FavoriteFragment.Statified.noNext == false)
+            MainScreenFragment.noNext = true
+        } else if (FavoriteFragment.noNext == false)
         {
             previousSong()
-            FavoriteFragment.Statified.noNext = true
+            FavoriteFragment.noNext = true
         }
 
 
         var play = Intent(myActivity, EchoNotification::class.java)
         play.action = Constants.ACTION.NEXT_UPDATE
-        play.putExtra("title", currentSongHelper?.songTitle)
-        play.putExtra("artist", currentSongHelper?.songArtist)
-        play.putExtra("album", currentSongHelper?.songAlbum)
-
-        try
-        {
-            myActivity?.startService(play)
-//                setData()
-        } catch (e: Exception)
-        {
-        }
+        play.putExtra("title", currentSongHelper.songTitle)
+        play.putExtra("artist", currentSongHelper.songArtist)
+        play.putExtra("album", currentSongHelper.songAlbum)
+        myActivity?.startService(play)
     }
 
 
-    val focusChangeListener =
+    private val focusChangeListener =
         AudioManager.OnAudioFocusChangeListener { focusChange ->
             //            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             when (focusChange) {
@@ -558,24 +531,39 @@ class SongPlayingFragment : Fragment() {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    fun updateTextViews(songtitle: String, songartist: String) {
+    fun updateTextViews(songtitle: String?, songartist: String?) {
 
         var songtitleupdted = songtitle
         var songartistupdted = songartist
 
-        if (songtitle.equals("<unknown>", true)) {
+        if (songtitle==null || songtitle.equals("<unknown>", true)) {
             songtitleupdted = "Unknown"
         }
-        if (songartist.equals("<unknown>", true)) {
+        if (songartist==null || songartist.equals("<unknown>", true)) {
             songartistupdted = "Unknown"
         }
         Statified.songTitle?.text = songtitleupdted
         Statified.songArtist?.text = songartistupdted
 
-        var img = getAlbumart(currentSongHelper?.songAlbum!!.toLong())
-        if (img == null)
+        var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
+        if (img == null) {
             ALbumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-        else ALbumArt?.setImageBitmap(img)
+            glView?.visibility = View.VISIBLE
+            ALbumArt?.visibility = View.GONE
+            controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+        }
+        else {
+            ALbumArt?.setImageBitmap(img)
+            if(myActivity!=null) {
+                glView?.visibility = View.GONE
+                ALbumArt?.visibility = View.VISIBLE
+                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+            }
+        }
+
+        BottomBarUtils.setTitle()
+        BottomBarUtils.setArtist()
+        BottomBarUtils.setAlbumArt()
 
     }
 
@@ -719,8 +707,6 @@ private val mCallingReceiver = object : BroadcastReceiver() {
             var play = Intent(context, EchoNotification::class.java)
             play.action = Constants.ACTION.CHANGE_TO_PLAY
             activity?.startService(play)
-
-//                Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
         }
     }
 }
@@ -731,10 +717,6 @@ override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
 ): View? {
-    // Inflate the layout for this fragment
-
-
-    //only recreating the view if it is not present beforehand
 
     var view = view
 
@@ -744,10 +726,7 @@ override fun onCreateView(
 
     requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
 
-//        activity?.title = "Now Playing"
     setHasOptionsMenu(true)
-
-//        receiver=CaptureBroadcast()
 
     ALbumArt = view?.findViewById(R.id.art)
 
@@ -786,9 +765,9 @@ override fun onCreateView(
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     var play = Intent(myActivity, EchoNotification::class.java)
                     play.action = Constants.ACTION.STARTFOREGROUND_ACTION
-                    play.putExtra("title", currentSongHelper?.songTitle)
-                    play.putExtra("artist", currentSongHelper?.songArtist)
-                    play.putExtra("album", currentSongHelper?.songAlbum)
+                    play.putExtra("title", currentSongHelper.songTitle)
+                    play.putExtra("artist", currentSongHelper.songArtist)
+                    play.putExtra("album", currentSongHelper.songAlbum)
                     myActivity?.startService(play)
                 }
             }
@@ -891,7 +870,7 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
     var _songAlbum: Long? = null
     var _album: String? = null
 
-    try {
+    //try {
         path = arguments?.getString("path")
         _songArtist = arguments?.getString("songArtist")
         _songTitle = arguments?.getString("songTitle")
@@ -905,23 +884,23 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
         currentPosition = arguments!!.getInt("songPosition")
         fetchSongs = arguments?.getParcelableArrayList("songData")
 
-        /*Now store the song details to the current song helper object so that they can be used later*/
-        currentSongHelper?.songpath = path
-        currentSongHelper?.songTitle = _songTitle
-        currentSongHelper?.songArtist = _songArtist
-        currentSongHelper?.songId = _songId
-        currentSongHelper?.songAlbum = _songAlbum
-        currentSongHelper?.album = _album
-        currentSongHelper?.currentPosition = currentPosition
+      //  Now store the song details to the current song helper object so that they can be used later
+        currentSongHelper.songpath = path
+        currentSongHelper.songTitle = _songTitle
+        currentSongHelper.songArtist = _songArtist
+        currentSongHelper.songId = _songId
+        currentSongHelper.songAlbum = _songAlbum
+        currentSongHelper.album = _album
+        currentSongHelper.currentPosition = currentPosition
 
-        ALbumArt?.setImageBitmap(getAlbumart(currentSongHelper?.songAlbum!!.toLong()))
+        ALbumArt?.setImageBitmap(getAlbumart(currentSongHelper.songAlbum!!.toLong()))
         ALbumArt?.visibility = View.GONE
 
         // updating the textViews as soon as the song is changed and loaded
 
         updateTextViews(
-            currentSongHelper?.songTitle as String,
-            currentSongHelper?.songArtist as String
+            currentSongHelper.songTitle,
+            currentSongHelper.songArtist
         )
 
         var serviceIntent = Intent(context, EchoNotification::class.java)
@@ -934,9 +913,9 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
 
         context?.startService(serviceIntent)
 
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//    }
 
     var fromFavbotomBar = arguments?.get("FavBottomBar") as? String
     var fromMainbottomBar = arguments?.get("MainBottomBar") as? String
@@ -961,15 +940,15 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
         //stopPlaying()
 
-        try {
+//        try {
 
             //setting the data source for the media player with the help of uri
             mediaPlayer.setDataSource(path)
             mediaPlayer.prepare()
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
 
 
 //            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -1033,7 +1012,7 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
 
     /*Here we check that if the song playing is a favorite, then we show a red colored heart indicating favorite else only the heart boundary
    * This action is performed whenever a new song is played, hence this will done in the playNext(), playPrevious() and onSongComplete() methods*/
-    if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
+    if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
         fab?.setBackgroundResource(R.drawable.favorite_on)
     } else {
         fab?.setBackgroundResource(R.drawable.favorite_off)
@@ -1090,9 +1069,9 @@ fun clickHandler() {
     /*Here we handle the click of the favorite icon
    * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
     fab?.setOnClickListener {
-        if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
+        if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
             fab?.setBackgroundResource(R.drawable.favorite_off)
-            favoriteContent?.deleteFavourite(currentSongHelper?.songId?.toInt() as Int)
+            favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
 
             /*Toast is prompt message at the bottom of screen indicating that an action has been performed*/
             Toast.makeText(myActivity, "Removed from Favorites", Toast.LENGTH_SHORT).show()
@@ -1100,19 +1079,19 @@ fun clickHandler() {
 
             /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
             fab?.setBackgroundResource(R.drawable.favorite_on)
-            var album = currentSongHelper?.album
+            var album = currentSongHelper.album
             if (null == album) {
                 album = ""
             }
-            var songAlbum = currentSongHelper?.songAlbum
+            var songAlbum = currentSongHelper.songAlbum
             if (null == songAlbum) {
                 songAlbum = 0
             }
             favoriteContent?.storeAsFavorite(
-                currentSongHelper?.songId?.toInt(),
-                currentSongHelper?.songArtist,
-                currentSongHelper?.songTitle,
-                currentSongHelper?.songpath,
+                currentSongHelper.songId?.toInt(),
+                currentSongHelper.songArtist,
+                currentSongHelper.songTitle,
+                currentSongHelper.songpath,
                 songAlbum,
                 album
             )

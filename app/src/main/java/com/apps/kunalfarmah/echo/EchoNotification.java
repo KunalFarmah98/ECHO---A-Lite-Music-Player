@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -32,6 +33,7 @@ import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
+import com.apps.kunalfarmah.echo.databinding.BottomBarBinding;
 import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment;
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
@@ -124,7 +126,7 @@ public class EchoNotification extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (null == intent) {
+        if (null == intent || intent.getAction()==null) {
             stopForeground(true);
             stopSelf();
             Log.e("ECHONotification", "intent is null");
@@ -136,7 +138,6 @@ public class EchoNotification extends Service {
             artist = intent.getStringExtra("artist");
             albumID = intent.getLongExtra("album", -1);
             main.setNotify_val(true);
-
             showNotification();
 
         } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
@@ -155,7 +156,6 @@ public class EchoNotification extends Service {
             }
 
             updateNotiUI();
-            setAlbumArt();
 
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
@@ -175,7 +175,6 @@ public class EchoNotification extends Service {
 
 
             updateNotiUI();
-            setAlbumArt();
 
         } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
             songsViewModel.setPlayStatus(true);
@@ -188,7 +187,6 @@ public class EchoNotification extends Service {
             smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
             updateNotiUI();
-            setAlbumArt();
 
         } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
             msong.next();
@@ -205,7 +203,6 @@ public class EchoNotification extends Service {
             }
 
             updateNotiUI();
-            setAlbumArt();
 
 
         } else if (intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
@@ -215,10 +212,10 @@ public class EchoNotification extends Service {
             albumID = intent.getLongExtra("album", -1);
 
 
-            if (title.equals("<unknown>"))
+            if (title==null || title.equals("<unknown>"))
                 title = "Unknown";
 
-            if (artist.equals("<unknown>"))
+            if (artist==null || artist.equals("<unknown>"))
                 artist = "unknown";
 
             views.setTextViewText(R.id.song_title_nav, title);
@@ -239,16 +236,15 @@ public class EchoNotification extends Service {
 
 
             updateNotiUI();
-            setAlbumArt();
         } else if (intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
             title = intent.getStringExtra("title");
             artist = intent.getStringExtra("artist");
             albumID = intent.getLongExtra("album", -1);
 
-            if (title.equals("<unknown>"))
+            if (title==null || title.equals("<unknown>"))
                 title = "Unknown";
 
-            if (artist.equals("<unknown>"))
+            if (artist==null || artist.equals("<unknown>"))
                 artist = "unknown";
             views.setTextViewText(R.id.song_title_nav, title);
             views.setTextViewText(R.id.song_artist_nav, artist);
@@ -269,7 +265,6 @@ public class EchoNotification extends Service {
 
 
             updateNotiUI();
-            setAlbumArt();
 
         } else if (intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)) {
             SongPlayingFragment.Statified.shufflebutton.callOnClick();
@@ -365,10 +360,10 @@ public class EchoNotification extends Service {
         views.setTextViewText(R.id.logo, thoughts.get(currentPosition));
 
 
-        if (title.equals("<unknown>"))
+        if (title==null || title.equals("<unknown>"))
             title = "Unknown";
 
-        if (artist.equals("<unknown>"))
+        if (artist == null || artist.equals("<unknown>"))
             artist = "unknown";
 
         views.setTextViewText(R.id.song_title_nav, title);
@@ -485,7 +480,7 @@ public class EchoNotification extends Service {
 
         Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
-                .setSmallIcon(R.drawable.echo_icon_notification)
+                .setSmallIcon(R.drawable.ic_echo_icon)
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(pcloseIntent);
 
@@ -610,7 +605,8 @@ public class EchoNotification extends Service {
         mediaSession.setPlaybackState(
                 new PlaybackState.Builder()
                         .setState(
-                                PlaybackState.STATE_PLAYING,
+                                MediaUtils.INSTANCE.getMediaPlayer().isPlaying() ?
+                                        PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
                                 (long) MediaUtils.INSTANCE.getMediaPlayer().getCurrentPosition(),
                                 1f
                         )
@@ -645,48 +641,5 @@ public class EchoNotification extends Service {
             buildMediaNotification();
         else
             this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    void setAlbumArt() {
-        Long albumId = albumID;
-        try {
-            if (albumId <= 0L)
-                Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                        .getResources().getDrawable(R.drawable.echo_icon));
-            Uri sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-            Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-            Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()));
-
-
-            if (albumId <= 0L)
-                Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext().getResources()
-                        .getDrawable(R.drawable.echo_icon));
-            sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-            uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-            Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()));
-
-
-            if (albumId <= 0L)
-                Objects.requireNonNull(OfflineAlbumsFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                        .getResources().getDrawable(R.drawable.echo_icon));
-            sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-            uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-            Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(OfflineAlbumsFragment.Statified.getSongImg()));
-
-
-            if (albumId <= 0L)
-                Objects.requireNonNull(AlbumTracksFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                        .getResources().getDrawable(R.drawable.echo_icon));
-            sArtworkUri = Uri
-                    .parse("content://media/external/audio/albumart");
-            uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-            Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(AlbumTracksFragment.Statified.getSongImg()));
-        } catch (Exception e) {
-        }
-
     }
 }
