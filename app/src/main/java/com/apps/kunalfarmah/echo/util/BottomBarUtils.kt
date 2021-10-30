@@ -9,8 +9,6 @@ import android.content.Intent
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.apps.kunalfarmah.echo.App
@@ -20,8 +18,6 @@ import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.BottomBarBinding
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fetchSongs
-import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.bumptech.glide.Glide
@@ -183,7 +179,6 @@ object BottomBarUtils {
     private fun isMyServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            Log.d("Service: ", serviceClass.name)
             if (serviceClass.name == service.service.className) {
                 return true
             }

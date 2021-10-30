@@ -97,8 +97,7 @@ constructor(
                     arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
-                    Log.d("Error",e.message!!.toString());
-//                    Toast.makeText(contetx,e.message.toString(), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context,e.message.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }
