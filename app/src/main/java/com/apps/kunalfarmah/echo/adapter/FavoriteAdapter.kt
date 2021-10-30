@@ -160,7 +160,6 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         if (mediaPlayer != null) {
             MainScreenAdapter.Statified.stopPlayingCalled=true
             mediaPlayer.stop()
-            mediaPlayer.reset()
         }
 
 

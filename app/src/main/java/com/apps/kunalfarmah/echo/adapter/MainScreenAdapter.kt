@@ -158,7 +158,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         if (mediaPlayer != null) {
             stopPlayingCalled=true
             mediaPlayer.stop()
-            mediaPlayer.reset()
         }
     }
 

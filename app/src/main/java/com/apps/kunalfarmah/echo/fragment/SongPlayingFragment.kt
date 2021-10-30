@@ -959,7 +959,7 @@ class SongPlayingFragment : Fragment() {
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
         }
 
-
+        mediaPlayer.setOnErrorListener { mp, what, extra -> true }
 
         mediaPlayer.setOnCompletionListener {
             onSongComplete()

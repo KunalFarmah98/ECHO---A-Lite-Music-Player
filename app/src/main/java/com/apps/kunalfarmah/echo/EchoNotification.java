@@ -269,6 +269,7 @@ public class EchoNotification extends Service {
             msong.unregister();
 
             MediaUtils.INSTANCE.getMediaPlayer().stop();
+            MediaUtils.INSTANCE.getMediaPlayer().release();
 
             try {
                 main.setNotify_val(false);
