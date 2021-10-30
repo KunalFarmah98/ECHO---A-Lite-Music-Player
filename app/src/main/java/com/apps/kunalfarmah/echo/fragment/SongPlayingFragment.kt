@@ -289,7 +289,7 @@ class SongPlayingFragment : Fragment() {
                 * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
                 * The %d:%d is used for formatting the time strings as 03:45 so that it appears like time*/
 
-                    var seconds = TimeUnit.MILLISECONDS.toSeconds(getCurrent?.toLong() as Long) -
+                    var seconds = TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong() as Long) -
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()))
 
                     if (seconds >= 10) {
@@ -323,7 +323,7 @@ class SongPlayingFragment : Fragment() {
 
 
                     }
-                    seekBar?.progress = getCurrent.toInt()
+                    seekBar?.progress = mediaPlayer.currentPosition.toInt()
 
                     /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
                     Handler().postDelayed(this, 1000)
