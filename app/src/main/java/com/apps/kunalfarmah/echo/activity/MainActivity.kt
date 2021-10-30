@@ -61,16 +61,14 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Constants.ACTION.CLOSE) {
-
-                mediaPlayer.stop()
+                if(mediaPlayer!=null) {
+                    mediaPlayer.stop()
+                    mediaPlayer.release()
+                }
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
                 song!!.unregister()
-
-
                 // SongPlayingFragment.Statified.mediaPlayer?.release()
                 finishAffinity()
-
-
             }
         }
     }

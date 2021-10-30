@@ -52,17 +52,6 @@ object BottomBarUtils {
         else
             bottomBarBinding.songArtist.text = artist
         setAlbumArt(currentSongHelper.songAlbum)
-        mediaPlayer.setOnCompletionListener {
-            bottomBarBinding.songTitle.text = currentSongHelper.songTitle
-            if (artist.equals("<unknown>", ignoreCase = true))
-                bottomBarBinding.songArtist.visibility = View.GONE
-            else
-                bottomBarBinding.songArtist.text = artist
-
-            setAlbumArt(currentSongHelper.songAlbum)
-
-            SongPlayingFragment.Staticated.onSongComplete()
-        }
 
     }
 
@@ -83,6 +72,7 @@ object BottomBarUtils {
             args.putLong("songAlbum", currentSongHelper.songAlbum!!)
             args.putInt("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
             args.putParcelableArrayList("songData", SongPlayingFragment.Statified.fetchSongs)
+            args.putBoolean("fromBottomBar",true)
             songPlayingFragment.arguments = args
             fragmentManager.beginTransaction()
                 .replace(R.id.details_fragment, songPlayingFragment)
@@ -216,6 +206,15 @@ object BottomBarUtils {
             if (null == bottomBarBinding.songImg.drawable) {
                 bottomBarBinding.songImg.setImageResource(R.drawable.echo_icon)
             }
+        }
+    }
+
+    fun updatePlayPause(){
+        if(mediaPlayer.isPlaying){
+            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+        }
+        else{
+            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
         }
     }
 }

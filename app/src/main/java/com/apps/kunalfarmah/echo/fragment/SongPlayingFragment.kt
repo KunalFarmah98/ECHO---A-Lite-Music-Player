@@ -109,13 +109,13 @@ class SongPlayingFragment : Fragment() {
             mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
 
 //            try {
-                mediaPlayer.setDataSource(
-                    myActivity as Activity,
-                    Uri.parse(currentSongHelper.songpath)
-                )
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-                processInformation(mediaPlayer)
+            mediaPlayer.setDataSource(
+                myActivity as Activity,
+                Uri.parse(currentSongHelper.songpath)
+            )
+            mediaPlayer.prepare()
+            mediaPlayer.start()
+            processInformation(mediaPlayer)
 //            } catch (e: Exception) {
 //                e.printStackTrace()
 //            }
@@ -190,17 +190,16 @@ class SongPlayingFragment : Fragment() {
 
             mediaPlayer.reset()
 //            try {
-                mediaPlayer.setDataSource(
-                    myActivity as Activity,
-                    Uri.parse(currentSongHelper.songpath)
-                )
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-                processInformation(mediaPlayer as MediaPlayer)
+            mediaPlayer.setDataSource(
+                myActivity as Activity,
+                Uri.parse(currentSongHelper.songpath)
+            )
+            mediaPlayer.prepare()
+            mediaPlayer.start()
+            processInformation(mediaPlayer as MediaPlayer)
 //            } catch (e: Exception) {
 //                e.printStackTrace()
 //            }
-
 
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
@@ -284,7 +283,7 @@ class SongPlayingFragment : Fragment() {
 
                 if (mediaPlayer != null) {
 
-                    val getCurrent = mediaPlayer?.currentPosition
+                    val getCurrent = mediaPlayer.currentPosition
 
                     /*The start time is set to the current position of the song
                 * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
@@ -389,13 +388,13 @@ class SongPlayingFragment : Fragment() {
                 mediaPlayer.reset()
 
 //                try {
-                    mediaPlayer.setDataSource(
-                        myActivity as Activity,
-                        Uri.parse(currentSongHelper.songpath)
-                    )
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
-                    processInformation(mediaPlayer as MediaPlayer)
+                mediaPlayer.setDataSource(
+                    myActivity as Activity,
+                    Uri.parse(currentSongHelper.songpath)
+                )
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+                processInformation(mediaPlayer as MediaPlayer)
 //                } catch (e: Exception) {
 //                    e.printStackTrace()
 //                }
@@ -412,465 +411,463 @@ class SongPlayingFragment : Fragment() {
                 fab?.setBackgroundResource(R.drawable.favorite_off)
             }
 
-        // preventing next song from playing if activity was destroyed
+            // preventing next song from playing if activity was destroyed
 
-        if (!MainScreenFragment.noNext)
-        {
-            previousSong()
-            MainScreenFragment.noNext = true
-        } else if (FavoriteFragment.noNext == false)
-        {
-            previousSong()
-            FavoriteFragment.noNext = true
+//            if (!MainScreenFragment.noNext) {
+//                previousSong()
+//                MainScreenFragment.noNext = true
+//            } else if (FavoriteFragment.noNext == false) {
+//                previousSong()
+//                FavoriteFragment.noNext = true
+//            }
+
+
+            var play = Intent(myActivity, EchoNotification::class.java)
+            play.action = Constants.ACTION.NEXT_UPDATE
+            play.putExtra("title", currentSongHelper.songTitle)
+            play.putExtra("artist", currentSongHelper.songArtist)
+            play.putExtra("album", currentSongHelper.songAlbum)
+            myActivity?.startService(play)
         }
 
 
-        var play = Intent(myActivity, EchoNotification::class.java)
-        play.action = Constants.ACTION.NEXT_UPDATE
-        play.putExtra("title", currentSongHelper.songTitle)
-        play.putExtra("artist", currentSongHelper.songArtist)
-        play.putExtra("album", currentSongHelper.songAlbum)
-        myActivity?.startService(play)
-    }
-
-
-    private val focusChangeListener =
-        AudioManager.OnAudioFocusChangeListener { focusChange ->
-            //            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            when (focusChange) {
-                (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) ->
-                    // Lower the volume while ducking.
-                    mediaPlayer?.setVolume(0.2f, 0.2f)
-                (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) -> {
-                    if (mediaPlayer!!.isPlaying) {
-                        wasPlaying = true
-                        mediaPlayer?.pause()
-                        playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-                        var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.CHANGE_TO_PLAY
-                        myActivity?.startService(play)
-                    }
-
-                }
-                (AudioManager.AUDIOFOCUS_LOSS) -> {
-                    if (mediaPlayer!!.isPlaying) {
-
-                        wasPlaying = true
-                        if (MainScreenAdapter.Statified.stopPlayingCalled) {
-                            // it means we started the song from within the app so don't pause it
-                            MainScreenAdapter.Statified.stopPlayingCalled = false
-                        } else {
-
-                            //                                wasPlaying = true
+        private val focusChangeListener =
+            AudioManager.OnAudioFocusChangeListener { focusChange ->
+                //            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+                when (focusChange) {
+                    (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) ->
+                        // Lower the volume while ducking.
+                        mediaPlayer?.setVolume(0.2f, 0.2f)
+                    (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) -> {
+                        if (mediaPlayer!!.isPlaying) {
+                            wasPlaying = true
                             mediaPlayer?.pause()
                             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                             var play = Intent(myActivity, EchoNotification::class.java)
                             play.action = Constants.ACTION.CHANGE_TO_PLAY
                             myActivity?.startService(play)
-                            //                    val component = ComponentName(this, MediaControlReceiver::class.java)
-                            //                    am.unregisterMediaButtonEventReceiver(component)
+                        }
+
+                    }
+                    (AudioManager.AUDIOFOCUS_LOSS) -> {
+                        if (mediaPlayer!!.isPlaying) {
+
+                            wasPlaying = true
+                            if (MainScreenAdapter.Statified.stopPlayingCalled) {
+                                // it means we started the song from within the app so don't pause it
+                                MainScreenAdapter.Statified.stopPlayingCalled = false
+                            } else {
+
+                                //                                wasPlaying = true
+                                mediaPlayer?.pause()
+                                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+
+                                var play = Intent(myActivity, EchoNotification::class.java)
+                                play.action = Constants.ACTION.CHANGE_TO_PLAY
+                                myActivity?.startService(play)
+                                //                    val component = ComponentName(this, MediaControlReceiver::class.java)
+                                //                    am.unregisterMediaButtonEventReceiver(component)
+                            }
                         }
                     }
+                    (AudioManager.AUDIOFOCUS_GAIN) -> {
+
+                        if (wasPlaying) {
+                            wasPlaying = false
+
+                            // Return the volume to normal and resume if paused.
+                            mediaPlayer?.setVolume(1f, 1f)
+                            mediaPlayer?.start()
+                            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                            var play = Intent(myActivity, EchoNotification::class.java)
+                            play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                            myActivity?.startService(play)
+                        }
+                    }
+                    else -> {
+                    }
                 }
-                (AudioManager.AUDIOFOCUS_GAIN) -> {
+            }
 
-                    if (wasPlaying) {
-                        wasPlaying = false
 
-                        // Return the volume to normal and resume if paused.
-                        mediaPlayer?.setVolume(1f, 1f)
-                        mediaPlayer?.start()
-                        playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+        @SuppressLint("NewApi")
+        fun requestAudiofocus(): Int {
+
+            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+            //Request audio focus for playback
+            // old method
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+                val result = am.requestAudioFocus(
+                    Staticated.focusChangeListener,
+                    // Use the music stream.
+                    AudioManager.STREAM_MUSIC,
+                    // Request permanent focus.
+                    AudioManager.AUDIOFOCUS_GAIN
+                )
+
+                return result
+            }
+            // from O onwards
+            else {
+                var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                    setAudioAttributes(AudioAttributes.Builder().run {
+                        setUsage(AudioAttributes.USAGE_GAME)
+                        setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        build()
+                    })
+                    setAcceptsDelayedFocusGain(true)
+                    setOnAudioFocusChangeListener(focusChangeListener)
+                    build()
+                }
+
+                return am.requestAudioFocus(focusRequest)
+            }
+
+        }
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        fun updateTextViews(songtitle: String?, songartist: String?) {
+
+            var songtitleupdted = songtitle
+            var songartistupdted = songartist
+
+            if (songtitle == null || songtitle.equals("<unknown>", true)) {
+                songtitleupdted = "Unknown"
+            }
+            if (songartist == null || songartist.equals("<unknown>", true)) {
+                songartistupdted = "Unknown"
+            }
+            Statified.songTitle?.text = songtitleupdted
+            Statified.songArtist?.text = songartistupdted
+
+            var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
+            if (img == null) {
+                ALbumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                glView?.visibility = View.VISIBLE
+                ALbumArt?.visibility = View.GONE
+                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+            } else {
+                ALbumArt?.setImageBitmap(img)
+                if (myActivity != null) {
+                    glView?.visibility = View.GONE
+                    ALbumArt?.visibility = View.VISIBLE
+                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                }
+            }
+
+            BottomBarUtils.setTitle()
+            BottomBarUtils.setArtist()
+            BottomBarUtils.setAlbumArt()
+
+        }
+
+
+        /*function used to update the time*/
+        fun processInformation(mediaPlayer: MediaPlayer) {
+
+            /*Obtaining the final time*/
+            val finalTime = mediaPlayer.duration
+
+            /*Obtaining the current position*/
+            val startingTime = mediaPlayer.currentPosition
+
+            seekBar?.max = finalTime
+
+            var seconds_start =
+                TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                )
+
+            var seconds_end =
+                TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                )
+
+            if (seconds_start >= 10) {
+
+                /*Here we format the time and set it to the start time text*/
+                Statified.startTime?.text = String.format(
+                    "%d:%d",
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
+                    TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                    )
+                )
+
+                if (seconds_end >= 10) {
+
+                    /*Similar to above is done for the end time text*/
+                    Statified.endTime?.text = String.format(
+                        "%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
+                } else {
+                    Statified.endTime?.text = String.format(
+                        "%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
+                }
+
+
+            } else if (seconds_start < 10) {
+
+                /*Here we format the time and set it to the start time text*/
+                Statified.startTime?.text = String.format(
+                    "%d:0%d",
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
+                    TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                    )
+                )
+
+                if (seconds_end >= 10) {
+
+                    /*Similar to above is done for the end time text*/
+                    Statified.endTime?.text = String.format(
+                        "%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
+                } else {
+                    Statified.endTime?.text = String.format(
+                        "%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
+                }
+            }
+
+
+            /*Seekbar has been assigned this time so that it moves according to the time of song*/
+            seekBar?.progress = startingTime
+
+            /*Now this task is synced with the update song time object*/
+            Handler().postDelayed(updateSongTime, 1000)
+        }
+
+        fun updateButton(Mode: String) {
+
+            if (Mode.equals("pause", true)) {
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+
+            } else if (Mode.equals("play", true)) {
+                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+
+            }
+        }
+    }
+
+    var mAcceleration: Float = 0f
+
+
+    /**
+     * creating a broadcast receiver to register earphones unplugging
+     *
+     */
+
+    private val mNoisyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                mediaPlayer?.pause()
+                inform = true
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+
+                var play = Intent(context, EchoNotification::class.java)
+                play.action = Constants.ACTION.CHANGE_TO_PLAY
+                activity?.startService(play)
+
+                Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    private val mCallingReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                mediaPlayer?.pause()
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+
+                var play = Intent(context, EchoNotification::class.java)
+                play.action = Constants.ACTION.CHANGE_TO_PLAY
+                activity?.startService(play)
+            }
+        }
+    }
+    var mAccelerationCurrent: Float = 0f
+    var mAccelerationLast: Float = 0f
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        var view = view
+
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_song_playing, container, false)
+        }
+
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+
+        setHasOptionsMenu(true)
+
+        ALbumArt = view?.findViewById(R.id.art)
+
+        Statified.songTitle = view?.findViewById(R.id.songTitle)
+        Statified.songTitle?.isSelected = true
+        Statified.songArtist = view?.findViewById(R.id.songArtist)
+        Statified.songArtist?.isSelected = true
+        Statified.startTime = view?.findViewById(R.id.startTime)
+        Statified.endTime = view?.findViewById(R.id.endTime)
+
+        seekBar = view?.findViewById(R.id.seekbar)
+
+        playpausebutton = view?.findViewById(R.id.playpausebutton)
+        previousbutton = view?.findViewById(R.id.previousbutton)
+        nextbutton = view?.findViewById(R.id.nextbutton)
+        loopbutton = view?.findViewById(R.id.loopButton)
+        shufflebutton = view?.findViewById(R.id.shuffleButton)!!
+
+
+        /*Linking it with the view*/
+        fab = view?.findViewById(R.id.favouriteButton)
+        art = view?.findViewById(R.id.showArtButton)
+
+        /*Fading the favorite icon*/
+        fab?.alpha = 0.8f
+        art?.alpha = 0.8f
+
+        glView = view?.findViewById(R.id.visualizer_view)
+
+        controlsView = view?.findViewById(R.id.controls_layout);
+
+        Statified.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
+                if (fromuser && mediaPlayer != null) {
+                    mediaPlayer.seekTo(progress)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                        play.action = Constants.ACTION.STARTFOREGROUND_ACTION
+                        play.putExtra("title", currentSongHelper.songTitle)
+                        play.putExtra("artist", currentSongHelper.songArtist)
+                        play.putExtra("album", currentSongHelper.songAlbum)
                         myActivity?.startService(play)
                     }
                 }
-                else -> {
-                }
-            }
-        }
 
-
-    @SuppressLint("NewApi")
-    fun requestAudiofocus(): Int {
-
-        val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        //Request audio focus for playback
-        // old method
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
-            val result = am.requestAudioFocus(
-                Staticated.focusChangeListener,
-                // Use the music stream.
-                AudioManager.STREAM_MUSIC,
-                // Request permanent focus.
-                AudioManager.AUDIOFOCUS_GAIN
-            )
-
-            return result
-        }
-        // from O onwards
-        else {
-            var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
-                setAudioAttributes(AudioAttributes.Builder().run {
-                    setUsage(AudioAttributes.USAGE_GAME)
-                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    build()
-                })
-                setAcceptsDelayedFocusGain(true)
-                setOnAudioFocusChangeListener(focusChangeListener)
-                build()
             }
 
-            return am.requestAudioFocus(focusRequest)
-        }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
+        return view
+
 
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    fun updateTextViews(songtitle: String?, songartist: String?) {
 
-        var songtitleupdted = songtitle
-        var songartistupdted = songartist
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /*Sensor service is activate when the fragment is created*/
+        Staticated.mSensorManager =
+            myActivity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-        if (songtitle==null || songtitle.equals("<unknown>", true)) {
-            songtitleupdted = "Unknown"
-        }
-        if (songartist==null || songartist.equals("<unknown>", true)) {
-            songartistupdted = "Unknown"
-        }
-        Statified.songTitle?.text = songtitleupdted
-        Statified.songArtist?.text = songartistupdted
+        /*Default values*/
+        mAcceleration = 0.0f
+        /*We take earth's gravitational value to be default, this will give us good results*/
+        mAccelerationCurrent = SensorManager.GRAVITY_EARTH
+        mAccelerationLast = SensorManager.GRAVITY_EARTH
+        sharedPreferences = context?.getSharedPreferences(Constants.APP_PREFS, MODE_PRIVATE)
+        bindShakeListener()
+    }
 
-        var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
-        if (img == null) {
-            ALbumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-            glView?.visibility = View.VISIBLE
-            ALbumArt?.visibility = View.GONE
-            controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
-        }
-        else {
-            ALbumArt?.setImageBitmap(img)
-            if(myActivity!=null) {
-                glView?.visibility = View.GONE
-                ALbumArt?.visibility = View.VISIBLE
-                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        menu.clear()   // clearing any previous menus
+        inflater.inflate(R.menu.song_playing_menu, menu)
+
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        val item: MenuItem? = menu.findItem(R.id.action_redirect)
+        item?.isVisible = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_redirect -> {
+                // redirecting the user to the activity from which they came
+                myActivity?.onBackPressed()
+                return false
+
             }
         }
+        return false
+    }
 
-        BottomBarUtils.setTitle()
-        BottomBarUtils.setArtist()
-        BottomBarUtils.setAlbumArt()
+
+    override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // you can extract AudioVisualization interface for simplifying things
+        audioVisualization = glView as AudioVisualization
+    }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        myActivity = context as Activity
 
     }
 
 
-    /*function used to update the time*/
-    fun processInformation(mediaPlayer: MediaPlayer) {
-
-        /*Obtaining the final time*/
-        val finalTime = mediaPlayer.duration
-
-        /*Obtaining the current position*/
-        val startingTime = mediaPlayer.currentPosition
-
-        seekBar?.max = finalTime
-
-        var seconds_start =
-            TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
-            )
-
-        var seconds_end =
-            TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
-            )
-
-        if (seconds_start >= 10) {
-
-            /*Here we format the time and set it to the start time text*/
-            Statified.startTime?.text = String.format(
-                "%d:%d",
-                TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
-                TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
-                )
-            )
-
-            if (seconds_end >= 10) {
-
-                /*Similar to above is done for the end time text*/
-                Statified.endTime?.text = String.format(
-                    "%d:%d",
-                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
-                    )
-                )
-            } else {
-                Statified.endTime?.text = String.format(
-                    "%d:0%d",
-                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
-                    )
-                )
-            }
-
-
-        } else if (seconds_start < 10) {
-
-            /*Here we format the time and set it to the start time text*/
-            Statified.startTime?.text = String.format(
-                "%d:0%d",
-                TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
-                TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
-                )
-            )
-
-            if (seconds_end >= 10) {
-
-                /*Similar to above is done for the end time text*/
-                Statified.endTime?.text = String.format(
-                    "%d:%d",
-                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
-                    )
-                )
-            } else {
-                Statified.endTime?.text = String.format(
-                    "%d:0%d",
-                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
-                    )
-                )
-            }
-        }
-
-
-        /*Seekbar has been assigned this time so that it moves according to the time of song*/
-        seekBar?.progress = startingTime
-
-        /*Now this task is synced with the update song time object*/
-        Handler().postDelayed(updateSongTime, 1000)
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        myActivity = activity
     }
 
-    fun updateButton(Mode: String) {
 
-        if (Mode.equals("pause", true)) {
-            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-        } else if (Mode.equals("play", true)) {
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-
-        }
-    }
-}
-
-var mAcceleration: Float = 0f
+    @SuppressLint("UseRequireInsteadOfGet")
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
 
 
-/**
- * creating a broadcast receiver to register earphones unplugging
- *
- */
-
-private val mNoisyReceiver = object : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            mediaPlayer?.pause()
-            inform = true
-            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-            var play = Intent(context, EchoNotification::class.java)
-            play.action = Constants.ACTION.CHANGE_TO_PLAY
-            activity?.startService(play)
-
-            Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
-        }
-    }
-}
+        // recreating everything again only if it didn't happen before
 
 
-private val mCallingReceiver = object : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            mediaPlayer?.pause()
-            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-            var play = Intent(context, EchoNotification::class.java)
-            play.action = Constants.ACTION.CHANGE_TO_PLAY
-            activity?.startService(play)
-        }
-    }
-}
-var mAccelerationCurrent: Float = 0f
-var mAccelerationLast: Float = 0f
-
-override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-): View? {
-
-    var view = view
-
-    if (view == null) {
-        view = inflater.inflate(R.layout.fragment_song_playing, container, false)
-    }
-
-    requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-
-    setHasOptionsMenu(true)
-
-    ALbumArt = view?.findViewById(R.id.art)
-
-    Statified.songTitle = view?.findViewById(R.id.songTitle)
-    Statified.songTitle?.isSelected = true
-    Statified.songArtist = view?.findViewById(R.id.songArtist)
-    Statified.songArtist?.isSelected = true
-    Statified.startTime = view?.findViewById(R.id.startTime)
-    Statified.endTime = view?.findViewById(R.id.endTime)
-
-    seekBar = view?.findViewById(R.id.seekbar)
-
-    playpausebutton = view?.findViewById(R.id.playpausebutton)
-    previousbutton = view?.findViewById(R.id.previousbutton)
-    nextbutton = view?.findViewById(R.id.nextbutton)
-    loopbutton = view?.findViewById(R.id.loopButton)
-    shufflebutton = view?.findViewById(R.id.shuffleButton)!!
+        super.onActivityCreated(savedInstanceState)
 
 
-    /*Linking it with the view*/
-    fab = view?.findViewById(R.id.favouriteButton)
-    art = view?.findViewById(R.id.showArtButton)
-
-    /*Fading the favorite icon*/
-    fab?.alpha = 0.8f
-    art?.alpha = 0.8f
-
-    glView = view?.findViewById(R.id.visualizer_view)
-
-    controlsView = view?.findViewById(R.id.controls_layout);
-
-    Statified.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
-            if (fromuser && mediaPlayer != null) {
-                mediaPlayer.seekTo(progress)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    var play = Intent(myActivity, EchoNotification::class.java)
-                    play.action = Constants.ACTION.STARTFOREGROUND_ACTION
-                    play.putExtra("title", currentSongHelper.songTitle)
-                    play.putExtra("artist", currentSongHelper.songArtist)
-                    play.putExtra("album", currentSongHelper.songAlbum)
-                    myActivity?.startService(play)
-                }
-            }
-
-        }
-
-        override fun onStartTrackingTouch(seekBar: SeekBar) {}
-        override fun onStopTrackingTouch(seekBar: SeekBar) {}
-    })
-
-    return view
+        /*Initialising the params of the current song helper object*/
+        favoriteContent = EchoDatabase(myActivity)
+        currentSongHelper = CurrentSongHelper()
 
 
-}
+        var path: String? = null   // to get the args of the bundle
+        var _songTitle: String? = null
+        var _songArtist: String? = null
+        var _songId: Long? = null
+        var _songAlbum: Long? = null
+        var _album: String? = null
+        var fromBottomBar = false
 
-
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    /*Sensor service is activate when the fragment is created*/
-    Staticated.mSensorManager =
-        myActivity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
-    /*Default values*/
-    mAcceleration = 0.0f
-    /*We take earth's gravitational value to be default, this will give us good results*/
-    mAccelerationCurrent = SensorManager.GRAVITY_EARTH
-    mAccelerationLast = SensorManager.GRAVITY_EARTH
-    sharedPreferences = context?.getSharedPreferences(Constants.APP_PREFS, MODE_PRIVATE)
-    bindShakeListener()
-}
-
-
-override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-    super.onCreateOptionsMenu(menu, inflater)
-
-    menu.clear()   // clearing any previous menus
-    inflater.inflate(R.menu.song_playing_menu, menu)
-
-}
-
-override fun onPrepareOptionsMenu(menu: Menu) {
-    super.onPrepareOptionsMenu(menu)
-
-    val item: MenuItem? = menu.findItem(R.id.action_redirect)
-    item?.isVisible = true
-}
-
-override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-        R.id.action_redirect -> {
-            // redirecting the user to the activity from which they came
-            myActivity?.onBackPressed()
-            return false
-
-        }
-    }
-    return false
-}
-
-
-override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    // you can extract AudioVisualization interface for simplifying things
-    audioVisualization = glView as AudioVisualization
-}
-
-
-override fun onAttach(context: Context) {
-    super.onAttach(context)
-    myActivity = context as Activity
-
-}
-
-
-override fun onAttach(activity: Activity) {
-    super.onAttach(activity)
-    myActivity = activity
-}
-
-
-@SuppressLint("UseRequireInsteadOfGet")
-override fun onActivityCreated(savedInstanceState: Bundle?) {
-
-
-    // recreating everything again only if it didn't happen before
-
-
-    super.onActivityCreated(savedInstanceState)
-
-
-    /*Initialising the params of the current song helper object*/
-    favoriteContent = EchoDatabase(myActivity)
-    currentSongHelper = CurrentSongHelper()
-
-
-    var path: String? = null   // to get the args of the bundle
-    var _songTitle: String? = null
-    var _songArtist: String? = null
-    var _songId: Long? = null
-    var _songAlbum: Long? = null
-    var _album: String? = null
-
-    //try {
+        //try {
         path = arguments?.getString("path")
         _songArtist = arguments?.getString("songArtist")
         _songTitle = arguments?.getString("songTitle")
@@ -879,12 +876,15 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
         _songId = arguments?.getLong("SongID")
         _album = arguments?.getString("album")
 
+        if (arguments?.getBoolean("fromBottomBar") != null)
+            fromBottomBar = arguments?.getBoolean("fromBottomBar")!!
+
 
         /*Here we fetch the received bundle data for current position and the list of all songs*/
         currentPosition = arguments!!.getInt("songPosition")
         fetchSongs = arguments?.getParcelableArrayList("songData")
 
-      //  Now store the song details to the current song helper object so that they can be used later
+        //  Now store the song details to the current song helper object so that they can be used later
         currentSongHelper.songpath = path
         currentSongHelper.songTitle = _songTitle
         currentSongHelper.songArtist = _songArtist
@@ -917,28 +917,17 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
 //        e.printStackTrace()
 //    }
 
-    var fromFavbotomBar = arguments?.get("FavBottomBar") as? String
-    var fromMainbottomBar = arguments?.get("MainBottomBar") as? String
-    var fromAlbumbottomBar = arguments?.get("AlbumsBottomBar") as? String
-    var fromAlbumSongsbottomBar = arguments?.get("AlbumSongsBottomBar") as? String
 
+        if (fromBottomBar) {
+            myActivity?.title = "Now Playing"
+        } else {
 
-    if (fromFavbotomBar != null) {
-        myActivity?.title = "Now Playing"
-    } else if (fromMainbottomBar != null) {
-        myActivity?.title = "Now Playing"
-    } else if (fromAlbumbottomBar != null) {
-        myActivity?.title = "Now Playing"
-    } else if (fromAlbumSongsbottomBar != null) {
-        myActivity?.title = "Now Playing"
-    } else {
+            // set up media player for default
+            myActivity?.title = "Now Playing"
 
-        // set up media player for default
-        myActivity?.title = "Now Playing"
-
-        mediaPlayer = MediaPlayer()
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        //stopPlaying()
+            mediaPlayer = MediaPlayer()
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            //stopPlaying()
 
 //        try {
 
@@ -952,351 +941,348 @@ override fun onActivityCreated(savedInstanceState: Bundle?) {
 
 
 //            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-        // other app had stopped playing song now , so u can do u stuff now .
+            // other app had stopped playing song now , so u can do u stuff now .
 
-        if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            mediaPlayer.start()
+            if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
 //            }
 
 
-    }
+        }
 
-    // precess all the information at the start of the song
-    processInformation(mediaPlayer as MediaPlayer)
+        // precess all the information at the start of the song
+        processInformation(mediaPlayer)
 
-    if (mediaPlayer?.isPlaying) {
-        playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-    } else {
-        playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-    }
-
-
-
-    mediaPlayer.setOnCompletionListener {
-        onSongComplete()
-    }
-
-    clickHandler()
-
-    /**
-     *  set visualiser helper
-     *  */
-
-    var visualizationHandler = DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
-    audioVisualization?.linkTo(visualizationHandler)
+        if (mediaPlayer.isPlaying) {
+            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+        } else {
+            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+        }
 
 
-    /**
-     *  getting the shared preferences for shuffle set by the song
-     */
 
-    if (sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)) {
-        /*if shuffle was found activated, then we change the icon color and tun loop OFF*/
-        shufflebutton.setBackgroundResource(R.drawable.shuffle_icon)
-        sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-        loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-    } else {
-        /*Else default is set*/
-        shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
-    }
+        mediaPlayer.setOnCompletionListener {
+            onSongComplete()
+        }
 
-    if (sharedPreferences!!.getBoolean(Constants.LOOP, false)) {
-        /*If loop was activated we change the icon color and shuffle is turned OFF */
-        loopbutton?.setBackgroundResource(R.drawable.loop_icon)
-        sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
-        shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
-    } else {
-        loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-    }
+        clickHandler()
+
+        /**
+         *  set visualiser helper
+         *  */
+
+        var visualizationHandler = DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
+        audioVisualization?.linkTo(visualizationHandler)
 
 
-    /*Here we check that if the song playing is a favorite, then we show a red colored heart indicating favorite else only the heart boundary
-   * This action is performed whenever a new song is played, hence this will done in the playNext(), playPrevious() and onSongComplete() methods*/
-    if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-        fab?.setBackgroundResource(R.drawable.favorite_on)
-    } else {
-        fab?.setBackgroundResource(R.drawable.favorite_off)
-    }
+        /**
+         *  getting the shared preferences for shuffle set by the song
+         */
+
+        if (sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)) {
+            /*if shuffle was found activated, then we change the icon color and tun loop OFF*/
+            shufflebutton.setBackgroundResource(R.drawable.shuffle_icon)
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+        } else {
+            /*Else default is set*/
+            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+        }
+
+        if (sharedPreferences!!.getBoolean(Constants.LOOP, false)) {
+            /*If loop was activated we change the icon color and shuffle is turned OFF */
+            loopbutton?.setBackgroundResource(R.drawable.loop_icon)
+            sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+        } else {
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+        }
 
 
-    // register reciever for unplugging earphones
+        /*Here we check that if the song playing is a favorite, then we show a red colored heart indicating favorite else only the heart boundary
+       * This action is performed whenever a new song is played, hence this will done in the playNext(), playPrevious() and onSongComplete() methods*/
+        if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+            fab?.setBackgroundResource(R.drawable.favorite_on)
+        } else {
+            fab?.setBackgroundResource(R.drawable.favorite_off)
+        }
 
-    var filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-    myActivity?.registerReceiver(mNoisyReceiver, filter)
+
+        // register reciever for unplugging earphones
+
+        var filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+        myActivity?.registerReceiver(mNoisyReceiver, filter)
 
 //        var filter2 = IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL)
 //        myActivity?.registerReceiver(mCallingReceiver, filter2)
 
 
-}
+    }
 
-override fun onResume() {
-    super.onResume()
-    Staticated.mSensorManager?.registerListener(
-        Staticated.mSensorListener,
-        Staticated.mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-        SensorManager.SENSOR_DELAY_NORMAL
-    )
-    if (audioVisualization != null)
-        audioVisualization!!.onResume()
-}
-
-override fun onPause() {
-    super.onPause()
-    if (audioVisualization != null)
-        audioVisualization?.onPause()
-}
-
-
-// if user leaves the screen destroy it
-override fun onDestroyView() {
-
-    super.onDestroyView()
-
-    try {
+    override fun onResume() {
+        super.onResume()
+        Staticated.mSensorManager?.registerListener(
+            Staticated.mSensorListener,
+            Staticated.mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
         if (audioVisualization != null)
-            audioVisualization?.release()
-        myActivity?.unregisterReceiver(mNoisyReceiver)
-        myActivity?.unregisterReceiver(mCallingReceiver)
-        mSensorManager?.unregisterListener(mSensorListener)
-    } catch (e: Exception) {
+            audioVisualization!!.onResume()
     }
-}
 
-/*A new click handler function is created to handle all the click functions in the song playing fragment*/
-fun clickHandler() {
+    override fun onPause() {
+        super.onPause()
+        if (audioVisualization != null)
+            audioVisualization?.onPause()
+    }
 
-    /*Here we handle the click of the favorite icon
-   * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
-    fab?.setOnClickListener {
-        if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-            fab?.setBackgroundResource(R.drawable.favorite_off)
-            favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
 
-            /*Toast is prompt message at the bottom of screen indicating that an action has been performed*/
-            Toast.makeText(myActivity, "Removed from Favorites", Toast.LENGTH_SHORT).show()
-        } else {
+    // if user leaves the screen destroy it
+    override fun onDestroyView() {
 
-            /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
-            fab?.setBackgroundResource(R.drawable.favorite_on)
-            var album = currentSongHelper.album
-            if (null == album) {
-                album = ""
+        super.onDestroyView()
+
+        try {
+            if (audioVisualization != null)
+                audioVisualization?.release()
+            myActivity?.unregisterReceiver(mNoisyReceiver)
+            myActivity?.unregisterReceiver(mCallingReceiver)
+            mSensorManager?.unregisterListener(mSensorListener)
+        } catch (e: Exception) {
+        }
+    }
+
+    /*A new click handler function is created to handle all the click functions in the song playing fragment*/
+    fun clickHandler() {
+
+        /*Here we handle the click of the favorite icon
+       * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
+        fab?.setOnClickListener {
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+                fab?.setBackgroundResource(R.drawable.favorite_off)
+                favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
+
+                /*Toast is prompt message at the bottom of screen indicating that an action has been performed*/
+                Toast.makeText(myActivity, "Removed from Favorites", Toast.LENGTH_SHORT).show()
+            } else {
+
+                /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
+                fab?.setBackgroundResource(R.drawable.favorite_on)
+                var album = currentSongHelper.album
+                if (null == album) {
+                    album = ""
+                }
+                var songAlbum = currentSongHelper.songAlbum
+                if (null == songAlbum) {
+                    songAlbum = 0
+                }
+                favoriteContent?.storeAsFavorite(
+                    currentSongHelper.songId?.toInt(),
+                    currentSongHelper.songArtist,
+                    currentSongHelper.songTitle,
+                    currentSongHelper.songpath,
+                    songAlbum,
+                    album
+                )
+                Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
-            var songAlbum = currentSongHelper.songAlbum
-            if (null == songAlbum) {
-                songAlbum = 0
+        }
+
+        art?.setOnClickListener {
+            if (glView?.visibility == View.VISIBLE) {
+                glView?.visibility = View.GONE
+                ALbumArt?.visibility = View.VISIBLE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+            } else {
+                glView?.visibility = View.VISIBLE
+                ALbumArt?.visibility = View.GONE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
             }
-            favoriteContent?.storeAsFavorite(
-                currentSongHelper.songId?.toInt(),
-                currentSongHelper.songArtist,
-                currentSongHelper.songTitle,
-                currentSongHelper.songpath,
-                songAlbum,
-                album
-            )
-            Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
         }
-    }
 
-    art?.setOnClickListener {
-        if (glView?.visibility == View.VISIBLE) {
-            glView?.visibility = View.GONE
-            ALbumArt?.visibility = View.VISIBLE
-            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
-        } else {
-            glView?.visibility = View.VISIBLE
-            ALbumArt?.visibility = View.GONE
-            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
+
+        shufflebutton.setOnClickListener {
+
+            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
+            // turning off shuffle
+            if (isShuffle) {
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+                shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
+            }
+            // turning on shuffle, repeat must be disabled now
+            else {
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
+                shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
+            }
+
         }
-    }
 
 
-    shufflebutton.setOnClickListener {
-
-        var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
-        // turning off shuffle
-        if (isShuffle) {
-            sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
-            shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
+        nextbutton?.setOnClickListener {
+            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            play = true
+            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
-        }
-        // turning on shuffle, repeat must be disabled now
-        else {
-            sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
-            shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
-            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
-        }
-
-    }
-
-
-    nextbutton?.setOnClickListener {
-        playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-        play = true
-        var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
-        sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-        loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-        playNext(isShuffle)
-    }
-
-
-
-    previousbutton?.setOnClickListener {
-        var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
-        /*We set the player to be playing by setting isPlaying to be true*/
-        playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-        play = true
-        sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-        loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-        /*After all of the above is done we then play the previous song using the playPrevious() function*/
-        playPrevious(isShuffle)
-    }
-
-
-    loopbutton?.setOnClickListener {
-
-        var isRepeat = sharedPreferences!!.getBoolean(Constants.LOOP, false)
-        if (isRepeat) {
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            playNext(isShuffle)
+        }
+
+
+
+        previousbutton?.setOnClickListener {
+            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
+            /*We set the player to be playing by setting isPlaying to be true*/
+            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+            play = true
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
-            sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
-        } else {
-            loopbutton?.setBackgroundResource(R.drawable.loop_icon)
-            sharedPreferences!!.edit().putBoolean(Constants.LOOP, true).apply()
-            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
-            sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            /*After all of the above is done we then play the previous song using the playPrevious() function*/
+            playPrevious(isShuffle)
+        }
+
+
+        loopbutton?.setOnClickListener {
+
+            var isRepeat = sharedPreferences!!.getBoolean(Constants.LOOP, false)
+            if (isRepeat) {
+                loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            } else {
+                loopbutton?.setBackgroundResource(R.drawable.loop_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, true).apply()
+                shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            }
+        }
+
+        /*Here we handle the click event on the play/pause button*/
+        playpausebutton?.setOnClickListener {
+
+            /*if the song is already playing and then play/pause button is tapped
+            * then we pause the media player and also change the button to play button*/
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+                play = false
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+
+                var play = Intent(context, EchoNotification::class.java)
+                play.action = Constants.ACTION.CHANGE_TO_PLAY
+                activity?.startService(play)
+
+                /*If the song was not playing the, we start the music player and
+                * change the image to pause icon*/
+            } else {
+                if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    mediaPlayer.start()
+                    MainScreenAdapter.Statified.stopPlayingCalled = true
+                    play = true
+                    playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+
+                    var play = Intent(activity, EchoNotification::class.java)
+                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                    activity?.startService(play)
+                }
+
+            }
         }
     }
 
-    /*Here we handle the click event on the play/pause button*/
-    playpausebutton?.setOnClickListener {
 
-        /*if the song is already playing and then play/pause button is tapped
-        * then we pause the media player and also change the button to play button*/
-        if (mediaPlayer.isPlaying) {
+    /*This function handles the shake events in order to change the songs when we shake the phone*/
+    private fun bindShakeListener() {
+
+        /*The sensor listener has two methods used for its implementation i.e. OnAccuracyChanged() and onSensorChanged*/
+        Staticated.mSensorListener = object : SensorEventListener {
+
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+
+                /*We do not need to check or work with the accuracy changes for the sensor*/
+            }
+
+            override fun onSensorChanged(event: SensorEvent) {
+
+                /*We need this onSensorChanged function
+                * This function is called when there is a new sensor event*/
+                /*The sensor event has 3 dimensions i.e. the x, y and z in which the changes can occur*/
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+                val curTime = System.currentTimeMillis()
+                /*Now lets see how we calculate the changes in the acceleration*/
+                /*Now we shook the phone so the current acceleration will be the first to start with*/
+                mAccelerationLast = mAccelerationCurrent
+
+                /*Since we could have moved the phone in any direction, we calculate the Euclidean distance to get the normalized distance*/
+                mAccelerationCurrent = Math.sqrt(((x * x + y * y + z * z).toDouble())).toFloat()
+
+                /*Delta gives the change in acceleration*/
+                val delta = mAccelerationCurrent - mAccelerationLast
+
+                /*Here we calculate the lower filter
+                * The written below is a formula to get it*/
+                mAcceleration = mAcceleration * 0.9f + delta
+
+                /*We obtain a real number for acceleration
+                * and we check if the acceleration was noticeable, considering 12 here*/
+                if ((curTime - Staticated.mLastShakeTime!!) > 1000 && mAcceleration > 12) {
+
+                    /*If the accel was greater than 12 we change the song, given the fact our shake to change was active*/
+                    val isAllowed = sharedPreferences!!.getBoolean(Constants.SHAKE_TO_CHANGE, false)
+                    val isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
+
+                    mLastShakeTime = curTime
+
+                    if (!mediaPlayer!!.isPlaying)
+                        return
+
+                    if (isAllowed)
+                        playNext(isShuffle)
+                }
+            }
+
+        }
+    }
+
+
+    fun previous() {
+        playPrevious(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
+    }
+
+
+    fun next() {
+        playNext(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
+    }
+
+
+    fun playorpause(): Boolean {
+        var play = false
+
+        if (mediaPlayer.isPlaying as Boolean) {
             mediaPlayer.pause()
             play = false
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
-            var play = Intent(context, EchoNotification::class.java)
-            play.action = Constants.ACTION.CHANGE_TO_PLAY
-            activity?.startService(play)
-
-            /*If the song was not playing the, we start the music player and
+            /*If the song was not playing then, we start the music player and
             * change the image to pause icon*/
         } else {
-            if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 mediaPlayer.start()
-                MainScreenAdapter.Statified.stopPlayingCalled = true
-                play = true
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-
-                var play = Intent(activity, EchoNotification::class.java)
-                play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                activity?.startService(play)
-            }
-
+            play = true
+            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
         }
-    }
-}
-
-
-/*This function handles the shake events in order to change the songs when we shake the phone*/
-private fun bindShakeListener() {
-
-    /*The sensor listener has two methods used for its implementation i.e. OnAccuracyChanged() and onSensorChanged*/
-    Staticated.mSensorListener = object : SensorEventListener {
-
-        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-
-            /*We do not need to check or work with the accuracy changes for the sensor*/
-        }
-
-        override fun onSensorChanged(event: SensorEvent) {
-
-            /*We need this onSensorChanged function
-            * This function is called when there is a new sensor event*/
-            /*The sensor event has 3 dimensions i.e. the x, y and z in which the changes can occur*/
-            val x = event.values[0]
-            val y = event.values[1]
-            val z = event.values[2]
-            val curTime = System.currentTimeMillis()
-            /*Now lets see how we calculate the changes in the acceleration*/
-            /*Now we shook the phone so the current acceleration will be the first to start with*/
-            mAccelerationLast = mAccelerationCurrent
-
-            /*Since we could have moved the phone in any direction, we calculate the Euclidean distance to get the normalized distance*/
-            mAccelerationCurrent = Math.sqrt(((x * x + y * y + z * z).toDouble())).toFloat()
-
-            /*Delta gives the change in acceleration*/
-            val delta = mAccelerationCurrent - mAccelerationLast
-
-            /*Here we calculate the lower filter
-            * The written below is a formula to get it*/
-            mAcceleration = mAcceleration * 0.9f + delta
-
-            /*We obtain a real number for acceleration
-            * and we check if the acceleration was noticeable, considering 12 here*/
-            if ((curTime - Staticated.mLastShakeTime!!) > 1000 && mAcceleration > 12) {
-
-                /*If the accel was greater than 12 we change the song, given the fact our shake to change was active*/
-                val isAllowed = sharedPreferences!!.getBoolean(Constants.SHAKE_TO_CHANGE, false)
-                val isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
-
-                mLastShakeTime = curTime
-
-                if (!mediaPlayer!!.isPlaying)
-                    return
-
-                if (isAllowed)
-                    playNext(isShuffle)
-            }
-        }
-
-    }
-}
-
-
-fun previous() {
-    playPrevious(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
-}
-
-
-fun next() {
-    playNext(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
-}
-
-
-fun playorpause(): Boolean {
-    var play = false
-
-    if (mediaPlayer.isPlaying as Boolean) {
-        mediaPlayer.pause()
-        play = false
-        playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-        /*If the song was not playing then, we start the music player and
-        * change the image to pause icon*/
-    } else {
-        if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            mediaPlayer.start()
-        play = true
-        playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+        BottomBarUtils.updatePlayPause()
+        return play
     }
 
-    return play
-
-}
-
-fun unregister() {
-    mSensorManager?.unregisterListener(mSensorListener)
-}
-
-
+    fun unregister() {
+        mSensorManager?.unregisterListener(mSensorListener)
+    }
 
 
 }

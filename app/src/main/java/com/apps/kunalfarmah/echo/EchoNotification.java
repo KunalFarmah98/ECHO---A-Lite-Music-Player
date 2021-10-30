@@ -1,7 +1,5 @@
 package com.apps.kunalfarmah.echo;
 
-
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,7 +20,6 @@ import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -33,20 +30,13 @@ import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
-import com.apps.kunalfarmah.echo.databinding.BottomBarBinding;
-import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment;
-import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
-import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
-import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.util.Constants;
 import com.apps.kunalfarmah.echo.util.MediaUtils;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
-import com.bumptech.glide.Glide;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
 
 import javax.inject.Inject;
