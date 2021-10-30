@@ -485,7 +485,7 @@ public class EchoNotification extends Service {
 
         Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
-                .setSmallIcon(R.drawable.ic_echo_icon)
+                .setSmallIcon(R.drawable.echo_icon_notification)
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(pcloseIntent);
 
@@ -612,7 +612,7 @@ public class EchoNotification extends Service {
                         .setState(
                                 PlaybackState.STATE_PLAYING,
                                 (long) MediaUtils.INSTANCE.getMediaPlayer().getCurrentPosition(),
-                                MediaUtils.INSTANCE.getMediaPlayer().getPlaybackParams().getSpeed()
+                                1f
                         )
                         // isSeekable.
                         .setActions(PlaybackState.ACTION_SEEK_TO)
