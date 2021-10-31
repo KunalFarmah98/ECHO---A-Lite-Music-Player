@@ -7,6 +7,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -33,7 +34,7 @@ object BottomBarUtils {
     fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding) {
         bottomBarClickHandler(activity, main, fragmentManager, bottomBarBinding)
         this.bottomBarBinding = bottomBarBinding
-        if (!mediaPlayer.isPlaying && !isMyServiceRunning(
+        if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
                 EchoNotification::class.java,
                 App.context
             )
@@ -42,7 +43,7 @@ object BottomBarUtils {
             return
         }
         bottomBarBinding.bottomBar.visibility = View.VISIBLE
-        if (mediaPlayer.isPlaying) {
+        if (MediaUtils.isMediaPlayerPlaying()) {
             bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
         } else {
             bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
@@ -84,7 +85,7 @@ object BottomBarUtils {
 
         bottomBarBinding.playPause.setOnClickListener {
 
-            if (mediaPlayer.isPlaying) {
+            if (MediaUtils.isMediaPlayerPlaying()) {
 
                 mediaPlayer.pause()
                 bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.play_icon))
@@ -212,7 +213,7 @@ object BottomBarUtils {
     }
 
     fun updatePlayPause(){
-        if(mediaPlayer.isPlaying){
+        if(MediaUtils.isMediaPlayerPlaying()){
             bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
         }
         else{

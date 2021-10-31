@@ -57,6 +57,7 @@ import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
@@ -127,8 +128,8 @@ class SongPlayingFragment : Fragment() {
             }
 
             BottomBarUtils.setTitle()
+            BottomBarUtils.setArtist()
             BottomBarUtils.setAlbumArt()
-            BottomBarUtils.setTitle()
 
 
             var play = Intent(myActivity, EchoNotification::class.java)
@@ -167,7 +168,7 @@ class SongPlayingFragment : Fragment() {
             if (currentPosition == -1) {
                 currentPosition = 0
             }
-            if (mediaPlayer.isPlaying as Boolean) {
+            if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
                 playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             } else {
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -280,17 +281,19 @@ class SongPlayingFragment : Fragment() {
             override fun run() {
 
                 /*Retrieving the current time position of the media player*/
-
-                if (mediaPlayer != null) {
-
+                try {
                     val getCurrent = mediaPlayer.currentPosition
 
                     /*The start time is set to the current position of the song
-                * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
-                * The %d:%d is used for formatting the time strings as 03:45 so that it appears like time*/
+                    * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
+                    * The %d:%d is used for formatting the time strings as 03:45 so that it appears like time*/
 
                     var seconds = TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong() as Long) -
-                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()))
+                            TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(
+                                    getCurrent.toLong()
+                                )
+                            )
 
                     if (seconds >= 10) {
 
@@ -324,10 +327,11 @@ class SongPlayingFragment : Fragment() {
 
                     }
                     seekBar?.progress = getCurrent.toInt()
-
-                    /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
-                    Handler().postDelayed(this, 1000)
+                } catch (e: Exception) {
                 }
+
+                /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
+                Handler().postDelayed(this, 1000)
             }
         }
 
@@ -953,7 +957,7 @@ class SongPlayingFragment : Fragment() {
         // precess all the information at the start of the song
         processInformation(mediaPlayer)
 
-        if (mediaPlayer.isPlaying) {
+        if (MediaUtils.isMediaPlayerPlaying()) {
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
         } else {
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -1166,7 +1170,7 @@ class SongPlayingFragment : Fragment() {
 
             /*if the song is already playing and then play/pause button is tapped
             * then we pause the media player and also change the button to play button*/
-            if (mediaPlayer.isPlaying) {
+            if (MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer.pause()
                 play = false
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -1263,7 +1267,7 @@ class SongPlayingFragment : Fragment() {
     fun playorpause(): Boolean {
         var play = false
 
-        if (mediaPlayer.isPlaying as Boolean) {
+        if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
             mediaPlayer.pause()
             play = false
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -1271,10 +1275,12 @@ class SongPlayingFragment : Fragment() {
             /*If the song was not playing then, we start the music player and
             * change the image to pause icon*/
         } else {
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 mediaPlayer.start()
-            play = true
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                MainScreenAdapter.Statified.stopPlayingCalled = true
+                play = true
+                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            }
         }
         BottomBarUtils.updatePlayPause()
         return play

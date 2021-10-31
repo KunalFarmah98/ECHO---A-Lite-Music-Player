@@ -31,7 +31,7 @@ class CaptureBroadcast : BroadcastReceiver() {
 
             try {
                 /*If the media player was playing we pause it and change the play/pause button*/
-                if (mediaPlayer.isPlaying as Boolean) {
+                if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
                     wasPlaying=true
                     mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -49,7 +49,7 @@ class CaptureBroadcast : BroadcastReceiver() {
 
         else if(intent?.action == android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
             try {
-                if (mediaPlayer.isPlaying as Boolean) {
+                if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
                     wasPlaying=true
                     mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -78,7 +78,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                     }
 
                     try {
-                        if (mediaPlayer.isPlaying as Boolean) {
+                        if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -94,7 +94,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                 TelephonyManager.CALL_STATE_IDLE-> {
                     // not in call
                     try {
-                        if (mediaPlayer.isPlaying as Boolean == false && SongPlayingFragment.Statified.inform==false && wasPlaying) {
+                        if (MediaUtils.isMediaPlayerPlaying() as Boolean == false && SongPlayingFragment.Statified.inform==false && wasPlaying) {
 
                             mediaPlayer.start()
                             wasPlaying=false
@@ -116,7 +116,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                     //A call is dialing, active or on hold
 
                     try {
-                        if (mediaPlayer.isPlaying as Boolean) {
+                        if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)

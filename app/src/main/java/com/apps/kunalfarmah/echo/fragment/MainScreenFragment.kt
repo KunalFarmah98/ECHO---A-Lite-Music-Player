@@ -49,14 +49,6 @@ class MainScreenFragment : Fragment() {
         viewModel.getAllSongs()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(main!=null && binding!=null){
-            BottomBarUtils.bottomBarSetup(requireActivity(),main!!,
-                requireFragmentManager(),binding.nowPlayingBottomBarMain)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)

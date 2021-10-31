@@ -85,14 +85,6 @@ class FavoriteFragment : Fragment() {
         myActivity = activity
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(main!=null){
-            BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
-            binding.nowPlayingBottomBar)
-        }
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         display_favorites_by_searching()

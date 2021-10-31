@@ -590,7 +590,7 @@ public class EchoNotification extends Service {
         builder.addAction(mShuffleAction);
         builder.addAction(mPrevAction);
 
-        if (MediaUtils.INSTANCE.getMediaPlayer().isPlaying())
+        if (MediaUtils.INSTANCE.isMediaPlayerPlaying())
             builder.addAction(mPauseAction);
         else
             builder.addAction(mPlayAction);
@@ -598,7 +598,7 @@ public class EchoNotification extends Service {
         builder.addAction(mCloseAction);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addMetaData(MediaSession mediaSession) {
         mediaSession.setMetadata(
                 new MediaMetadata.Builder()
@@ -612,7 +612,7 @@ public class EchoNotification extends Service {
         mediaSession.setPlaybackState(
                 new PlaybackState.Builder()
                         .setState(
-                                MediaUtils.INSTANCE.getMediaPlayer().isPlaying() ?
+                                MediaUtils.INSTANCE.isMediaPlayerPlaying() ?
                                         PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
                                 (long) MediaUtils.INSTANCE.getMediaPlayer().getCurrentPosition(),
                                 1f
@@ -627,6 +627,7 @@ public class EchoNotification extends Service {
             public void onSeekTo(long pos) {
                 super.onSeekTo(pos);
                 MediaUtils.INSTANCE.getMediaPlayer().seekTo((int) pos);
+                buildMediaNotification();
             }
         });
 
