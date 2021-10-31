@@ -13,4 +13,20 @@ object MediaUtils {
                false
           }
      }
+
+     fun getDuration(): Int{
+          return try{
+               mediaPlayer.duration
+          }catch (e: Exception){
+               0
+          }
+     }
+
+     fun getCurrentPosition(): Int{
+          return try{
+               mediaPlayer.currentPosition
+          }catch (e: Exception){
+               0
+          }
+     }
 }

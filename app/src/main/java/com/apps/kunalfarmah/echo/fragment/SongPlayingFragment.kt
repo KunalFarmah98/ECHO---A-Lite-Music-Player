@@ -572,10 +572,10 @@ class SongPlayingFragment : Fragment() {
         fun processInformation(mediaPlayer: MediaPlayer) {
 
             /*Obtaining the final time*/
-            val finalTime = mediaPlayer.duration
+            val finalTime = MediaUtils.getDuration()
 
             /*Obtaining the current position*/
-            val startingTime = mediaPlayer.currentPosition
+            val startingTime = MediaUtils.getCurrentPosition()
 
             seekBar?.max = finalTime
 

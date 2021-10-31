@@ -27,7 +27,6 @@ import java.lang.Exception
 
 @Keep
 object BottomBarUtils {
-    var trackPosition = mediaPlayer.currentPosition
     lateinit var bottomBarBinding: BottomBarBinding
 
 
@@ -96,8 +95,8 @@ object BottomBarUtils {
             } else {
                 MainScreenAdapter.Statified.stopPlayingCalled = true
                 if (!main.getnotify_val()) {
-                    trackPosition =
-                        mediaPlayer.currentPosition
+                    var trackPosition =
+                        MediaUtils.getCurrentPosition()
                     mediaPlayer.seekTo(trackPosition)
                     if (SongPlayingFragment.Staticated.requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
@@ -123,8 +122,8 @@ object BottomBarUtils {
                     /*If the music was already paused and we then click on the button
                 * it plays the song from the same position where it was paused
                 * and change the button to pause button*/
-                    trackPosition =
-                        mediaPlayer.currentPosition as Int  // current postiton where the player as stopped
+                    var trackPosition =
+                        MediaUtils.getCurrentPosition() as Int  // current postiton where the player as stopped
                     mediaPlayer.seekTo(trackPosition)
                     if (SongPlayingFragment.Staticated.requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()

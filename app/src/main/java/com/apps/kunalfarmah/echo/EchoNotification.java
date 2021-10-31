@@ -269,10 +269,9 @@ public class EchoNotification extends Service {
 
             msong.unregister();
 
-            MediaUtils.INSTANCE.getMediaPlayer().stop();
-            MediaUtils.INSTANCE.getMediaPlayer().release();
-
             try {
+                MediaUtils.INSTANCE.getMediaPlayer().stop();
+                MediaUtils.INSTANCE.getMediaPlayer().release();
                 main.setNotify_val(false);
                 main.finishAffinity();
             } catch (Exception e) {
@@ -605,7 +604,7 @@ public class EchoNotification extends Service {
                         .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
                         .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, getAlbumArtUri(albumID))
-                        .putLong(MediaMetadata.METADATA_KEY_DURATION, MediaUtils.INSTANCE.getMediaPlayer().getDuration())
+                        .putLong(MediaMetadata.METADATA_KEY_DURATION, MediaUtils.INSTANCE.getDuration())
                         .build()
         );
 
@@ -614,7 +613,7 @@ public class EchoNotification extends Service {
                         .setState(
                                 MediaUtils.INSTANCE.isMediaPlayerPlaying() ?
                                         PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
-                                (long) MediaUtils.INSTANCE.getMediaPlayer().getCurrentPosition(),
+                                (long) MediaUtils.INSTANCE.getCurrentPosition(),
                                 1f
                         )
                         // isSeekable.

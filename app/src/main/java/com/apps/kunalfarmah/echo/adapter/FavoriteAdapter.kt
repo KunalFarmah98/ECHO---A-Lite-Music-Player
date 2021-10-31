@@ -24,9 +24,11 @@ import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
 import java.io.FileDescriptor
+import java.lang.Exception
 
 class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<FavoriteAdapter.MyViewHolder>() {
 
@@ -157,10 +159,12 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     }
 
     private fun stopPlaying() {
-        if (mediaPlayer != null) {
-            MainScreenAdapter.Statified.stopPlayingCalled=true
-            mediaPlayer.stop()
-        }
+        try {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
+                MainScreenAdapter.Statified.stopPlayingCalled = true
+                mediaPlayer.stop()
+            }
+        }catch (e:Exception){}
 
 
     }
