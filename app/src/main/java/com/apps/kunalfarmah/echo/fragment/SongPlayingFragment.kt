@@ -32,7 +32,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensor
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.onSongComplete
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.requestAudiofocus
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.requestAudioFocus
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateTextViews
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.ALbumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
@@ -454,10 +454,10 @@ class SongPlayingFragment : Fragment() {
                         if (mediaPlayer!!.isPlaying) {
 
                             wasPlaying = true
-                            if (MainScreenAdapter.Statified.stopPlayingCalled) {
-                                // it means we started the song from within the app so don't pause it
-                                MainScreenAdapter.Statified.stopPlayingCalled = false
-                            } else {
+//                            if (MainScreenAdapter.Statified.stopPlayingCalled) {
+//                                // it means we started the song from within the app so don't pause it
+//                                MainScreenAdapter.Statified.stopPlayingCalled = false
+//                            } else {
 
                                 //                                wasPlaying = true
                                 mediaPlayer?.pause()
@@ -468,7 +468,7 @@ class SongPlayingFragment : Fragment() {
                                 myActivity?.startService(play)
                                 //                    val component = ComponentName(this, MediaControlReceiver::class.java)
                                 //                    am.unregisterMediaButtonEventReceiver(component)
-                            }
+//                            }
                         }
                     }
                     (AudioManager.AUDIOFOCUS_GAIN) -> {
@@ -492,13 +492,13 @@ class SongPlayingFragment : Fragment() {
 
 
         @SuppressLint("NewApi")
-        fun requestAudiofocus(): Int {
+        fun requestAudioFocus(): Int {
 
             val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
             //Request audio focus for playback
             // old method
-            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 val result = am.requestAudioFocus(
                     Staticated.focusChangeListener,
                     // Use the music stream.
@@ -513,7 +513,7 @@ class SongPlayingFragment : Fragment() {
             else {
                 var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
                     setAudioAttributes(AudioAttributes.Builder().run {
-                        setUsage(AudioAttributes.USAGE_GAME)
+                        setUsage(AudioAttributes.USAGE_MEDIA)
                         setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         build()
                     })
@@ -943,7 +943,7 @@ class SongPlayingFragment : Fragment() {
 //            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // other app had stopped playing song now , so u can do u stuff now .
 
-            if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 mediaPlayer.start()
 //            }
 
@@ -1178,7 +1178,7 @@ class SongPlayingFragment : Fragment() {
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
             } else {
-                if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                     mediaPlayer.start()
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
@@ -1271,7 +1271,7 @@ class SongPlayingFragment : Fragment() {
             /*If the song was not playing then, we start the music player and
             * change the image to pause icon*/
         } else {
-            if (requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 mediaPlayer.start()
             play = true
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)

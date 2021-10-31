@@ -96,7 +96,7 @@ object BottomBarUtils {
                     trackPosition =
                         mediaPlayer.currentPosition
                     mediaPlayer.seekTo(trackPosition)
-                    if (SongPlayingFragment.Staticated.requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    if (SongPlayingFragment.Staticated.requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
 
                     bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
@@ -123,7 +123,7 @@ object BottomBarUtils {
                     trackPosition =
                         mediaPlayer.currentPosition as Int  // current postiton where the player as stopped
                     mediaPlayer.seekTo(trackPosition)
-                    if (SongPlayingFragment.Staticated.requestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    if (SongPlayingFragment.Staticated.requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                         mediaPlayer.start()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
 

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
@@ -450,7 +451,8 @@ public class EchoNotification extends Service {
         mNotificationManager.createNotificationChannel(mChannel);
 
         MediaSession mediaSession = new MediaSession(getBaseContext(), "EchoNotification");
-        addMetaData(mediaSession);
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.Q)
+            addMetaData(mediaSession);
 
 
         // Create a MediaStyle object and supply your media session token to it.
@@ -477,8 +479,23 @@ public class EchoNotification extends Service {
 
         addActions(builder);
 
+        if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.Q){
+            addInfo(builder);
+        }
+
         status = builder.build();
         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void addInfo(Notification.Builder builder){
+        Bitmap icon = getAlbumart(getBaseContext(),albumID);
+        builder.setContentTitle(title);
+        builder.setContentText(artist);
+        if(icon==null)
+            builder.setLargeIcon(Icon.createWithContentUri(getUriToDrawable(getBaseContext(),R.drawable.echo_icon)));
+        else
+            builder.setLargeIcon(icon);
     }
 
     public static Bitmap getAlbumart(Context context, Long album_id) {
@@ -545,7 +562,7 @@ public class EchoNotification extends Service {
         Notification.Action mPrevAction =
                 new Notification.Action(
                         R.drawable.skip_previous_white,
-                        "pause",
+                        "prev",
                         ppreviousIntent);
 
         Notification.Action mPlayAction =
@@ -562,7 +579,7 @@ public class EchoNotification extends Service {
         Notification.Action mNextAction =
                 new Notification.Action(
                         R.drawable.skip_next_white,
-                        "pause",
+                        "next",
                         pnextIntent);
 
         Notification.Action mCloseAction =
