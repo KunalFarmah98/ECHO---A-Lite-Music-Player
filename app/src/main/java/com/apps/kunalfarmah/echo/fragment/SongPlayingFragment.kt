@@ -454,10 +454,10 @@ class SongPlayingFragment : Fragment() {
                         if (mediaPlayer!!.isPlaying) {
 
                             wasPlaying = true
-//                            if (MainScreenAdapter.Statified.stopPlayingCalled) {
-//                                // it means we started the song from within the app so don't pause it
-//                                MainScreenAdapter.Statified.stopPlayingCalled = false
-//                            } else {
+                            if (MainScreenAdapter.Statified.stopPlayingCalled) {
+                                // it means we started the song from within the app so don't pause it
+                                MainScreenAdapter.Statified.stopPlayingCalled = false
+                            } else {
 
                                 //                                wasPlaying = true
                                 mediaPlayer?.pause()
@@ -468,7 +468,7 @@ class SongPlayingFragment : Fragment() {
                                 myActivity?.startService(play)
                                 //                    val component = ComponentName(this, MediaControlReceiver::class.java)
                                 //                    am.unregisterMediaButtonEventReceiver(component)
-//                            }
+                            }
                         }
                     }
                     (AudioManager.AUDIOFOCUS_GAIN) -> {

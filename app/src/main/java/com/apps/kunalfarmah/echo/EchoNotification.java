@@ -379,9 +379,9 @@ public class EchoNotification extends Service {
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             buildMediaNotification();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -451,8 +451,7 @@ public class EchoNotification extends Service {
         mNotificationManager.createNotificationChannel(mChannel);
 
         MediaSession mediaSession = new MediaSession(getBaseContext(), "EchoNotification");
-        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.Q)
-            addMetaData(mediaSession);
+        addMetaData(mediaSession);
 
 
         // Create a MediaStyle object and supply your media session token to it.
@@ -645,7 +644,7 @@ public class EchoNotification extends Service {
 
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences("Notification", Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)
             buildMediaNotification();
         else
             this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
