@@ -161,9 +161,9 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     private fun stopPlaying() {
         try {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
-                MainScreenAdapter.Statified.stopPlayingCalled = true
                 mediaPlayer.stop()
             }
+            MainScreenAdapter.Statified.stopPlayingCalled = true
         }catch (e:Exception){}
 
 

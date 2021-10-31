@@ -157,9 +157,9 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     private fun stopPlaying() {
         try {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
-                stopPlayingCalled = true
                 mediaPlayer.stop()
             }
+            stopPlayingCalled = true
         }catch (e:Exception){}
     }
 
