@@ -323,7 +323,7 @@ class SongPlayingFragment : Fragment() {
 
 
                     }
-                    seekBar?.progress = mediaPlayer.currentPosition.toInt()
+                    seekBar?.progress = getCurrent.toInt()
 
                     /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
                     Handler().postDelayed(this, 1000)
