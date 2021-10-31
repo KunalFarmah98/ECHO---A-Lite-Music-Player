@@ -3,7 +3,6 @@ package com.apps.kunalfarmah.echo.adapter
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -24,7 +23,6 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.HelpActivity
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SettingsActivity
-import com.apps.kunalfarmah.echo.online.OnlineActivity
 import java.io.*
 import java.util.*
 
@@ -106,14 +104,6 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
                 mContext!!.startActivity(feedback)
 
-            } else if (position == 7) {
-                var pref: SharedPreferences = mContext!!.getSharedPreferences("Mode", Context.MODE_PRIVATE)
-                var editor = pref.edit()
-                editor.putString("mode", "online")
-                editor.apply()
-                val activity: MainActivity = mContext as MainActivity
-                activity.finish()
-                mContext?.startActivity(Intent(mContext, OnlineActivity::class.java))
             }
             MainActivity.Statified.drawerLayout?.closeDrawers()
         }

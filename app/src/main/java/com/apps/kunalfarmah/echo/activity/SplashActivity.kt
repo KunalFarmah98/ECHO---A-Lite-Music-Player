@@ -2,22 +2,19 @@ package com.apps.kunalfarmah.echo.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.apps.kunalfarmah.echo.online.OnlineActivity
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Exception
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -128,19 +125,10 @@ class SplashActivity : AppCompatActivity() {
                 return@observe
             }
             if (!viewModel.songsList.value.isNullOrEmpty()) {
-                var pref: SharedPreferences = getSharedPreferences("Mode", Context.MODE_PRIVATE)
-                var value = pref.getString("mode", "offline")
-                if (value.equals("offline")) {
-                    Handler().postDelayed({
+                Handler().postDelayed({
                     val startAct = Intent(this@SplashActivity, MainActivity::class.java)
                     startActivity(startAct)
                     this.finish()},1500)
-                } else {
-                    Handler().postDelayed({
-                        val startAct = Intent(this@SplashActivity, OnlineActivity::class.java)
-                        startActivity(startAct)
-                        this.finish()},1500)
-                }
                 // if it doesn't have songs, fetch them, listen fro completion and then observe list again
             } else {
                 viewModel.init()

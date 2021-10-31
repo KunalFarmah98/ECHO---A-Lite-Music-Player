@@ -10,6 +10,7 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.Keep
 import androidx.fragment.app.FragmentManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
@@ -23,6 +24,7 @@ import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.bumptech.glide.Glide
 import java.lang.Exception
 
+@Keep
 object BottomBarUtils {
     var trackPosition = mediaPlayer.currentPosition
     lateinit var bottomBarBinding: BottomBarBinding

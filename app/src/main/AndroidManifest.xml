@@ -36,12 +36,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".online.OnlineActivity"
-            android:label="@string/title_activity_online"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".activity.HelpActivity"
             android:label="@string/help"
             android:launchMode="singleTask"

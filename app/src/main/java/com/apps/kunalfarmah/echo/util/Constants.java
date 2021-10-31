@@ -1,11 +1,5 @@
 package com.apps.kunalfarmah.echo.util;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.apps.kunalfarmah.echo.R;
-
 public class Constants {
     public static final String SETTINGS_APP_SETTINGS = "ECHO_A_LITE_MUSIC_PLAYER";
 
@@ -36,20 +30,5 @@ public class Constants {
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;
     }
-
-    public static Bitmap getDefaultAlbumArt(Context context) {
-        Bitmap bm = null;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        try {
-            bm = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.now_playing_bar_eq_image, options);
-        } catch (Error ee) {
-        } catch (Exception e) {
-        }
-        return bm;
-    }
-
-    public static final String  API_KEY = "96575af11bc84f955ad52eb7c0a951ad";
-    public static final String SECRET  = "985c2b381395c365681141fb3864c973";
 
 }
