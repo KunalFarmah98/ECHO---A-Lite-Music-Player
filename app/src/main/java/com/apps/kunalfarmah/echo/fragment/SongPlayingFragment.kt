@@ -653,6 +653,10 @@ class SongPlayingFragment : Fragment() {
                 }
             }
 
+            if(finalTime<=0){
+                Statified.endTime?.text = "-:--"
+            }
+
 
             /*Seekbar has been assigned this time so that it moves according to the time of song*/
             seekBar?.progress = startingTime
