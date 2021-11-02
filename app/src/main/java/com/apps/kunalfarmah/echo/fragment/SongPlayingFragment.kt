@@ -1246,7 +1246,7 @@ class SongPlayingFragment : Fragment() {
 
                     mLastShakeTime = curTime
 
-                    if (!mediaPlayer!!.isPlaying)
+                    if (!MediaUtils.isMediaPlayerPlaying())
                         return
 
                     if (isAllowed)
