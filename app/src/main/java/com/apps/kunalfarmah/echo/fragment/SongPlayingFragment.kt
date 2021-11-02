@@ -115,7 +115,8 @@ class SongPlayingFragment : Fragment() {
                 Uri.parse(currentSongHelper.songpath)
             )
             mediaPlayer.prepare()
-            mediaPlayer.start()
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
             processInformation(mediaPlayer)
 //            } catch (e: Exception) {
 //                e.printStackTrace()
@@ -196,7 +197,8 @@ class SongPlayingFragment : Fragment() {
                 Uri.parse(currentSongHelper.songpath)
             )
             mediaPlayer.prepare()
-            mediaPlayer.start()
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
             processInformation(mediaPlayer as MediaPlayer)
 //            } catch (e: Exception) {
 //                e.printStackTrace()
@@ -397,7 +399,8 @@ class SongPlayingFragment : Fragment() {
                     Uri.parse(currentSongHelper.songpath)
                 )
                 mediaPlayer.prepare()
-                mediaPlayer.start()
+                if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                    mediaPlayer.start()
                 processInformation(mediaPlayer as MediaPlayer)
 //                } catch (e: Exception) {
 //                    e.printStackTrace()
