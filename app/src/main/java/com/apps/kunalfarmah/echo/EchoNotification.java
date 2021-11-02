@@ -32,6 +32,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
+import com.apps.kunalfarmah.echo.util.BottomBarUtils;
 import com.apps.kunalfarmah.echo.util.Constants;
 import com.apps.kunalfarmah.echo.util.MediaUtils;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
@@ -644,6 +645,7 @@ public class EchoNotification extends Service {
 
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences("Notification", Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
+        BottomBarUtils.INSTANCE.updatePlayPause();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)
             buildMediaNotification();
         else
