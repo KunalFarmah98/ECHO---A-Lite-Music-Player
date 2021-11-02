@@ -443,7 +443,7 @@ class SongPlayingFragment : Fragment() {
                         // Lower the volume while ducking.
                         mediaPlayer?.setVolume(0.2f, 0.2f)
                     (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) -> {
-                        if (mediaPlayer!!.isPlaying) {
+                        if (MediaUtils.isMediaPlayerPlaying()) {
                             wasPlaying = true
                             mediaPlayer?.pause()
                             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -455,7 +455,7 @@ class SongPlayingFragment : Fragment() {
 
                     }
                     (AudioManager.AUDIOFOCUS_LOSS) -> {
-                        if (mediaPlayer!!.isPlaying) {
+                        if (MediaUtils.isMediaPlayerPlaying()) {
 
                             wasPlaying = true
                             if (MainScreenAdapter.Statified.stopPlayingCalled) {
@@ -687,7 +687,7 @@ class SongPlayingFragment : Fragment() {
 
     private val mNoisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 inform = true
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -704,7 +704,7 @@ class SongPlayingFragment : Fragment() {
 
     private val mCallingReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
