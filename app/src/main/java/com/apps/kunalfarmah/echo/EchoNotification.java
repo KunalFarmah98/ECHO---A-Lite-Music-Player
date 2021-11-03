@@ -122,6 +122,7 @@ public class EchoNotification extends Service {
             stopForeground(true);
             stopSelf();
             Log.e("ECHONotification", "intent is null");
+            return START_STICKY;
         }
 
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
