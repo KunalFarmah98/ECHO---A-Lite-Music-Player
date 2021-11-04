@@ -92,6 +92,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun resetScreen(){
+        if(bottomNav!=null)
+            bottomNav!!.selectedItemId = bottomNav!!.selectedItemId
+    }
+
 
     fun setNotify_val(bool: Boolean) {
         notify = bool

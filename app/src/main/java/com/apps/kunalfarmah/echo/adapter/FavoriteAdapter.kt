@@ -100,15 +100,15 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
             stopPlaying()
 
-            var serviceIntent = Intent(mContext, EchoNotification::class.java)
-
-            serviceIntent.putExtra("title", songObject.songTitle)
-            serviceIntent.putExtra("artist", songObject.artist)
-            serviceIntent.putExtra("album", songObject.songAlbum!!)
-
-            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-
-            mContext?.startService(serviceIntent)
+//            var serviceIntent = Intent(mContext, EchoNotification::class.java)
+//
+//            serviceIntent.putExtra("title", songObject.songTitle)
+//            serviceIntent.putExtra("artist", songObject.artist)
+//            serviceIntent.putExtra("album", songObject.songAlbum!!)
+//
+//            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+//
+//            mContext?.startService(serviceIntent)
 
             /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
             (mContext as FragmentActivity).supportFragmentManager

@@ -24,6 +24,7 @@ import android.widget.*
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.*
+import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.database.EchoDatabase
@@ -918,16 +919,6 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper.songArtist
         )
 
-        var serviceIntent = Intent(context, EchoNotification::class.java)
-
-        serviceIntent.putExtra("title", _songTitle)
-        serviceIntent.putExtra("artist", _songArtist)
-        serviceIntent.putExtra("album", _songAlbum)
-
-        serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-
-        context?.startService(serviceIntent)
-
 //    } catch (e: Exception) {
 //        e.printStackTrace()
 //    }
@@ -945,7 +936,6 @@ class SongPlayingFragment : Fragment() {
             //stopPlaying()
 
         try {
-
             //setting the data source for the media player with the help of uri
             mediaPlayer.setDataSource(
                 myActivity as Activity,
@@ -957,6 +947,9 @@ class SongPlayingFragment : Fragment() {
 
         } catch (e: Exception) {
             Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+            if(activity!=null)
+                (activity as MainActivity).resetScreen()
+            return
         }
 
 
@@ -1035,6 +1028,17 @@ class SongPlayingFragment : Fragment() {
 //        var filter2 = IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL)
 //        myActivity?.registerReceiver(mCallingReceiver, filter2)
 
+        var serviceIntent = Intent(context, EchoNotification::class.java)
+
+        serviceIntent.putExtra("title", _songTitle)
+        serviceIntent.putExtra("artist", _songArtist)
+        serviceIntent.putExtra("album", _songAlbum)
+
+        serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+
+        // need to start it twice or media controls don't work
+        context?.startService(serviceIntent)
+        context?.startService(serviceIntent)
 
     }
 
