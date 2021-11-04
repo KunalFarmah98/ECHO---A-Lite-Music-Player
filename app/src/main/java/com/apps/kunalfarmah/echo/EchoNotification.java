@@ -452,6 +452,7 @@ public class EchoNotification extends Service {
         mNotificationManager.createNotificationChannel(mChannel);
 
         MediaSession mediaSession = new MediaSession(getBaseContext(), "EchoNotification");
+        mediaSession.setActive(true);
         addMetaData(mediaSession);
 
 
