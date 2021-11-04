@@ -121,8 +121,6 @@ class SongPlayingFragment : Fragment() {
             processInformation(mediaPlayer)
             } catch (e: Exception) {
                 Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
-                if(myActivity!=null)
-                    myActivity!!.onBackPressed()
             }
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
@@ -205,8 +203,6 @@ class SongPlayingFragment : Fragment() {
             processInformation(mediaPlayer as MediaPlayer)
             } catch (e: Exception) {
                 Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
-                if(myActivity!=null)
-                    myActivity!!.onBackPressed()
             }
 
 
@@ -412,8 +408,6 @@ class SongPlayingFragment : Fragment() {
                     processInformation(mediaPlayer as MediaPlayer)
                 } catch (e: Exception) {
                     Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
-                    if(myActivity!=null)
-                        myActivity!!.onBackPressed()
                 }
             } else {
 
@@ -958,19 +952,18 @@ class SongPlayingFragment : Fragment() {
                 Uri.parse(path)
             )
             mediaPlayer.prepare()
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
 
         } catch (e: Exception) {
             Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
-            if(myActivity!=null)
-                myActivity!!.onBackPressed()
         }
 
 
 //            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // other app had stopped playing song now , so u can do u stuff now .
 
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                mediaPlayer.start()
+
 //            }
 
 
