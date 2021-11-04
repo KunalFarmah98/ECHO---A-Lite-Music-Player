@@ -1143,6 +1143,7 @@ class SongPlayingFragment : Fragment() {
         nextbutton?.setOnClickListener {
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             play = true
+            stopPlayingCalled = true
             var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
@@ -1156,6 +1157,7 @@ class SongPlayingFragment : Fragment() {
             /*We set the player to be playing by setting isPlaying to be true*/
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
             play = true
+            stopPlayingCalled = true
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
             /*After all of the above is done we then play the previous song using the playPrevious() function*/
