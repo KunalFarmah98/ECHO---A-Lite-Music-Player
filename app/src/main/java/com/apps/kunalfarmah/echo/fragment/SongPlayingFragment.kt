@@ -25,6 +25,7 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.*
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
+import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.database.EchoDatabase
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.getAlbumart
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastShakeTime
@@ -297,6 +298,9 @@ class SongPlayingFragment : Fragment() {
                                 )
                             )
 
+                    if(seconds>1){
+                        stopPlayingCalled = false
+                    }
                     if (seconds >= 10) {
 
                         startTime?.text = String.format(
