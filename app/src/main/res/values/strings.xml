@@ -56,5 +56,6 @@ or pulling down the notification panel to do the same.</string>
     <string name="sort_by_name">action_sort_ascending</string>
     <string name="sort_by_recent">action_sort_recent</string>
     <string name="sorting">action_sort</string>
+    <string name="media_playback_failure">Playback failed. Please try another song or restart the app.</string>
 
 </resources>

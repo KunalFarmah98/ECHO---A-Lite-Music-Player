@@ -110,7 +110,7 @@ class SongPlayingFragment : Fragment() {
 
             mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
 
-//            try {
+            try {
             mediaPlayer.setDataSource(
                 myActivity as Activity,
                 Uri.parse(currentSongHelper.songpath)
@@ -119,9 +119,9 @@ class SongPlayingFragment : Fragment() {
             if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 mediaPlayer.start()
             processInformation(mediaPlayer)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
+            } catch (e: Exception) {
+                Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+            }
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
                 fab?.setBackgroundResource(R.drawable.favorite_on)
@@ -192,7 +192,7 @@ class SongPlayingFragment : Fragment() {
             )
 
             mediaPlayer.reset()
-//            try {
+            try {
             mediaPlayer.setDataSource(
                 myActivity as Activity,
                 Uri.parse(currentSongHelper.songpath)
@@ -201,9 +201,9 @@ class SongPlayingFragment : Fragment() {
             if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 mediaPlayer.start()
             processInformation(mediaPlayer as MediaPlayer)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
+            } catch (e: Exception) {
+                Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+            }
 
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
@@ -298,7 +298,7 @@ class SongPlayingFragment : Fragment() {
                                 )
                             )
 
-                    if(seconds>1){
+                    if (seconds > 1) {
                         stopPlayingCalled = false
                     }
                     if (seconds >= 10) {
@@ -397,18 +397,18 @@ class SongPlayingFragment : Fragment() {
 
                 mediaPlayer.reset()
 
-//                try {
-                mediaPlayer.setDataSource(
-                    myActivity as Activity,
-                    Uri.parse(currentSongHelper.songpath)
-                )
-                mediaPlayer.prepare()
-                if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    mediaPlayer.start()
-                processInformation(mediaPlayer as MediaPlayer)
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
+                try {
+                    mediaPlayer.setDataSource(
+                        myActivity as Activity,
+                        Uri.parse(currentSongHelper.songpath)
+                    )
+                    mediaPlayer.prepare()
+                    if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                        mediaPlayer.start()
+                    processInformation(mediaPlayer as MediaPlayer)
+                } catch (e: Exception) {
+                    Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+                }
             } else {
 
                 /*If loop was OFF then normally play the next song*/
@@ -660,7 +660,7 @@ class SongPlayingFragment : Fragment() {
                 }
             }
 
-            if(finalTime<=0){
+            if (finalTime <= 0) {
                 Statified.endTime?.text = "-:--"
             }
 
@@ -944,15 +944,18 @@ class SongPlayingFragment : Fragment() {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             //stopPlaying()
 
-//        try {
+        try {
 
             //setting the data source for the media player with the help of uri
-            mediaPlayer.setDataSource(path)
+            mediaPlayer.setDataSource(
+                myActivity as Activity,
+                Uri.parse(path)
+            )
             mediaPlayer.prepare()
 
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        } catch (e: Exception) {
+            Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+        }
 
 
 //            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
