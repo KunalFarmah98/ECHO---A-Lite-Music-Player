@@ -94,7 +94,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                 TelephonyManager.CALL_STATE_IDLE-> {
                     // not in call
                     try {
-                        if (MediaUtils.isMediaPlayerPlaying() as Boolean == false && SongPlayingFragment.Statified.inform==false && wasPlaying) {
+                        if (!MediaUtils.isMediaPlayerPlaying() && !SongPlayingFragment.Statified.inform && wasPlaying) {
 
                             mediaPlayer.start()
                             wasPlaying=false
@@ -116,7 +116,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                     //A call is dialing, active or on hold
 
                     try {
-                        if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
+                        if (MediaUtils.isMediaPlayerPlaying()) {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)

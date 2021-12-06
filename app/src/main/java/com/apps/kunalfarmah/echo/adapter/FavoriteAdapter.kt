@@ -53,10 +53,10 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         holder.trackTitle?.text = songObject?.songTitle
         holder.trackArtist?.text = songObject?.artist
 
-        if(holder.trackTitle?.text!!.equals("<unknown>"))
+        if(holder.trackTitle?.text?.equals("<unknown>") == true)
             holder.trackTitle?.text="unknown"
 
-        if( holder.trackArtist?.text !!.equals("<unknown>"))
+        if(holder.trackArtist?.text ?.equals("<unknown>") == true)
             holder.trackArtist?.text ="unknown"
 
         var albumId = songObject?.songAlbum as Long
@@ -65,7 +65,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.trackArt?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
+        mContext?.let { holder.trackArt?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).into(it1) } }
 //        var art = getAlbumart(albumId)
 //
 //        if(art!=null) holder.trackArt?.setImageBitmap(art)
@@ -104,7 +104,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 //
 //            serviceIntent.putExtra("title", songObject.songTitle)
 //            serviceIntent.putExtra("artist", songObject.artist)
-//            serviceIntent.putExtra("album", songObject.songAlbum!!)
+//            serviceIntent.putExtra("album", songObject.songAlbum?)
 //
 //            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
 //
@@ -175,8 +175,8 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
-            val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
-                    .openFileDescriptor(uri, "r")
+            val pfd: ParcelFileDescriptor? = mContext?.contentResolver
+                    ?.openFileDescriptor(uri, "r")
             if (pfd != null) {
                 val fd: FileDescriptor = pfd.fileDescriptor
                 bm = BitmapFactory.decodeFileDescriptor(fd)

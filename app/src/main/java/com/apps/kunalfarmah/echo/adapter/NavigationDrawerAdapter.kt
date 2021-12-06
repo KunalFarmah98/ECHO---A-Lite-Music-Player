@@ -59,7 +59,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
             } else if (position == 2) {
                 var intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://kunalfarmah.com")
-                mContext!!.startActivity(intent)
+                mContext?.startActivity(intent)
             } else if (position == 3) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
             } else if (position == 4) {
@@ -80,9 +80,9 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 }
                 else
                     sendIntent.type = "text/*"
-                mContext!!.startActivity(Intent.createChooser(sendIntent, "Share With"))
+                mContext?.startActivity(Intent.createChooser(sendIntent, "Share With"))
             } else if (position == 5) {
-                val uri = Uri.parse("market://details?id=" + mContext!!.packageName)
+                val uri = Uri.parse("market://details?id=" + mContext?.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
                 // To count with Play market backstack, After pressing back button,
                 // to taken back to our application, we need to add following flags to intent.
@@ -91,10 +91,10 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                         Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
                         Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
                 try {
-                    mContext!!.startActivity(goToMarket)
+                    mContext?.startActivity(goToMarket)
                 } catch (e: ActivityNotFoundException) {
-                    mContext!!.startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext!!.getPackageName())))
+                    mContext?.startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext?.getPackageName())))
                 }
             } else if (position == 6) {
                 var feedback = Intent(Intent.ACTION_SENDTO)
@@ -102,7 +102,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 feedback.data = Uri.parse("mailto:")
                 feedback.putExtra(Intent.EXTRA_EMAIL, to)
                 feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
-                mContext!!.startActivity(feedback)
+                mContext?.startActivity(feedback)
 
             }
             MainActivity.Statified.drawerLayout?.closeDrawers()
@@ -152,8 +152,8 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 e.printStackTrace()
             }
             try {
-                outStream!!.flush()
-                outStream!!.close()
+                outStream?.flush()
+                outStream?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

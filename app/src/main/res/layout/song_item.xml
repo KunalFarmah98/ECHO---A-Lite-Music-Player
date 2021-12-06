@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
@@ -14,7 +15,7 @@
         android:id="@+id/albumArt"
         android:layout_width="@dimen/_50sdp"
         android:layout_height="@dimen/_50sdp"
-        android:background="@drawable/now_playing_bar_eq_image"/>
+        app:srcCompat="@drawable/now_playing_bar_eq_image"/>
 
     <LinearLayout
         android:layout_width="match_parent"

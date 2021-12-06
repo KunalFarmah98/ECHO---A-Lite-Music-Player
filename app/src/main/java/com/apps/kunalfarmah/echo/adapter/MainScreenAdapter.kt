@@ -58,18 +58,18 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         * trackTitle for holding the name of the song and
         * trackArtist for holding the name of the artist*/
 
-        holder.binding!!.trackTitle?.text = songObject?.songTitle
-        holder.binding!!.trackArtist?.text = songObject?.artist
-        holder.binding!!.trackAlbum?.text = songObject?.album
+        holder.binding?.trackTitle?.text = songObject?.songTitle
+        holder.binding?.trackArtist?.text = songObject?.artist
+        holder.binding?.trackAlbum?.text = songObject?.album
 
-        if(holder.binding!!.trackTitle?.text!!.equals("<unknown>"))
-            holder.binding!!.trackTitle?.text="unknown"
+        if(holder.binding?.trackTitle?.text?.equals("<unknown>") == true)
+            holder.binding?.trackTitle?.text="unknown"
 
-        if( holder.binding!!.trackArtist?.text !!.equals("<unknown>"))
-            holder.binding!!.trackArtist?.visibility = View.GONE
+        if(holder.binding?.trackArtist?.text ?.equals("<unknown>") == true)
+            holder.binding?.trackArtist?.visibility = View.GONE
 
-        if( holder.binding!!.trackAlbum?.text !!.equals("<unknown>"))
-            holder.binding!!.trackAlbum?.text = "Unknown Album"
+        if(holder.binding?.trackAlbum?.text ?.equals("<unknown>") == true)
+            holder.binding?.trackAlbum?.text = "Unknown Album"
 
         var albumId = songObject?.songAlbum as Long
         //var art: Bitmap? =null
@@ -78,22 +78,22 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.binding!!.album?.let { it1 -> Glide.with(it).load(uri).diskCacheStrategy(DiskCacheStrategy.ALL).into(it1) } }
+        mContext?.let { holder.binding?.album?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).diskCacheStrategy(DiskCacheStrategy.ALL).into(it1) } }
 
 
 
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.binding!!.contentRow?.setOnClickListener {
+        holder.binding?.contentRow?.setOnClickListener {
             val songPlayingFragment = SongPlayingFragment()
             MainScreenFragment.position = position
-            mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)!!.edit().putInt("listPosition",position).apply()
+            mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
             var args = Bundle()
             args.putString("songArtist", songObject.artist)
             args.putString("songTitle", songObject.songTitle)
             args.putString("path", songObject.songData)
             args.putLong("SongID", songObject.songID)
-            args.putLong("songAlbum", songObject.songAlbum!!)
+            args.putLong("songAlbum", songObject.songAlbum?:-1)
             args.putString("album", songObject.album)
             args.putInt("songPosition", position)
 
@@ -109,7 +109,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 //
 //            serviceIntent.putExtra("title", songObject.songTitle)
 //            serviceIntent.putExtra("artist", songObject.artist)
-//            serviceIntent.putExtra("album", songObject.songAlbum!!)
+//            serviceIntent.putExtra("album", songObject.songAlbum?)
 //
 //            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
 //

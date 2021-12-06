@@ -36,12 +36,12 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
             if(name.equals("<unknown>",true)){
                 name = "Unknown Album"
             }
-            binding!!.name.text = name
+            binding?.name?.text = name
             if (album._id <= 0L) binding!!.image!!.setImageDrawable(itemView.context!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
             val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album._id)
-            itemView.context?.let { binding!!.image?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).diskCacheStrategy(DiskCacheStrategy.ALL).into(it1) } }
+            itemView.context?.let { binding?.image?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).diskCacheStrategy(DiskCacheStrategy.ALL).into(it1) } }
         }
 
     }
@@ -53,7 +53,7 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
     override fun onBindViewHolder(holder: AlbumsViewHolder, position: Int) {
         val album = albums[position]
         holder.bind(album)
-        holder.binding!!.root.setOnClickListener {
+        holder.binding?.root?.setOnClickListener {
             OfflineAlbumsFragment.postion = position
             (mContext as MainActivity).supportFragmentManager
                     .beginTransaction()

@@ -44,7 +44,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.main_content.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -250,13 +249,13 @@ class MainActivity : AppCompatActivity() {
         fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
 
         if (fragment != null && fragment.isVisible) {
-            bottom_nav.selectedItemId = R.id.navigation_main_screen
+            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
             return
         }
 
         fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
         if (fragment != null && fragment.isVisible) {
-            bottom_nav.selectedItemId = R.id.navigation_main_screen
+            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
             OfflineAlbumsFragment.postion=0
             return
         }
