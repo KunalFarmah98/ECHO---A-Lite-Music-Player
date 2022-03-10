@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
@@ -76,7 +77,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
-            var intent = Intent()
+            var intent = Intent(mContext,SongPlayingActivity::class.java)
 
             /*A bundle is used to transfer data from one point in your activity to another
             * Here we create an object of Bundle to send the sond details to the fragment so that we can display the song details there and also play the song*/

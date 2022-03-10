@@ -3,9 +3,11 @@ package com.apps.kunalfarmah.echo.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.databinding.ActivitySongPlayingBinding
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.util.BottomBarUtils
 
 class SongPlayingActivity : AppCompatActivity() {
     lateinit var binding : ActivitySongPlayingBinding
@@ -19,11 +21,19 @@ class SongPlayingActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_to_list)
+        supportActionBar?.setTitle("Now Playing")
+        binding.toolbar.title = "Now Playing"
+        setSupportActionBar(binding.toolbar)
 
         val args = intent.extras
         songPlayingFragment.arguments = args
         supportFragmentManager.beginTransaction().replace(R.id.container, songPlayingFragment)
             .commit()
+    }
+
+    override fun onBackPressed() {
+        BottomBarUtils.bottomBarBinding?.root?.visibility = View.VISIBLE
+        super.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean {

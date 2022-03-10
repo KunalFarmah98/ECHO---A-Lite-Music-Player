@@ -26,6 +26,9 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".activity.SongPlayingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".activity.WizardActivity"

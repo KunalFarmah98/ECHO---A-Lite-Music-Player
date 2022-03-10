@@ -17,6 +17,7 @@ import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlaying
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
@@ -85,7 +86,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
-            var intent = Intent()
+            var intent = Intent(mContext,SongPlayingActivity::class.java)
             MainScreenFragment.position = position
             mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
             intent.putExtra("songArtist", songObject.artist)

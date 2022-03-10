@@ -18,6 +18,7 @@ import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.BottomBarBinding
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
@@ -66,7 +67,7 @@ object BottomBarUtils {
     ) {
 
         bottomBarBinding.bottomBar.setOnClickListener {
-            var intent = Intent()
+            var intent = Intent(App.context,SongPlayingActivity::class.java)
             intent.putExtra("songArtist", currentSongHelper.songArtist)
             intent.putExtra("songTitle", currentSongHelper.songTitle)
             intent.putExtra("path", currentSongHelper.songpath)
@@ -75,6 +76,7 @@ object BottomBarUtils {
             intent.putExtra("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
             intent.putExtra("fromBottomBar",true)
             MediaUtils.songsList = SongPlayingFragment.Statified.fetchSongs?:ArrayList()
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             App.context.startActivity(intent)
         }
 
