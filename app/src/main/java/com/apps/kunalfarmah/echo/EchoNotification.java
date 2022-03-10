@@ -124,10 +124,11 @@ public class EchoNotification extends Service {
                 stopForeground(true);
                 stopSelf();
                 Log.e("ECHONotification", "intent is null");
-                return START_STICKY;
+                super.onStartCommand(intent,flags,startId);
             }
 
-            if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
+            if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
@@ -135,7 +136,8 @@ public class EchoNotification extends Service {
                 main.setNotify_val(true);
                 showNotification();
 
-            } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
 
                 msong.previous();
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
@@ -153,7 +155,8 @@ public class EchoNotification extends Service {
                 updateNotiUI();
 
 
-            } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
 
                 msong.setPlay(msong.playorpause());
 
@@ -171,19 +174,22 @@ public class EchoNotification extends Service {
 
                 updateNotiUI();
 
-            } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
                 songsViewModel.setPlayStatus(true);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
-            } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
                 songsViewModel.setPlayStatus(false);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
                 updateNotiUI();
 
-            } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
                 msong.next();
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
@@ -200,7 +206,8 @@ public class EchoNotification extends Service {
                 updateNotiUI();
 
 
-            } else if (intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
@@ -231,7 +238,8 @@ public class EchoNotification extends Service {
 
 
                 updateNotiUI();
-            } else if (intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
                 albumID = intent.getLongExtra("album", -1);
@@ -261,9 +269,11 @@ public class EchoNotification extends Service {
 
                 updateNotiUI();
 
-            } else if (intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)) {
                 SongPlayingFragment.Statified.shufflebutton.callOnClick();
-            } else if (intent.getAction().equals(
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(
                     Constants.ACTION.STOPFOREGROUND_ACTION)) {
 
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
