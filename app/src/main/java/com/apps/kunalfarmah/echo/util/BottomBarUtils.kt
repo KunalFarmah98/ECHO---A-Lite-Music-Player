@@ -10,6 +10,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentManager
@@ -27,7 +28,7 @@ import java.lang.Exception
 
 @Keep
 object BottomBarUtils {
-    lateinit var bottomBarBinding: BottomBarBinding
+    var bottomBarBinding: BottomBarBinding  ?= null
 
 
     fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding) {
@@ -150,7 +151,7 @@ object BottomBarUtils {
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum
         if (albumId == null || albumId <= 0L) {
-            bottomBarBinding.songImg.setImageDrawable(
+            bottomBarBinding?.songImg?.setImageDrawable(
                 App.context.resources?.getDrawable(
                     R.drawable.echo_icon
                 )
@@ -162,7 +163,7 @@ object BottomBarUtils {
                 .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
             Glide.with(App.context).load(uri).placeholder(R.drawable.echo_icon)
-                .into(bottomBarBinding.songImg)
+                .into(bottomBarBinding?.songImg!!)
         } catch (e: Exception) {
         }
     }
@@ -180,43 +181,43 @@ object BottomBarUtils {
 
     fun setTitle() {
         if (null != currentSongHelper.songTitle && null != currentSongHelper)
-            bottomBarBinding.songTitle.text = currentSongHelper?.songTitle
+            bottomBarBinding?.songTitle?.text = currentSongHelper?.songTitle
     }
 
     fun setArtist() {
         if (null != currentSongHelper.songArtist && null != currentSongHelper) {
             var artist = currentSongHelper.songArtist
             if (artist.equals("<unknown>", ignoreCase = true))
-                bottomBarBinding.songArtist.visibility = View.GONE
+                bottomBarBinding?.songArtist?.visibility = View.GONE
             else {
-                bottomBarBinding.songArtist.visibility = View.VISIBLE
-                bottomBarBinding.songArtist.text = artist
+                bottomBarBinding?.songArtist?.visibility = View.VISIBLE
+                bottomBarBinding?.songArtist?.text = artist
             }
         }
     }
 
     fun setAlbumArt() {
-        if (null != bottomBarBinding.songImg && null != currentSongHelper) {
+        if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
             val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, currentSongHelper.songAlbum!!)
             if (currentSongHelper.songAlbum!! < 0 || null == uri || uri.toString().isEmpty())
-                bottomBarBinding.songImg.setImageResource(R.drawable.echo_icon)
+                bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             else
-                bottomBarBinding.songImg.setImageURI(uri)
+                bottomBarBinding?.songImg?.setImageURI(uri)
 
-            if (null == bottomBarBinding.songImg.drawable) {
-                bottomBarBinding.songImg.setImageResource(R.drawable.echo_icon)
+            if (null == bottomBarBinding?.songImg?.drawable) {
+                bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             }
         }
     }
 
     fun updatePlayPause(){
         if(MediaUtils.isMediaPlayerPlaying()){
-            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+            bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
         }
         else{
-            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
+            bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
         }
     }
 }
