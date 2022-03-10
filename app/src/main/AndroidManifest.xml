@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.SongPlayingActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.WizardActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

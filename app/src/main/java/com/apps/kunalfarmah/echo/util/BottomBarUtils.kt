@@ -66,21 +66,16 @@ object BottomBarUtils {
     ) {
 
         bottomBarBinding.bottomBar.setOnClickListener {
-            val songPlayingFragment = SongPlayingFragment()
-            var args = Bundle()
-            args.putString("songArtist", currentSongHelper.songArtist)
-            args.putString("songTitle", currentSongHelper.songTitle)
-            args.putString("path", currentSongHelper.songpath)
-            args.putLong("SongID", currentSongHelper.songId!!)
-            args.putLong("songAlbum", currentSongHelper.songAlbum!!)
-            args.putInt("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
+            var intent = Intent()
+            intent.putExtra("songArtist", currentSongHelper.songArtist)
+            intent.putExtra("songTitle", currentSongHelper.songTitle)
+            intent.putExtra("path", currentSongHelper.songpath)
+            intent.putExtra("SongID", currentSongHelper.songId!!)
+            intent.putExtra("songAlbum", currentSongHelper.songAlbum!!)
+            intent.putExtra("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
+            intent.putExtra("fromBottomBar",true)
             MediaUtils.songsList = SongPlayingFragment.Statified.fetchSongs?:ArrayList()
-            args.putBoolean("fromBottomBar",true)
-            songPlayingFragment.arguments = args
-            fragmentManager.beginTransaction()
-                .replace(R.id.details_fragment, songPlayingFragment)
-                .addToBackStack("SongPlayingFragment")
-                .commit()
+            App.context.startActivity(intent)
         }
 
         bottomBarBinding.playPause.setOnClickListener {

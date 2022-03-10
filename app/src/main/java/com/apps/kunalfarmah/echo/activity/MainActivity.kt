@@ -234,11 +234,6 @@ class MainActivity : AppCompatActivity() {
             Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
         }
 
-
-        if(supportFragmentManager.findFragmentByTag(SongPlayingFragment.Statified.TAG)==null)
-            MainScreenFragment.position = 0
-
-
         var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
 
         if (fragment != null && fragment.isVisible) {

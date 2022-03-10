@@ -85,20 +85,17 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
-            val songPlayingFragment = SongPlayingFragment()
+            var intent = Intent()
             MainScreenFragment.position = position
             mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
-            var args = Bundle()
-            args.putString("songArtist", songObject.artist)
-            args.putString("songTitle", songObject.songTitle)
-            args.putString("path", songObject.songData)
-            args.putLong("SongID", songObject.songID)
-            args.putLong("songAlbum", songObject.songAlbum?:-1)
-            args.putString("album", songObject.album)
-            args.putInt("songPosition", position)
-            MediaUtils.songsList = songDetails?:ArrayList()
-            songPlayingFragment.arguments = args
-
+            intent.putExtra("songArtist", songObject.artist)
+            intent.putExtra("songTitle", songObject.songTitle)
+            intent.putExtra("path", songObject.songData)
+            intent.putExtra("SongID", songObject.songID)
+            intent.putExtra("songAlbum", songObject.songAlbum?:-1)
+            intent.putExtra("album", songObject.album)
+            intent.putExtra("songPosition", position)
+            MediaUtils.songsList = songDetails?: ArrayList()
 
             stopPlaying()
 
@@ -113,11 +110,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 //
 //            mContext?.startService(serviceIntent)
 
-            (mContext as MainActivity).supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.details_fragment, songPlayingFragment,SongPlayingFragment.Statified.TAG)
-                    .addToBackStack(SongPlayingFragment.Statified.TAG)
-                    .commit()
+            (mContext as MainActivity).startActivity(intent)
         }
     }
 

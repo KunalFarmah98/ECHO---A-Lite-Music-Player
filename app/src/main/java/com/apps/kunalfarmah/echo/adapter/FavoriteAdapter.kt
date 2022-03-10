@@ -76,26 +76,21 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
-            val songPlayingFragment = SongPlayingFragment()
+            var intent = Intent()
 
             /*A bundle is used to transfer data from one point in your activity to another
             * Here we create an object of Bundle to send the sond details to the fragment so that we can display the song details there and also play the song*/
-            var args = Bundle()
-
             /*putString() function is used for adding a string to the bundle object
             * the string written in green is the name of the string which is placed in the bundle object with the value of that string written alongside
             * Note: Remember the name of the strings/entities you place inside the bundle object as you will retrieve them later using the same name. And these names are case-sensitive*/
-            args.putString("songArtist", songObject.artist)
-            args.putString("songTitle", songObject.songTitle)
-            args.putString("path", songObject.songData)
-            args.putLong("SongID", songObject.songID)
-            args.putInt("songPosition", position)
-            args.putLong("songAlbum", songObject.songAlbum as Long)
+            intent.putExtra("songArtist", songObject.artist)
+            intent.putExtra("songTitle", songObject.songTitle)
+            intent.putExtra("path", songObject.songData)
+            intent.putExtra("SongID", songObject.songID)
+            intent.putExtra("songPosition", position)
+            intent.putExtra("songAlbum", songObject.songAlbum as Long)
 
-            MediaUtils.songsList = songDetails?:ArrayList()
-
-            /*Using this we pass the arguments to the song playing fragment*/
-            songPlayingFragment.arguments = args
+            MediaUtils.songsList = songDetails?: ArrayList()
 
             stopPlaying()
 
@@ -110,11 +105,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 //            mContext?.startService(serviceIntent)
 
             /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
-            (mContext as FragmentActivity).supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.details_fragment, songPlayingFragment, SongPlayingFragment.Statified.TAG)
-                    .addToBackStack(SongPlayingFragment.Statified.TAG)
-                    .commit()
+            (mContext as FragmentActivity).startActivity(intent)
         }
     }
 
