@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.BuildConfig
@@ -53,13 +54,18 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
 
             /*Loading the Main Screen Fragment as the first(remember that the index starts at 0) item is All songs and the fragment corresponding to it is the Main Screen fragment*/
             if (position == 0) {
-                (mContext as MainActivity).movToHome()
+                (mContext as MainActivity).moveToHome()
             } else if (position == 1) {
                 mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
             } else if (position == 2) {
                 var intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://kunalfarmah.com")
-                mContext?.startActivity(intent)
+                try {
+                    mContext?.startActivity(intent)
+                }
+                catch (e: ActivityNotFoundException){
+                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_browser_app), Toast.LENGTH_SHORT).show()
+                }
             } else if (position == 3) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
             } else if (position == 4) {
@@ -80,7 +86,12 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 }
                 else
                     sendIntent.type = "text/*"
-                mContext?.startActivity(Intent.createChooser(sendIntent, "Share With"))
+                try {
+                    mContext?.startActivity(Intent.createChooser(sendIntent, "Share With"))
+                }
+                catch (e: ActivityNotFoundException){
+                    Toast.makeText(mContext, mContext?.resources?.getString(R.string.no_app_share), Toast.LENGTH_SHORT).show()
+                }
             } else if (position == 5) {
                 val uri = Uri.parse("market://details?id=" + mContext?.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
@@ -102,7 +113,12 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 feedback.data = Uri.parse("mailto:")
                 feedback.putExtra(Intent.EXTRA_EMAIL, to)
                 feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
-                mContext?.startActivity(feedback)
+                try {
+                    mContext?.startActivity(feedback)
+                }
+                catch (e :ActivityNotFoundException){
+                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_email_app),Toast.LENGTH_SHORT).show();
+                }
 
             }
             MainActivity.Statified.drawerLayout?.closeDrawers()

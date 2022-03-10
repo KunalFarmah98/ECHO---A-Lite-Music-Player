@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun movToHome() {
+    fun moveToHome() {
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
     }
 
