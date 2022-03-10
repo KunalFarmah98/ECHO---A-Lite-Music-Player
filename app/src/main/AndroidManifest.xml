@@ -54,7 +54,8 @@
             android:name=".activity.SplashActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,7 +68,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name=".util.CaptureBroadcast">
+        <receiver android:name=".util.CaptureBroadcast"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
                 <action android:name="android.intent.action.PHONE_STATE" />
