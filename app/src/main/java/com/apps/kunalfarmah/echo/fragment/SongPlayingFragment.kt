@@ -24,7 +24,7 @@ import android.widget.*
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.*
-import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.database.EchoDatabase
@@ -814,34 +814,6 @@ class SongPlayingFragment : Fragment() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-
-        menu.clear()   // clearing any previous menus
-        inflater.inflate(R.menu.song_playing_menu, menu)
-
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-
-        val item: MenuItem? = menu.findItem(R.id.action_redirect)
-        item?.isVisible = true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_redirect -> {
-                // redirecting the user to the activity from which they came
-                myActivity?.onBackPressed()
-                return false
-
-            }
-        }
-        return false
-    }
-
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         myActivity = context as Activity
@@ -940,7 +912,7 @@ class SongPlayingFragment : Fragment() {
         } catch (e: Exception) {
             Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
             if(activity!=null)
-                (activity as MainActivity).resetScreen()
+                (activity as SongPlayingActivity).finish()
             return
         }
 
