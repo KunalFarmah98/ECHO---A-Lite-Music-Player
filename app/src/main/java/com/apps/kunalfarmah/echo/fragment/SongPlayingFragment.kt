@@ -36,7 +36,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.onSongC
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.requestAudioFocus
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateTextViews
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.ALbumArt
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.audioVisualization
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.controlsView
@@ -73,6 +73,7 @@ import java.util.concurrent.TimeUnit
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
+    var showVisualizer = true
 
     companion object {
         var sharedPreferences: SharedPreferences? = null
@@ -125,9 +126,9 @@ class SongPlayingFragment : Fragment() {
             }
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_on)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
             } else {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
             }
 
             BottomBarUtils.setTitle()
@@ -208,9 +209,9 @@ class SongPlayingFragment : Fragment() {
 
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_on)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
             } else {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
             }
 
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
@@ -262,9 +263,9 @@ class SongPlayingFragment : Fragment() {
         var loopbutton: ImageButton? = null
         lateinit var shufflebutton: ImageButton
 
-        var ALbumArt: ImageView? = null
-        var fab: ImageButton? = null
-        var art: ImageButton? = null
+        var albumArt: ImageView? = null
+        var fab: ImageView? = null
+        var art: ImageView? = null
 
         var currentPosition: Int = 0
 
@@ -418,9 +419,9 @@ class SongPlayingFragment : Fragment() {
 
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_on)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
             } else {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
             }
 
             // preventing next song from playing if activity was destroyed
@@ -556,15 +557,15 @@ class SongPlayingFragment : Fragment() {
 
             var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
             if (img == null) {
-                ALbumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                 glView?.visibility = View.VISIBLE
-                ALbumArt?.visibility = View.GONE
+                albumArt?.visibility = View.GONE
                 controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
             } else {
-                ALbumArt?.setImageBitmap(img)
+                albumArt?.setImageBitmap(img)
                 if (myActivity != null) {
                     glView?.visibility = View.GONE
-                    ALbumArt?.visibility = View.VISIBLE
+                    albumArt?.visibility = View.VISIBLE
                     controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
                 }
             }
@@ -740,7 +741,7 @@ class SongPlayingFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        ALbumArt = view?.findViewById(R.id.art)
+        albumArt = view?.findViewById(R.id.art)
 
         Statified.songTitle = view?.findViewById(R.id.songTitle)
         Statified.songTitle?.isSelected = true
@@ -761,6 +762,7 @@ class SongPlayingFragment : Fragment() {
         /*Linking it with the view*/
         fab = view?.findViewById(R.id.favouriteButton)
         art = view?.findViewById(R.id.showArtButton)
+        art?.visibility = View.VISIBLE
 
         /*Fading the favorite icon*/
         fab?.alpha = 0.8f
@@ -840,13 +842,6 @@ class SongPlayingFragment : Fragment() {
     }
 
 
-    override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // you can extract AudioVisualization interface for simplifying things
-        audioVisualization = glView as AudioVisualization
-    }
-
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         myActivity = context as Activity
@@ -861,14 +856,11 @@ class SongPlayingFragment : Fragment() {
 
 
     @SuppressLint("UseRequireInsteadOfGet")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-        // recreating everything again only if it didn't happen before
-
-
-        super.onActivityCreated(savedInstanceState)
-
+        // you can extract AudioVisualization interface for simplifying things
+        audioVisualization = glView as AudioVisualization
 
         /*Initialising the params of the current song helper object*/
         favoriteContent = EchoDatabase(myActivity)
@@ -909,8 +901,8 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper.album = _album
         currentSongHelper.currentPosition = currentPosition
 
-        ALbumArt?.setImageBitmap(getAlbumart(currentSongHelper.songAlbum!!.toLong()))
-        ALbumArt?.visibility = View.GONE
+        albumArt?.setImageBitmap(getAlbumart(currentSongHelper.songAlbum!!.toLong()))
+        albumArt?.visibility = View.GONE
 
         // updating the textViews as soon as the song is changed and loaded
 
@@ -983,8 +975,17 @@ class SongPlayingFragment : Fragment() {
          *  set visualiser helper
          *  */
 
-        var visualizationHandler = DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
-        audioVisualization?.linkTo(visualizationHandler)
+        try {
+            var visualizationHandler =
+                DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
+            audioVisualization?.linkTo(visualizationHandler)
+        }
+        catch (e:java.lang.Exception){
+            art?.visibility =  View.GONE
+            glView?.visibility = View.GONE
+            albumArt?.visibility = View.VISIBLE
+            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+        }
 
 
         /**
@@ -1014,9 +1015,9 @@ class SongPlayingFragment : Fragment() {
         /*Here we check that if the song playing is a favorite, then we show a red colored heart indicating favorite else only the heart boundary
        * This action is performed whenever a new song is played, hence this will done in the playNext(), playPrevious() and onSongComplete() methods*/
         if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-            fab?.setBackgroundResource(R.drawable.favorite_on)
+            fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
         } else {
-            fab?.setBackgroundResource(R.drawable.favorite_off)
+            fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
         }
 
 
@@ -1082,7 +1083,7 @@ class SongPlayingFragment : Fragment() {
        * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
         fab?.setOnClickListener {
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
                 favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
 
                 /*Toast is prompt message at the bottom of screen indicating that an action has been performed*/
@@ -1090,7 +1091,7 @@ class SongPlayingFragment : Fragment() {
             } else {
 
                 /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
-                fab?.setBackgroundResource(R.drawable.favorite_on)
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
                 var album = currentSongHelper.album
                 if (null == album) {
                     album = ""
@@ -1114,11 +1115,11 @@ class SongPlayingFragment : Fragment() {
         art?.setOnClickListener {
             if (glView?.visibility == View.VISIBLE) {
                 glView?.visibility = View.GONE
-                ALbumArt?.visibility = View.VISIBLE
+                albumArt?.visibility = View.VISIBLE
                 controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
             } else {
                 glView?.visibility = View.VISIBLE
-                ALbumArt?.visibility = View.GONE
+                albumArt?.visibility = View.GONE
                 controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
             }
         }
