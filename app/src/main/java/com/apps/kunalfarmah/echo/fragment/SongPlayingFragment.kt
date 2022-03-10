@@ -737,8 +737,6 @@ class SongPlayingFragment : Fragment() {
             view = inflater.inflate(R.layout.fragment_song_playing, container, false)
         }
 
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-
         setHasOptionsMenu(true)
 
         albumArt = view?.findViewById(R.id.art)
