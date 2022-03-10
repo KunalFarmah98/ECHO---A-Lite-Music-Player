@@ -560,7 +560,7 @@ class SongPlayingFragment : Fragment() {
                 albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                 glView?.visibility = View.VISIBLE
                 albumArt?.visibility = View.GONE
-                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
             } else {
                 albumArt?.setImageBitmap(img)
                 if (myActivity != null) {
@@ -1090,7 +1090,7 @@ class SongPlayingFragment : Fragment() {
             } else {
                 glView?.visibility = View.VISIBLE
                 albumArt?.visibility = View.GONE
-                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
             }
         }
 
