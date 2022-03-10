@@ -762,10 +762,6 @@ class SongPlayingFragment : Fragment() {
         art = view?.findViewById(R.id.showArtButton)
         art?.visibility = View.VISIBLE
 
-        /*Fading the favorite icon*/
-        fab?.alpha = 0.8f
-        art?.alpha = 0.8f
-
         glView = view?.findViewById(R.id.visualizer_view)
 
         controlsView = view?.findViewById(R.id.controls_layout);

@@ -20,10 +20,7 @@ class SongPlayingActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_to_list)
-        supportActionBar?.setTitle("Now Playing")
-        binding.toolbar.title = "Now Playing"
-        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.baseline_queue_music_white_24dp)
 
         val args = intent.extras
         songPlayingFragment.arguments = args
@@ -39,10 +36,5 @@ class SongPlayingActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return super.onSupportNavigateUp()
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.home || item.itemId == R.id.homeAsUp)
-            onBackPressed()
-        return super.onOptionsItemSelected(item)
     }
 }
