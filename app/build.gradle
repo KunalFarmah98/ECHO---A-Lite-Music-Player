@@ -16,11 +16,6 @@ android {
         versionCode 49
         versionName "2.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.incremental":"true"]
-            }
-        }
         vectorDrawables{
             useSupportLibrary = true
         }
@@ -34,15 +29,11 @@ android {
     }
     buildTypes {
         release {
-            multiDexKeepFile file('multidex-config.txt')
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             project.ext {
                 firebaseCrashlytics.mappingFileUploadEnabled = true
             }
-        }
-        debug{
-            multiDexKeepProguard file('multidex-config.txt')
         }
     }
     buildFeatures {
@@ -71,11 +62,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx:19.0.2'
     implementation 'com.google.firebase:firebase-perf-ktx:20.0.3'
     implementation 'com.google.firebase:firebase-core:19.0.2'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
     implementation "androidx.multidex:multidex:2.0.1"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.android.support:multidex:2.0.1'
 
     def room_version = "2.4.2"
