@@ -13,15 +13,17 @@ android {
         minSdkVersion 17
         targetSdkVersion 30
         multiDexEnabled true
-        versionCode 48
-        versionName "2.0.4"
+        versionCode 49
+        versionName "2.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.incremental":"true"]
             }
         }
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables{
+            useSupportLibrary = true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
