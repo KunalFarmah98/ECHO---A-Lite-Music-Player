@@ -2,10 +2,12 @@ package com.apps.kunalfarmah.echo.util
 
 import android.media.MediaPlayer
 import androidx.annotation.Keep
+import com.apps.kunalfarmah.echo.model.Songs
 
 @Keep
 object MediaUtils {
      var mediaPlayer:MediaPlayer = MediaPlayer()
+     var songsList:ArrayList<Songs> = ArrayList()
      fun isMediaPlayerPlaying(): Boolean{
           return try{
                mediaPlayer.isPlaying

@@ -92,8 +92,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             args.putInt("songPosition", position)
             args.putLong("songAlbum", songObject.songAlbum as Long)
 
-            /*Here the complete array list is sent*/
-            args.putParcelableArrayList("songData", songDetails)
+            MediaUtils.songsList = songDetails?:ArrayList()
 
             /*Using this we pass the arguments to the song playing fragment*/
             songPlayingFragment.arguments = args

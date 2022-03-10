@@ -73,7 +73,7 @@ object BottomBarUtils {
             args.putLong("SongID", currentSongHelper.songId!!)
             args.putLong("songAlbum", currentSongHelper.songAlbum!!)
             args.putInt("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
-            args.putParcelableArrayList("songData", SongPlayingFragment.Statified.fetchSongs)
+            MediaUtils.songsList = SongPlayingFragment.Statified.fetchSongs?:ArrayList()
             args.putBoolean("fromBottomBar",true)
             songPlayingFragment.arguments = args
             fragmentManager.beginTransaction()

@@ -898,7 +898,7 @@ class SongPlayingFragment : Fragment() {
 
         /*Here we fetch the received bundle data for current position and the list of all songs*/
         currentPosition = arguments!!.getInt("songPosition")
-        fetchSongs = arguments?.getParcelableArrayList("songData")
+        fetchSongs = MediaUtils.songsList
 
         //  Now store the song details to the current song helper object so that they can be used later
         currentSongHelper.songpath = path

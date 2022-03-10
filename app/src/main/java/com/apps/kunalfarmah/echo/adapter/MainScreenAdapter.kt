@@ -96,9 +96,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             args.putLong("songAlbum", songObject.songAlbum?:-1)
             args.putString("album", songObject.album)
             args.putInt("songPosition", position)
-
-            args.putParcelableArrayList("songData", songDetails)  // sending the details as a parcel to the bundle
-
+            MediaUtils.songsList = songDetails?:ArrayList()
             songPlayingFragment.arguments = args
 
 
