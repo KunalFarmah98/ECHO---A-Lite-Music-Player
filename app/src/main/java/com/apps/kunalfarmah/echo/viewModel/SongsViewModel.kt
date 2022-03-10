@@ -50,7 +50,7 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
     fun getAllSongs() {
         viewModelScope.launch {
             list = songsRepository.getAllSongs()
-        }.invokeOnCompletion { songsList.value = list }
+        }.invokeOnCompletion { songsList.value = list?:ArrayList() }
     }
 
     fun getAllAlbums(){
