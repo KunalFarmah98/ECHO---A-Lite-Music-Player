@@ -8,6 +8,7 @@ import com.apps.kunalfarmah.echo.model.Songs
 object MediaUtils {
      var mediaPlayer:MediaPlayer = MediaPlayer()
      var songsList:ArrayList<Songs> = ArrayList()
+     var currInd: Int = -1
      fun isMediaPlayerPlaying(): Boolean{
           return try{
                mediaPlayer.isPlaying

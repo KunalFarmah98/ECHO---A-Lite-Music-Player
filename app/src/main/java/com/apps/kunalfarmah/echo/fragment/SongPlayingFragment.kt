@@ -1007,6 +1007,10 @@ class SongPlayingFragment : Fragment() {
         context?.startService(serviceIntent)
         context?.startService(serviceIntent)
 
+        if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
+            activity?.onBackPressed()
+        }
+
     }
 
     override fun onResume() {

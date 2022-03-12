@@ -17,6 +17,7 @@ import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentMainScreenBinding
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +31,6 @@ class MainScreenFragment : Fragment() {
     companion object {
         val TAG = "MainScreenFragment"
         var noNext: Boolean = true
-        var position: Int? = 0
     }
 
     private val viewModel: SongsViewModel by viewModels()
@@ -133,7 +133,10 @@ class MainScreenFragment : Fragment() {
             binding.recyclerView.isDrawingCacheEnabled = true
             binding.recyclerView.isAlwaysDrawnWithCacheEnabled = true
             binding.recyclerView.adapter = _MainScreenAdapter
-            binding.recyclerView.scrollToPosition(max(0, position!! - 2))
+            try {
+                binding.recyclerView.scrollToPosition(max(0, MediaUtils.currInd - 2))
+            }
+            catch (e:java.lang.Exception){}
         }
 
         if (getSongsList != null) {

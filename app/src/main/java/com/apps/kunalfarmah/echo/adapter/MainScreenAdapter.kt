@@ -26,6 +26,7 @@ import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import kotlin.math.max
 
 
 /*This adapter class also serves the same function to act as a bridge between the single row view and its data. The implementation is quite similar to the one we did
@@ -54,6 +55,14 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
+        if(position == MediaUtils.currInd){
+            holder.binding?.contentRow?.strokeWidth = 2
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+        }
+        else{
+            holder.binding?.contentRow?.strokeWidth = 0
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorPrimary)!!
+        }
 
         /*The holder object of our MyViewHolder class has two properties i.e
         * trackTitle for holding the name of the song and
@@ -87,7 +96,8 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
             var intent = Intent(mContext,SongPlayingActivity::class.java)
-            MainScreenFragment.position = position
+            notifyItemChanged(max(MediaUtils.currInd,0))
+            MediaUtils.currInd = position
             mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
             intent.putExtra("songArtist", songObject.artist)
             intent.putExtra("songTitle", songObject.songTitle)
@@ -98,8 +108,10 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             intent.putExtra("songPosition", position)
             MediaUtils.songsList = songDetails?: ArrayList()
 
-            stopPlaying()
+            stopPlaying(intent)
 
+            holder.binding?.contentRow?.strokeWidth = 2
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
 //            var serviceIntent = Intent(mContext, EchoNotification::class.java)
 //
@@ -146,10 +158,11 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     }
 
 
-    private fun stopPlaying() {
+    private fun stopPlaying(intent: Intent) {
         try {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer.stop()
+                intent.putExtra(Constants.WAS_MEDIA_PLAYING,true)
             }
             stopPlayingCalled = true
         }catch (e:Exception){}

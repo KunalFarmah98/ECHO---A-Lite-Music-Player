@@ -21,8 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.math.max
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
@@ -227,6 +229,10 @@ class FavoriteFragment : Fragment() {
                 binding.recyclerView?.itemAnimator = DefaultItemAnimator()
                 binding.recyclerView?.adapter = _FavouriteAdapter
                 binding.recyclerView?.setHasFixedSize(true)
+                try {
+                    binding.recyclerView.scrollToPosition(max(0, MediaUtils.currInd - 2))
+                }
+                catch (e:java.lang.Exception){}
             }
         } else {
 

@@ -28,9 +28,11 @@ import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.util.BottomBarUtils;
 import com.apps.kunalfarmah.echo.util.Constants;
@@ -62,7 +64,6 @@ public class EchoNotification extends Service {
 
 
     MainActivity main;
-
     String title = "";
     String artist = "";
     Long albumID;
@@ -287,7 +288,21 @@ public class EchoNotification extends Service {
                     MediaUtils.INSTANCE.getMediaPlayer().stop();
                     MediaUtils.INSTANCE.getMediaPlayer().release();
                     main.setNotify_val(false);
-                    main.finishAffinity();
+                    MediaUtils.INSTANCE.setCurrInd(-1);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        try{
+                            new SongPlayingActivity().finish();
+                        }
+                        catch (Exception e){}
+                        main.finishAndRemoveTask();
+                    }
+                    else{
+                        try{
+                            new SongPlayingActivity().finish();
+                        }
+                        catch (Exception e){}
+                        main.finishAffinity();
+                    }
                 } catch (Exception e) {
                 }
                 stopForeground(true);
