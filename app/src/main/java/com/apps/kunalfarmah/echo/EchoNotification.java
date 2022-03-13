@@ -283,6 +283,7 @@ public class EchoNotification extends Service {
                         Constants.ACTION.CLOSE));
 
                 msong.unregister();
+                SongPlayingActivity act = SongPlayingActivity.Companion.getInstance();
 
                 try {
                     MediaUtils.INSTANCE.getMediaPlayer().stop();
@@ -290,17 +291,13 @@ public class EchoNotification extends Service {
                     main.setNotify_val(false);
                     MediaUtils.INSTANCE.setCurrInd(-1);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        try{
-                            new SongPlayingActivity().finish();
-                        }
-                        catch (Exception e){}
+                        if(act!=null)
+                            act.onBackPressed();
                         main.finishAndRemoveTask();
                     }
                     else{
-                        try{
-                            new SongPlayingActivity().finish();
-                        }
-                        catch (Exception e){}
+                        if(act!=null)
+                            act.onBackPressed();
                         main.finishAffinity();
                     }
                 } catch (Exception e) {

@@ -12,10 +12,12 @@ import com.apps.kunalfarmah.echo.util.BottomBarUtils
 class SongPlayingActivity : AppCompatActivity() {
     lateinit var binding : ActivitySongPlayingBinding
     companion object{
+        var instance: SongPlayingActivity?=null
         var songPlayingFragment = SongPlayingFragment()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this@SongPlayingActivity
         binding = ActivitySongPlayingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -29,6 +31,7 @@ class SongPlayingActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        instance = null
         BottomBarUtils.bottomBarBinding?.root?.visibility = View.VISIBLE
         super.onBackPressed()
     }
@@ -36,5 +39,10 @@ class SongPlayingActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        instance = null
     }
 }
