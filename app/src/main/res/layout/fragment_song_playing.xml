@@ -175,7 +175,7 @@
                     android:layout_width="@dimen/_47sdp"
                     android:layout_height="@dimen/_47sdp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/play_icon"
+                    android:background="@drawable/pause_icon"
                     android:minWidth="0dp"
                     android:minHeight="0dp" />
 

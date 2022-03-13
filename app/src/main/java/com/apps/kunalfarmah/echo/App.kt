@@ -18,7 +18,6 @@ class App: MultiDexApplication(){
     }
     override fun onCreate() {
         super.onCreate()
-        MediaUtils.mediaPlayer = MediaPlayer()
         FirebaseApp.initializeApp(this)
         context = this
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)

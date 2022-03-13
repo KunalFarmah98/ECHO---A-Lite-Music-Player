@@ -88,6 +88,8 @@ dependencies {
 
     implementation "androidx.media:media:1.5.0"
 
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.17.1'
+
 }
 
 kapt {

@@ -95,9 +95,8 @@ object BottomBarUtils {
                 if (!main.getnotify_val()) {
                     var trackPosition =
                         MediaUtils.getCurrentPosition()
-                    mediaPlayer.seekTo(trackPosition)
-                    if (SongPlayingFragment.Staticated.requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                        mediaPlayer.start()
+                    mediaPlayer.seekTo(trackPosition.toLong())
+                    mediaPlayer.play()
 
                     bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
                     var serviceIntent = Intent(myActivity, EchoNotification::class.java)
@@ -121,10 +120,9 @@ object BottomBarUtils {
                 * it plays the song from the same position where it was paused
                 * and change the button to pause button*/
                     var trackPosition =
-                        MediaUtils.getCurrentPosition() as Int  // current postiton where the player as stopped
-                    mediaPlayer.seekTo(trackPosition)
-                    if (SongPlayingFragment.Staticated.requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                        mediaPlayer.start()
+                        MediaUtils.getCurrentPosition()  // current postiton where the player as stopped
+                    mediaPlayer.seekTo(trackPosition.toLong())
+                    mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
 
                     var play = Intent(myActivity, EchoNotification::class.java)
