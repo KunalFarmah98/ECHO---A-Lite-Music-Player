@@ -50,7 +50,8 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
 
-        if(position == MediaUtils.currInd){
+        if (MediaUtils.currSong != null && songObject == MediaUtils.currSong
+        ) {
             holder.binding.contentRow.strokeWidth = 2
             holder.binding.contentRow.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
@@ -89,8 +90,8 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
             var intent = Intent(mContext,SongPlayingActivity::class.java)
-            notifyItemChanged(max(MediaUtils.currInd,0))
-            MediaUtils.currInd = position
+            notifyItemChanged(max(MediaUtils.getSongIndex(),0))
+            MediaUtils.currSong = songObject
 
             /*A bundle is used to transfer data from one point in your activity to another
             * Here we create an object of Bundle to send the sond details to the fragment so that we can display the song details there and also play the song*/

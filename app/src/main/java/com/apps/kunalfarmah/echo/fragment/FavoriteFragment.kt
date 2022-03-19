@@ -34,7 +34,7 @@ class FavoriteFragment : Fragment() {
         val TAG = "FavoriteFragment"
         var noNext: Boolean? = true
     }
-    var _FavouriteAdapter: FavoriteAdapter? = null
+    var favouriteAdapter: FavoriteAdapter? = null
     var main: MainActivity? = null
     var myActivity: Activity? = null
     var trackPosition: Int = 0
@@ -130,7 +130,7 @@ class FavoriteFragment : Fragment() {
                     }
                     //Task HERE
 
-                    _FavouriteAdapter?.filter_data(newList)
+                    favouriteAdapter?.filter_data(newList)
                 } catch (e: Exception) {
                     Toast.makeText(context, "Aw Snap! Something Wrong Happened", Toast.LENGTH_SHORT).show()
                 }
@@ -162,7 +162,7 @@ class FavoriteFragment : Fragment() {
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.nameComparator)
             }
-            _FavouriteAdapter?.notifyDataSetChanged()
+            favouriteAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
             val editortwo = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
@@ -172,7 +172,7 @@ class FavoriteFragment : Fragment() {
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.dateComparator)
             }
-            _FavouriteAdapter?.notifyDataSetChanged()
+            favouriteAdapter?.notifyDataSetChanged()
             return false
         }
         return super.onOptionsItemSelected(item)
@@ -220,17 +220,17 @@ class FavoriteFragment : Fragment() {
                 // recyclerView?.visibility = View.VISIBLE
 
                 /*Else we setup our recycler view for displaying the favorite songs*/
-                _FavouriteAdapter = FavoriteAdapter(
+                favouriteAdapter = FavoriteAdapter(
                     refreshList as java.util.ArrayList<Songs>,
                     myActivity as Context
                 )
                 val mLayoutManager = LinearLayoutManager(activity)
                 binding.recyclerView?.layoutManager = mLayoutManager
                 binding.recyclerView?.itemAnimator = DefaultItemAnimator()
-                binding.recyclerView?.adapter = _FavouriteAdapter
+                binding.recyclerView?.adapter = favouriteAdapter
                 binding.recyclerView?.setHasFixedSize(true)
                 try {
-                    binding.recyclerView.scrollToPosition(max(0, MediaUtils.currInd - 2))
+                    binding.recyclerView.scrollToPosition(max(0, MediaUtils.getSongIndex() - 2))
                 }
                 catch (e:java.lang.Exception){}
             }
