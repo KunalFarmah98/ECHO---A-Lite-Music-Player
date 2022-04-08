@@ -67,6 +67,7 @@ object MediaUtils {
      }
      var songsList:ArrayList<Songs> = ArrayList()
      var currInd: Int = -1
+     var currSong: Songs? = null
      fun isMediaPlayerPlaying(): Boolean{
           return try{
                mediaPlayer.isPlaying
@@ -89,5 +90,11 @@ object MediaUtils {
           }catch (e: Exception){
                0
           }
+     }
+
+     fun getSongIndex(): Int {
+          if(currSong == null)
+               return -1
+          return songsList?.indexOf(currSong)!!
      }
 }

@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -40,7 +39,7 @@ class MainScreenFragment : Fragment() {
 
     var myActivity: Activity? = null
     var trackPosition: Int = 0
-    var _MainScreenAdapter: MainScreenAdapter? = null
+    var mainScreenAdapter: MainScreenAdapter? = null
 
     private lateinit var binding: FragmentMainScreenBinding
 
@@ -124,7 +123,7 @@ class MainScreenFragment : Fragment() {
         } else {
             binding.visibleLayout.visibility = View.VISIBLE
             binding.noSongs.visibility = View.GONE
-            _MainScreenAdapter = MainScreenAdapter(getSongsList as ArrayList<Songs>, myActivity as Context)
+            mainScreenAdapter = MainScreenAdapter(getSongsList as ArrayList<Songs>, myActivity as Context)
             val mLayoutManager = LinearLayoutManager(myActivity)
             binding.recyclerView.layoutManager = mLayoutManager
             binding.recyclerView.itemAnimator = DefaultItemAnimator()
@@ -132,9 +131,9 @@ class MainScreenFragment : Fragment() {
             binding.recyclerView.setItemViewCacheSize(100)
             binding.recyclerView.isDrawingCacheEnabled = true
             binding.recyclerView.isAlwaysDrawnWithCacheEnabled = true
-            binding.recyclerView.adapter = _MainScreenAdapter
+            binding.recyclerView.adapter = mainScreenAdapter
             try {
-                binding.recyclerView.scrollToPosition(max(0, MediaUtils.currInd - 2))
+                binding.recyclerView.scrollToPosition(max(0, MediaUtils.getSongIndex() - 2))
             }
             catch (e:java.lang.Exception){}
         }
@@ -142,10 +141,10 @@ class MainScreenFragment : Fragment() {
         if (getSongsList != null) {
             if (action_sort_ascending!!.equals("true", ignoreCase = true)) {
                 Collections.sort(getSongsList, Songs.Statified.nameComparator)
-                _MainScreenAdapter?.notifyDataSetChanged()
+                mainScreenAdapter?.notifyDataSetChanged()
             } else if (action_sort_recent!!.equals("true", ignoreCase = true)) {
                 Collections.sort(getSongsList, Songs.Statified.dateComparator)
-                _MainScreenAdapter?.notifyDataSetChanged()
+                mainScreenAdapter?.notifyDataSetChanged()
             }
         }
     }
@@ -178,7 +177,7 @@ class MainScreenFragment : Fragment() {
                         newList?.add(songs)
 
                 }
-                _MainScreenAdapter?.filter_data(newList)
+                mainScreenAdapter?.filter_data(newList)
                 return true
             }
 
@@ -204,7 +203,7 @@ class MainScreenFragment : Fragment() {
             if (getSongsList != null) {
                 Collections.sort(getSongsList, Songs.Statified.nameComparator)
             }
-            _MainScreenAdapter?.notifyDataSetChanged()
+            mainScreenAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
             val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
@@ -214,7 +213,7 @@ class MainScreenFragment : Fragment() {
             if (getSongsList != null) {
                 Collections.sort(getSongsList, Songs.Statified.dateComparator)
             }
-            _MainScreenAdapter?.notifyDataSetChanged()
+            mainScreenAdapter?.notifyDataSetChanged()
             return false
         }
         return super.onOptionsItemSelected(item)

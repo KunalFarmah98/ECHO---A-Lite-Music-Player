@@ -55,7 +55,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
-        if(position == MediaUtils.currInd){
+        if(MediaUtils.currSong != null && songObject == MediaUtils.currSong){
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
@@ -96,8 +96,8 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
             var intent = Intent(mContext,SongPlayingActivity::class.java)
-            notifyItemChanged(max(MediaUtils.currInd,0))
-            MediaUtils.currInd = position
+            notifyItemChanged(max(MediaUtils.getSongIndex(),0))
+            MediaUtils.currSong = songObject
             mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
             intent.putExtra("songArtist", songObject.artist)
             intent.putExtra("songTitle", songObject.songTitle)

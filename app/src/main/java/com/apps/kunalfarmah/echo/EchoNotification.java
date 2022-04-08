@@ -288,7 +288,7 @@ public class EchoNotification extends Service {
                 try {
                     MediaUtils.INSTANCE.getMediaPlayer().stop();
                     MediaUtils.INSTANCE.getMediaPlayer().release();
-                    MediaUtils.INSTANCE.setCurrInd(-1);
+                    MediaUtils.INSTANCE.setCurrSong(null);
                     MediaUtils.INSTANCE.setSongsList(null);
                     main.setNotify_val(false);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
