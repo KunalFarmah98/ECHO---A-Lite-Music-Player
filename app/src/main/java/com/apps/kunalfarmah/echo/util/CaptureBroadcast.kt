@@ -96,7 +96,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                     try {
                         if (!MediaUtils.isMediaPlayerPlaying() && !SongPlayingFragment.Statified.inform && wasPlaying) {
 
-                            mediaPlayer.start()
+                            mediaPlayer.play()
                             wasPlaying=false
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 

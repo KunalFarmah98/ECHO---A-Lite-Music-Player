@@ -10,10 +10,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -32,9 +29,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.getAlbu
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastShakeTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.onSongComplete
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.requestAudioFocus
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateTextViews
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
@@ -54,7 +48,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.previous
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.seekBar
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shufflebutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlaying
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
@@ -65,7 +58,7 @@ import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.exoplayer2.*
 import java.io.FileDescriptor
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -110,17 +103,13 @@ class SongPlayingFragment : Fragment() {
                 currentSongHelper.songArtist as String
             )
 
-            mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
+//            mediaPlayer.release()   // resetting the media player once a song completes or next is clicked
 
             try {
-            mediaPlayer.setDataSource(
-                myActivity as Activity,
-                Uri.parse(currentSongHelper.songpath)
-            )
+            mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentSongHelper.songpath)),true)
             mediaPlayer.prepare()
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                mediaPlayer.start()
-            processInformation(mediaPlayer)
+//            mediaPlayer.play()
+//            processInformation()
             } catch (e: Exception) {
                 Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
             }
@@ -172,11 +161,7 @@ class SongPlayingFragment : Fragment() {
             if (currentPosition == -1) {
                 currentPosition = 0
             }
-            if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-            } else {
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-            }
+
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
 
             /*Similar to the playNext() function defined above*/
@@ -193,16 +178,12 @@ class SongPlayingFragment : Fragment() {
                 currentSongHelper.songArtist as String
             )
 
-            mediaPlayer.reset()
+//            mediaPlayer.release()
             try {
-            mediaPlayer.setDataSource(
-                myActivity as Activity,
-                Uri.parse(currentSongHelper.songpath)
-            )
+            mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentSongHelper.songpath)),true)
             mediaPlayer.prepare()
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                mediaPlayer.start()
-            processInformation(mediaPlayer as MediaPlayer)
+//            mediaPlayer.play()
+//            processInformation()
             } catch (e: Exception) {
                 Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
             }
@@ -213,8 +194,6 @@ class SongPlayingFragment : Fragment() {
             } else {
                 fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
             }
-
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 
             BottomBarUtils.setTitle()
             BottomBarUtils.setArtist()
@@ -397,17 +376,13 @@ class SongPlayingFragment : Fragment() {
                 )
 
 
-                mediaPlayer.reset()
+//                mediaPlayer.release()
 
                 try {
-                    mediaPlayer.setDataSource(
-                        myActivity as Activity,
-                        Uri.parse(currentSongHelper.songpath)
-                    )
+                    mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentSongHelper.songpath)))
                     mediaPlayer.prepare()
-                    if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                        mediaPlayer.start()
-                    processInformation(mediaPlayer as MediaPlayer)
+//                    mediaPlayer.play()
+//                    processInformation()
                 } catch (e: Exception) {
                     Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
                 }
@@ -441,103 +416,6 @@ class SongPlayingFragment : Fragment() {
             play.putExtra("artist", currentSongHelper.songArtist)
             play.putExtra("album", currentSongHelper.songAlbum)
             myActivity?.startService(play)
-        }
-
-
-        private val focusChangeListener =
-            AudioManager.OnAudioFocusChangeListener { focusChange ->
-                //            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                when (focusChange) {
-                    (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) ->
-                        // Lower the volume while ducking.
-                        mediaPlayer?.setVolume(0.2f, 0.2f)
-                    (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) -> {
-                        if (MediaUtils.isMediaPlayerPlaying()) {
-                            wasPlaying = true
-                            mediaPlayer?.pause()
-                            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-                            var play = Intent(myActivity, EchoNotification::class.java)
-                            play.action = Constants.ACTION.CHANGE_TO_PLAY
-                            myActivity?.startService(play)
-                        }
-
-                    }
-                    (AudioManager.AUDIOFOCUS_LOSS) -> {
-                        if (MediaUtils.isMediaPlayerPlaying()) {
-
-                            wasPlaying = true
-                            if (MainScreenAdapter.Statified.stopPlayingCalled) {
-                                // it means we started the song from within the app so don't pause it
-                                MainScreenAdapter.Statified.stopPlayingCalled = false
-                            } else {
-
-                                //                                wasPlaying = true
-                                mediaPlayer?.pause()
-                                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-                                var play = Intent(myActivity, EchoNotification::class.java)
-                                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                                myActivity?.startService(play)
-                                //                    val component = ComponentName(this, MediaControlReceiver::class.java)
-                                //                    am.unregisterMediaButtonEventReceiver(component)
-                            }
-                        }
-                    }
-                    (AudioManager.AUDIOFOCUS_GAIN) -> {
-
-                        if (wasPlaying) {
-                            wasPlaying = false
-
-                            // Return the volume to normal and resume if paused.
-                            mediaPlayer?.setVolume(1f, 1f)
-                            mediaPlayer?.start()
-                            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                            var play = Intent(myActivity, EchoNotification::class.java)
-                            play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                            myActivity?.startService(play)
-                        }
-                    }
-                    else -> {
-                    }
-                }
-            }
-
-
-        @SuppressLint("NewApi")
-        fun requestAudioFocus(): Int {
-
-            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-            //Request audio focus for playback
-            // old method
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                val result = am.requestAudioFocus(
-                    Staticated.focusChangeListener,
-                    // Use the music stream.
-                    AudioManager.STREAM_MUSIC,
-                    // Request permanent focus.
-                    AudioManager.AUDIOFOCUS_GAIN
-                )
-
-                return result
-            }
-            // from O onwards
-            else {
-                var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
-                    setAudioAttributes(AudioAttributes.Builder().run {
-                        setUsage(AudioAttributes.USAGE_MEDIA)
-                        setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        build()
-                    })
-                    setAcceptsDelayedFocusGain(true)
-                    setOnAudioFocusChangeListener(focusChangeListener)
-                    build()
-                }
-
-                return am.requestAudioFocus(focusRequest)
-            }
-
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
@@ -578,7 +456,7 @@ class SongPlayingFragment : Fragment() {
 
 
         /*function used to update the time*/
-        fun processInformation(mediaPlayer: MediaPlayer) {
+        fun processInformation() {
 
             /*Obtaining the final time*/
             val finalTime = MediaUtils.getDuration()
@@ -586,16 +464,16 @@ class SongPlayingFragment : Fragment() {
             /*Obtaining the current position*/
             val startingTime = MediaUtils.getCurrentPosition()
 
-            seekBar?.max = finalTime
+            seekBar?.max = finalTime.toInt()
 
             var seconds_start =
-                TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                TimeUnit.MILLISECONDS.toSeconds(startingTime) - TimeUnit.MINUTES.toSeconds(
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime)
                 )
 
             var seconds_end =
-                TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                TimeUnit.MILLISECONDS.toSeconds(finalTime) - TimeUnit.MINUTES.toSeconds(
+                    TimeUnit.MILLISECONDS.toMinutes(finalTime)
                 )
 
             if (seconds_start >= 10) {
@@ -603,9 +481,9 @@ class SongPlayingFragment : Fragment() {
                 /*Here we format the time and set it to the start time text*/
                 Statified.startTime?.text = String.format(
                     "%d:%d",
-                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime),
+                    TimeUnit.MILLISECONDS.toSeconds(startingTime) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(startingTime)
                     )
                 )
 
@@ -614,17 +492,17 @@ class SongPlayingFragment : Fragment() {
                     /*Similar to above is done for the end time text*/
                     Statified.endTime?.text = String.format(
                         "%d:%d",
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime)
                         )
                     )
                 } else {
                     Statified.endTime?.text = String.format(
                         "%d:0%d",
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime)
                         )
                     )
                 }
@@ -635,9 +513,9 @@ class SongPlayingFragment : Fragment() {
                 /*Here we format the time and set it to the start time text*/
                 Statified.startTime?.text = String.format(
                     "%d:0%d",
-                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime),
+                    TimeUnit.MILLISECONDS.toSeconds(startingTime) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(startingTime)
                     )
                 )
 
@@ -646,17 +524,17 @@ class SongPlayingFragment : Fragment() {
                     /*Similar to above is done for the end time text*/
                     Statified.endTime?.text = String.format(
                         "%d:%d",
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime)
                         )
                     )
                 } else {
                     Statified.endTime?.text = String.format(
                         "%d:0%d",
-                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime)
                         )
                     )
                 }
@@ -668,7 +546,7 @@ class SongPlayingFragment : Fragment() {
 
 
             /*Seekbar has been assigned this time so that it moves according to the time of song*/
-            seekBar?.progress = startingTime
+            seekBar?.progress = startingTime.toInt()
 
             /*Now this task is synced with the update song time object*/
             Handler().postDelayed(updateSongTime, 1000)
@@ -769,7 +647,7 @@ class SongPlayingFragment : Fragment() {
         Statified.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
                 if (fromuser && mediaPlayer != null) {
-                    mediaPlayer.seekTo(progress)
+                    mediaPlayer.seekTo(progress.toLong())
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.STARTFOREGROUND_ACTION
@@ -888,20 +766,13 @@ class SongPlayingFragment : Fragment() {
 
             // set up media player for default
             myActivity?.title = "Now Playing"
-
-            mediaPlayer = MediaPlayer()
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             //stopPlaying()
 
         try {
             //setting the data source for the media player with the help of uri
-            mediaPlayer.setDataSource(
-                myActivity as Activity,
-                Uri.parse(path)
-            )
+            mediaPlayer.setMediaItem(MediaItem.fromUri( Uri.parse(path)),true)
             mediaPlayer.prepare()
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                mediaPlayer.start()
+
 
         } catch (e: Exception) {
             Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
@@ -921,19 +792,7 @@ class SongPlayingFragment : Fragment() {
         }
 
         // precess all the information at the start of the song
-        processInformation(mediaPlayer)
-
-        if (MediaUtils.isMediaPlayerPlaying()) {
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-        } else {
-            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-        }
-
-        mediaPlayer.setOnErrorListener { mp, what, extra -> true }
-
-        mediaPlayer.setOnCompletionListener {
-            onSongComplete()
-        }
+//        processInformation()
 
         clickHandler()
 
@@ -994,18 +853,6 @@ class SongPlayingFragment : Fragment() {
 
 //        var filter2 = IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL)
 //        myActivity?.registerReceiver(mCallingReceiver, filter2)
-
-        var serviceIntent = Intent(context, EchoNotification::class.java)
-
-        serviceIntent.putExtra("title", _songTitle)
-        serviceIntent.putExtra("artist", _songArtist)
-        serviceIntent.putExtra("album", _songAlbum)
-
-        serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-
-        // need to start it twice or media controls don't work
-        context?.startService(serviceIntent)
-        context?.startService(serviceIntent)
 
         if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
             activity?.onBackPressed()
@@ -1174,8 +1021,7 @@ class SongPlayingFragment : Fragment() {
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
             } else {
-                if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    mediaPlayer.start()
+                    mediaPlayer.play()
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
                     playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
@@ -1183,8 +1029,6 @@ class SongPlayingFragment : Fragment() {
                     var play = Intent(activity, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PAUSE
                     activity?.startService(play)
-                }
-
             }
         }
     }
@@ -1267,12 +1111,11 @@ class SongPlayingFragment : Fragment() {
             /*If the song was not playing then, we start the music player and
             * change the image to pause icon*/
         } else {
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                mediaPlayer.start()
-                MainScreenAdapter.Statified.stopPlayingCalled = true
-                play = true
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-            }
+            mediaPlayer.play()
+            MainScreenAdapter.Statified.stopPlayingCalled = true
+            play = true
+            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+
         }
         BottomBarUtils.updatePlayPause()
         return play
