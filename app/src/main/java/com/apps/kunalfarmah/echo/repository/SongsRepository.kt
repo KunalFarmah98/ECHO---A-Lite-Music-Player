@@ -42,18 +42,6 @@ constructor(
         return cacheMapper.mapFromEntityList(echoDao.getSongsByAlbum(id))
     }
 
-    suspend fun insertFavorite(fav: Songs){
-        echoDao.insertFav(cacheMapper.mapToFavEntity(fav))
-    }
-
-    suspend fun getFavorite(id: Long): Songs {
-        return cacheMapper.mapFromFavEntity(echoDao.getFavoriteById(id))
-    }
-
-    suspend fun getAllFavorites(): List<Songs>{
-        return cacheMapper.mapFromFavEntityList(echoDao.getFavorites())
-    }
-
 
     @SuppressLint("Recycle")
     fun getSongsFromPhone(): ArrayList<Songs> {
@@ -97,8 +85,7 @@ constructor(
                     arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
-                    Log.d("Error",e.message!!.toString());
-//                    Toast.makeText(contetx,e.message.toString(), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context,e.message.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }

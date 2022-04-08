@@ -3,7 +3,6 @@ package com.apps.kunalfarmah.echo.adapter
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -17,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.BuildConfig
@@ -24,7 +24,6 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.HelpActivity
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SettingsActivity
-import com.apps.kunalfarmah.echo.online.OnlineActivity
 import java.io.*
 import java.util.*
 
@@ -55,13 +54,18 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
 
             /*Loading the Main Screen Fragment as the first(remember that the index starts at 0) item is All songs and the fragment corresponding to it is the Main Screen fragment*/
             if (position == 0) {
-                (mContext as MainActivity).movToHome()
+                (mContext as MainActivity).moveToHome()
             } else if (position == 1) {
                 mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
             } else if (position == 2) {
                 var intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://kunalfarmah.com")
-                mContext!!.startActivity(intent)
+                try {
+                    mContext?.startActivity(intent)
+                }
+                catch (e: ActivityNotFoundException){
+                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_browser_app), Toast.LENGTH_SHORT).show()
+                }
             } else if (position == 3) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
             } else if (position == 4) {
@@ -82,9 +86,14 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 }
                 else
                     sendIntent.type = "text/*"
-                mContext!!.startActivity(Intent.createChooser(sendIntent, "Share With"))
+                try {
+                    mContext?.startActivity(Intent.createChooser(sendIntent, "Share With"))
+                }
+                catch (e: ActivityNotFoundException){
+                    Toast.makeText(mContext, mContext?.resources?.getString(R.string.no_app_share), Toast.LENGTH_SHORT).show()
+                }
             } else if (position == 5) {
-                val uri = Uri.parse("market://details?id=" + mContext!!.packageName)
+                val uri = Uri.parse("market://details?id=" + mContext?.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
                 // To count with Play market backstack, After pressing back button,
                 // to taken back to our application, we need to add following flags to intent.
@@ -93,10 +102,10 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                         Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
                         Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
                 try {
-                    mContext!!.startActivity(goToMarket)
+                    mContext?.startActivity(goToMarket)
                 } catch (e: ActivityNotFoundException) {
-                    mContext!!.startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext!!.getPackageName())))
+                    mContext?.startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext?.getPackageName())))
                 }
             } else if (position == 6) {
                 var feedback = Intent(Intent.ACTION_SENDTO)
@@ -104,16 +113,13 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 feedback.data = Uri.parse("mailto:")
                 feedback.putExtra(Intent.EXTRA_EMAIL, to)
                 feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
-                mContext!!.startActivity(feedback)
+                try {
+                    mContext?.startActivity(feedback)
+                }
+                catch (e :ActivityNotFoundException){
+                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_email_app),Toast.LENGTH_SHORT).show();
+                }
 
-            } else if (position == 7) {
-                var pref: SharedPreferences = mContext!!.getSharedPreferences("Mode", Context.MODE_PRIVATE)
-                var editor = pref.edit()
-                editor.putString("mode", "online")
-                editor.apply()
-                val activity: MainActivity = mContext as MainActivity
-                activity.finish()
-                mContext?.startActivity(Intent(mContext, OnlineActivity::class.java))
             }
             MainActivity.Statified.drawerLayout?.closeDrawers()
         }
@@ -162,8 +168,8 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 e.printStackTrace()
             }
             try {
-                outStream!!.flush()
-                outStream!!.close()
+                outStream?.flush()
+                outStream?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

@@ -14,7 +14,6 @@ import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.session.MediaSession
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,29 +24,29 @@ import android.widget.*
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.*
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
+import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.database.EchoDatabase
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.getAlbumart
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastShakeTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.onSongComplete
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.playPrevious
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.reuestAudiofocus
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.requestAudioFocus
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateTextViews
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.ALbumArt
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.audioVisualization
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.controlsView
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.currentPosition
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.currentSongHelper
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fab
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.favoriteContent
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fetchSongs
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.glView
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.inform
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.loopbutton
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.mediaPlayer
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.nextbutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.playpausebutton
@@ -57,8 +56,12 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shuffleb
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlaying
 import com.apps.kunalfarmah.echo.model.Songs
+import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper
+import com.apps.kunalfarmah.echo.util.MediaUtils
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
+import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
@@ -70,11 +73,162 @@ import java.util.concurrent.TimeUnit
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
-    var repeat:SharedPreferences?=null
-    var shuffle: SharedPreferences?=null
+    var showVisualizer = true
+
+    companion object {
+        var sharedPreferences: SharedPreferences? = null
+
+        fun playNext(shuffle: Boolean) {
+
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+
+            /*Let this one sit for a while, We'll explain this after the next section where we will be teaching to add the next and previous functionality*/
+            if (!shuffle) {
+                currentPosition += 1
+
+            } else {
+                var randomObject =
+                    Random()                                                              // initialising a random object of the random class
+                var randomPosition =
+                    randomObject.nextInt(fetchSongs?.size?.plus(1) as Int)                // setting range of random to size+1
+                currentPosition = randomPosition
+            }
+            if (currentPosition == fetchSongs?.size) {    // if the currentposition exceeds the size, start over
+                currentPosition = 0
+            }
+            var nextSong = fetchSongs?.get(currentPosition)
+            currentSongHelper.songpath = nextSong?.songData
+            currentSongHelper.songTitle = nextSong?.songTitle
+            currentSongHelper.songArtist = nextSong?.artist
+            currentSongHelper.songAlbum = nextSong?.songAlbum
+            currentSongHelper.album = nextSong?.album
+            currentSongHelper.songId = nextSong?.songID as Long
+
+            updateTextViews(
+                currentSongHelper.songTitle as String,
+                currentSongHelper.songArtist as String
+            )
+
+            mediaPlayer.reset()   // resetting the media player once a song completes or next is clicked
+
+            try {
+            mediaPlayer.setDataSource(
+                myActivity as Activity,
+                Uri.parse(currentSongHelper.songpath)
+            )
+            mediaPlayer.prepare()
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
+            processInformation(mediaPlayer)
+            } catch (e: Exception) {
+                Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+            }
+
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+            } else {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+            }
+
+            BottomBarUtils.setTitle()
+            BottomBarUtils.setArtist()
+            BottomBarUtils.setAlbumArt()
 
 
-//    var receiver:BroadcastReceiver?=null
+            var play = Intent(myActivity, EchoNotification::class.java)
+            play.action = Constants.ACTION.NEXT_UPDATE
+            play.putExtra("title", currentSongHelper.songTitle)
+            play.putExtra("artist", currentSongHelper.songArtist)
+            play.putExtra("album", currentSongHelper.songAlbum)
+
+            myActivity?.startService(play)
+        }
+
+        /*The function playPrevious() is used to play the previous song again*/
+        fun playPrevious(shuffle: Boolean) {
+
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+
+            /*Decreasing the current position by 1 to get the position of the previous song*/
+            if (!shuffle) {
+                currentPosition -= 1
+
+            } else {
+                var n = fetchSongs?.size?.minus(1) as Int
+                if (n == 0) {
+                    currentPosition = 0
+                } else {
+                    var randomObject =
+                        Random()                                                              // initialising a random object of the random class
+                    var randomPosition =
+                        randomObject.nextInt(fetchSongs?.size?.minus(1) as Int)                // setting range of random to size+1
+                    currentPosition = randomPosition
+                }
+            }
+
+            /*If the current position becomes less than 1, we make it 0 as there is no index as -1*/
+            if (currentPosition == -1) {
+                currentPosition = 0
+            }
+            if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
+                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            } else {
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+            }
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+
+            /*Similar to the playNext() function defined above*/
+            var nextSong = fetchSongs?.get(currentPosition)
+            currentSongHelper.songpath = nextSong?.songData
+            currentSongHelper.songTitle = nextSong?.songTitle
+            currentSongHelper.songArtist = nextSong?.artist
+            currentSongHelper.songAlbum = nextSong?.songAlbum
+            currentSongHelper.album = nextSong?.album
+            currentSongHelper.songId = nextSong?.songID as Long
+
+            updateTextViews(
+                currentSongHelper.songTitle as String,
+                currentSongHelper.songArtist as String
+            )
+
+            mediaPlayer.reset()
+            try {
+            mediaPlayer.setDataSource(
+                myActivity as Activity,
+                Uri.parse(currentSongHelper.songpath)
+            )
+            mediaPlayer.prepare()
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
+            processInformation(mediaPlayer as MediaPlayer)
+            } catch (e: Exception) {
+                Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+            }
+
+
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+            } else {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+            }
+
+            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+
+            BottomBarUtils.setTitle()
+            BottomBarUtils.setArtist()
+            BottomBarUtils.setAlbumArt()
+
+
+            var play = Intent(myActivity, EchoNotification::class.java)
+            play.action = Constants.ACTION.PREV_UPDATE
+            play.putExtra("title", currentSongHelper.songTitle)
+            play.putExtra("artist", currentSongHelper.songArtist)
+            play.putExtra("album", currentSongHelper.songAlbum)
+            myActivity?.startService(play)
+        }
+    }
 
 
     @SuppressLint("StaticFieldLeak")
@@ -90,10 +244,8 @@ class SongPlayingFragment : Fragment() {
 
         val TAG = "SongPLayingFragment"
         var myActivity: Activity? = null
-        var mediaPlayer: MediaPlayer? = null
-        var inform:Boolean=false
+        var inform: Boolean = false
         var wasPlaying = false
-        var mediaSession: MediaSession ?= null
 
         var favoriteContent: EchoDatabase? = null
 
@@ -111,17 +263,17 @@ class SongPlayingFragment : Fragment() {
         var loopbutton: ImageButton? = null
         lateinit var shufflebutton: ImageButton
 
-        var ALbumArt : ImageView? = null
-        var fab: ImageButton? = null
-        var art: ImageButton? = null
+        var albumArt: ImageView? = null
+        var fab: ImageView? = null
+        var art: ImageView? = null
 
         var currentPosition: Int = 0
-        var currentSongHelper: CurrentSongHelper? = null
 
         var fetchSongs: ArrayList<Songs>? = null
 
         var audioVisualization: AudioVisualization? = null
         var glView: GLAudioVisualizationView? = null
+        var controlsView: LinearLayout? = null
 
 
         /**
@@ -134,42 +286,60 @@ class SongPlayingFragment : Fragment() {
             override fun run() {
 
                 /*Retrieving the current time position of the media player*/
-
-                if (mediaPlayer != null) {
-
-                    val getCurrent = mediaPlayer?.currentPosition
+                try {
+                    val getCurrent = mediaPlayer.currentPosition
 
                     /*The start time is set to the current position of the song
-                * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
-                * The %d:%d is used for formatting the time strings as 03:45 so that it appears like time*/
+                    * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
+                    * The %d:%d is used for formatting the time strings as 03:45 so that it appears like time*/
 
-                    var seconds = TimeUnit.MILLISECONDS.toSeconds(getCurrent?.toLong() as Long) -
-                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()))
+                    var seconds = TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong() as Long) -
+                            TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(
+                                    getCurrent.toLong()
+                                )
+                            )
 
+                    if (seconds > 1) {
+                        stopPlayingCalled = false
+                    }
                     if (seconds >= 10) {
 
-                        startTime?.text = String.format("%d:%d",
+                        startTime?.text = String.format(
+                            "%d:%d",
 
-                                TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()),
+                            TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()),
 
-                                TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong()) -
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong())))
+                            TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong()) -
+                                    TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(
+                                            getCurrent.toLong()
+                                        )
+                                    )
+                        )
 
                     } else if (seconds < 10) {
-                        startTime?.text = String.format("%d:0%d",
+                        startTime?.text = String.format(
+                            "%d:0%d",
 
-                                TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()),
+                            TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong()),
 
-                                TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong()) -
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrent.toLong())))
+                            TimeUnit.MILLISECONDS.toSeconds(getCurrent.toLong()) -
+                                    TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(
+                                            getCurrent.toLong()
+                                        )
+                                    )
+                        )
 
 
                     }
                     seekBar?.progress = getCurrent.toInt()
-
-                    /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
-                    Handler().postDelayed(this, 1000)
+                } catch (e: Exception) {
                 }
+
+                /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
+                Handler().postDelayed(this, 1000)
             }
         }
 
@@ -179,27 +349,20 @@ class SongPlayingFragment : Fragment() {
 
     object Staticated {
 
-        lateinit var sharedPreferences: SharedPreferences
-        lateinit var currSong: Songs
-
-        var MY_PREFS_SHUFFLE = "Shuffle feature"
-        var MY_PREFS_LOOP = "Loop feature"
-
-
         /*Sensor Variables*/
         var mSensorManager: SensorManager? = null
         var mSensorListener: SensorEventListener? = null
         var MY_PREFS_NAME = "ShakeFeature"
-        var mLastShakeTime:Long? =0
+        var mLastShakeTime: Long? = 0
 
-         fun getAlbumart(album_id: Long): Bitmap? {
+        fun getAlbumart(album_id: Long): Bitmap? {
             var bm: Bitmap? = null
             try {
                 val sArtworkUri: Uri = Uri
-                        .parse("content://media/external/audio/albumart")
+                    .parse("content://media/external/audio/albumart")
                 val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
                 val pfd: ParcelFileDescriptor? = myActivity!!.contentResolver
-                        .openFileDescriptor(uri, "r")
+                    .openFileDescriptor(uri, "r")
                 if (pfd != null) {
                     val fd: FileDescriptor = pfd.fileDescriptor
                     bm = BitmapFactory.decodeFileDescriptor(fd)
@@ -208,193 +371,88 @@ class SongPlayingFragment : Fragment() {
             }
             return bm
         }
-        
-        fun setData(){
-            currSong = Songs(songID = currentSongHelper?.songId!!, songTitle = currentSongHelper?.songTitle!!, album = currentSongHelper?.album!!, artist = currentSongHelper?.songArtist!!,
-                    songAlbum = currentSongHelper?.songAlbum!!, dateAdded = 0L, songData = "")
-        }
-
-        /*The function playPrevious() is used to play the previous song again*/
-        fun playPrevious(check: String) {
 
 
-            /*Decreasing the current position by 1 to get the position of the previous song*/
-            if (check.equals("PlayNextNormal", true)) {
-                currentPosition = currentPosition - 1
-
-            } else if (check.equals("PlayNextLikeNormalShuffle", true)) {
-                var n  = fetchSongs?.size?.minus(1) as Int
-                if(n==0) {
-                    currentPosition = 0
-                }
-                else {
-                    var randomObject = Random()                                                              // initialising a random object of the random class
-                    var randomPosition = randomObject.nextInt(fetchSongs?.size?.minus(1) as Int)                // setting range of random to size+1
-                    currentPosition = randomPosition
-                }
-            }
-
-            /*If the current position becomes less than 1, we make it 0 as there is no index as -1*/
-            if (currentPosition == -1) {
-                currentPosition = 0
-            }
-            if (currentSongHelper?.isPlaying as Boolean) {
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-            } else {
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-            }
-            currentSongHelper?.isLoop = false
-
-            /*Similar to the playNext() function defined above*/
-            var nextSong = fetchSongs?.get(currentPosition)
-            currentSongHelper?.songpath = nextSong?.songData
-            currentSongHelper?.songTitle = nextSong?.songTitle
-            currentSongHelper?.songArtist = nextSong?.artist
-            currentSongHelper?.songAlbum = nextSong?.songAlbum
-            currentSongHelper?.album = nextSong?.album
-            currentSongHelper?.songId = nextSong?.songID as Long
-
-            updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
-
-            Statified.mediaPlayer?.reset()
-            try {
-                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-                Statified.mediaPlayer?.prepare()
-                Statified.mediaPlayer?.start()
-                processInformation(Statified.mediaPlayer as MediaPlayer)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-
-
-            if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_on)
-            } else {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
-            }
-
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-
-            MainScreenFragment.Staticated.setTitle()
-            MainScreenFragment.Staticated.setArtist()
-
-            FavoriteFragment.Staticated.setTitle()
-            FavoriteFragment.Staticated.setArtist()
-
-            AlbumTracksFragment.setTitle()
-            AlbumTracksFragment.setArtist()
-            AlbumTracksFragment.setAlbumArt()
-
-            OfflineAlbumsFragment.setTitle()
-            OfflineAlbumsFragment.setArtist()
-            OfflineAlbumsFragment.setAlbumArt()
-
-
-            var play = Intent(myActivity, EchoNotification::class.java)
-            play.action = Constants.ACTION.PREV_UPDATE
-            play.putExtra("title", currentSongHelper?.songTitle)
-            play.putExtra("artist", currentSongHelper?.songArtist)
-            play.putExtra("album", currentSongHelper?.songAlbum)
-            myActivity?.startService(play)
-//            setData()
-           }
-
-        fun previous_song() {
-            if (currentSongHelper?.isShuffle as Boolean) {
-                playPrevious("PlayNextLikeNormalShuffle")
-            } else {
-                playPrevious("PlayNextNormal")
-            }
+        fun previousSong() {
+            playPrevious(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
         }
 
 
         /*Function to handle the event where the song completes playing*/
         fun onSongComplete() {
-//            else {
-            /*If shuffle was on then play a random next song*/
-            if (currentSongHelper?.isShuffle as Boolean) {
-                playNext("PlayNextLikeNormalShuffle")
-                currentSongHelper?.isPlaying = true
+            /*If loop was ON, then play the same song again*/
+            if (sharedPreferences?.getBoolean(Constants.LOOP, false) == true) {
+                var nextSong = fetchSongs?.get(currentPosition)
+                currentSongHelper.currentPosition = currentPosition
+                currentSongHelper.songpath = nextSong?.songData
+                currentSongHelper.songTitle = nextSong?.songTitle
+                currentSongHelper.songArtist = nextSong?.artist
+                currentSongHelper.songAlbum = nextSong?.songAlbum
+                currentSongHelper.album = nextSong?.album
+                currentSongHelper.songId = nextSong?.songID as Long
+
+                updateTextViews(
+                    currentSongHelper.songTitle as String,
+                    currentSongHelper.songArtist as String
+                )
+
+
+                mediaPlayer.reset()
+
+                try {
+                    mediaPlayer.setDataSource(
+                        myActivity as Activity,
+                        Uri.parse(currentSongHelper.songpath)
+                    )
+                    mediaPlayer.prepare()
+                    if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                        mediaPlayer.start()
+                    processInformation(mediaPlayer as MediaPlayer)
+                } catch (e: Exception) {
+                    Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+                }
             } else {
 
-                /*If loop was ON, then play the same song again*/
-                if (myActivity!!.getSharedPreferences(MY_PREFS_LOOP, MODE_PRIVATE).getBoolean("feature", false) as Boolean) {
-                    currentSongHelper?.isPlaying = true
-                    var nextSong = fetchSongs?.get(currentPosition)
-                    currentSongHelper?.currentPosition = currentPosition
-                    currentSongHelper?.songpath = nextSong?.songData
-                    currentSongHelper?.songTitle = nextSong?.songTitle
-                    currentSongHelper?.songArtist = nextSong?.artist
-                    currentSongHelper?.songAlbum = nextSong?.songAlbum
-                    currentSongHelper?.album = nextSong?.album
-                    currentSongHelper?.songId = nextSong?.songID as Long
-
-                    updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
-
-
-                    Statified.mediaPlayer?.reset()
-
-                    try {
-                        Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-                        Statified.mediaPlayer?.prepare()
-                        Statified.mediaPlayer?.start()
-                        processInformation(Statified.mediaPlayer as MediaPlayer)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                } else {
-
-                    /*If loop was OFF then normally play the next song*/
-                    playNext("PlayNextNormal")
-                    currentSongHelper?.isPlaying = true
-                }
-
-
-                if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-                    fab?.setBackgroundResource(R.drawable.favorite_on)
-                } else {
-                    fab?.setBackgroundResource(R.drawable.favorite_off)
-                }
+                /*If loop was OFF then normally play the next song*/
+                playNext(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
             }
-//            }
+
+
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+            } else {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+            }
 
             // preventing next song from playing if activity was destroyed
 
-            if (MainScreenFragment.Statified.noNext == false){
-                previous_song()
-                MainScreenFragment.Statified.noNext = true
-            }
-
-            else if(FavoriteFragment.Statified.noNext == false){
-                previous_song()
-                FavoriteFragment.Statified.noNext = true
-            }
+//            if (!MainScreenFragment.noNext) {
+//                previousSong()
+//                MainScreenFragment.noNext = true
+//            } else if (FavoriteFragment.noNext == false) {
+//                previousSong()
+//                FavoriteFragment.noNext = true
+//            }
 
 
             var play = Intent(myActivity, EchoNotification::class.java)
             play.action = Constants.ACTION.NEXT_UPDATE
-            play.putExtra("title", currentSongHelper?.songTitle)
-            play.putExtra("artist", currentSongHelper?.songArtist)
-            play.putExtra("album", currentSongHelper?.songAlbum)
-
-            try {
-                myActivity?.startService(play)
-//                setData()
-            }
-            catch (e: Exception){ }
+            play.putExtra("title", currentSongHelper.songTitle)
+            play.putExtra("artist", currentSongHelper.songArtist)
+            play.putExtra("album", currentSongHelper.songAlbum)
+            myActivity?.startService(play)
         }
 
 
-        val focusChangeListener = object : AudioManager.OnAudioFocusChangeListener {
-            override fun onAudioFocusChange(focusChange: Int) {
-//            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        private val focusChangeListener =
+            AudioManager.OnAudioFocusChangeListener { focusChange ->
+                //            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 when (focusChange) {
                     (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) ->
                         // Lower the volume while ducking.
                         mediaPlayer?.setVolume(0.2f, 0.2f)
                     (AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) -> {
-                        if (Statified.mediaPlayer!!.isPlaying) {
+                        if (MediaUtils.isMediaPlayerPlaying()) {
                             wasPlaying = true
                             mediaPlayer?.pause()
                             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
@@ -406,7 +464,7 @@ class SongPlayingFragment : Fragment() {
 
                     }
                     (AudioManager.AUDIOFOCUS_LOSS) -> {
-                        if (mediaPlayer!!.isPlaying) {
+                        if (MediaUtils.isMediaPlayerPlaying()) {
 
                             wasPlaying = true
                             if (MainScreenAdapter.Statified.stopPlayingCalled) {
@@ -414,15 +472,15 @@ class SongPlayingFragment : Fragment() {
                                 MainScreenAdapter.Statified.stopPlayingCalled = false
                             } else {
 
-//                                wasPlaying = true
+                                //                                wasPlaying = true
                                 mediaPlayer?.pause()
                                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                                 var play = Intent(myActivity, EchoNotification::class.java)
                                 play.action = Constants.ACTION.CHANGE_TO_PLAY
                                 myActivity?.startService(play)
-//                    val component = ComponentName(this, MediaControlReceiver::class.java)
-//                    am.unregisterMediaButtonEventReceiver(component)
+                                //                    val component = ComponentName(this, MediaControlReceiver::class.java)
+                                //                    am.unregisterMediaButtonEventReceiver(component)
                             }
                         }
                     }
@@ -444,22 +502,23 @@ class SongPlayingFragment : Fragment() {
                     }
                 }
             }
-        }
 
 
         @SuppressLint("NewApi")
-        fun reuestAudiofocus(): Int {
+        fun requestAudioFocus(): Int {
 
-                val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val am = myActivity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        //Request audio focus for playback
+            //Request audio focus for playback
             // old method
-            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
-                val result = am.requestAudioFocus(Staticated.focusChangeListener,
-                        // Use the music stream.
-                        AudioManager.STREAM_MUSIC,
-                        // Request permanent focus.
-                        AudioManager.AUDIOFOCUS_GAIN)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                val result = am.requestAudioFocus(
+                    Staticated.focusChangeListener,
+                    // Use the music stream.
+                    AudioManager.STREAM_MUSIC,
+                    // Request permanent focus.
+                    AudioManager.AUDIOFOCUS_GAIN
+                )
 
                 return result
             }
@@ -467,7 +526,7 @@ class SongPlayingFragment : Fragment() {
             else {
                 var focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
                     setAudioAttributes(AudioAttributes.Builder().run {
-                        setUsage(AudioAttributes.USAGE_GAME)
+                        setUsage(AudioAttributes.USAGE_MEDIA)
                         setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         build()
                     })
@@ -482,24 +541,38 @@ class SongPlayingFragment : Fragment() {
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun updateTextViews(songtitle: String, songartist: String) {
+        fun updateTextViews(songtitle: String?, songartist: String?) {
 
             var songtitleupdted = songtitle
             var songartistupdted = songartist
 
-            if (songtitle.equals("<unknown>", true)) {
+            if (songtitle == null || songtitle.equals("<unknown>", true)) {
                 songtitleupdted = "Unknown"
             }
-            if (songartist.equals("<unknown>", true)) {
+            if (songartist == null || songartist.equals("<unknown>", true)) {
                 songartistupdted = "Unknown"
             }
             Statified.songTitle?.text = songtitleupdted
             Statified.songArtist?.text = songartistupdted
 
-            var img = getAlbumart(currentSongHelper?.songAlbum!!.toLong())
-            if(img==null)
-            ALbumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-            else ALbumArt?.setImageBitmap(img)
+            var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
+            if (img == null) {
+                albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                glView?.visibility = View.VISIBLE
+                albumArt?.visibility = View.GONE
+                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+            } else {
+                albumArt?.setImageBitmap(img)
+                if (myActivity != null) {
+                    glView?.visibility = View.GONE
+                    albumArt?.visibility = View.VISIBLE
+                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                }
+            }
+
+            BottomBarUtils.setTitle()
+            BottomBarUtils.setArtist()
+            BottomBarUtils.setAlbumArt()
 
         }
 
@@ -508,55 +581,89 @@ class SongPlayingFragment : Fragment() {
         fun processInformation(mediaPlayer: MediaPlayer) {
 
             /*Obtaining the final time*/
-            val finalTime = mediaPlayer.duration
+            val finalTime = MediaUtils.getDuration()
 
             /*Obtaining the current position*/
-            val startingTime = mediaPlayer.currentPosition
+            val startingTime = MediaUtils.getCurrentPosition()
 
             seekBar?.max = finalTime
 
-            var seconds_start = TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()))
+            var seconds_start =
+                TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                )
 
-            var seconds_end = TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()))
+            var seconds_end =
+                TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                )
 
             if (seconds_start >= 10) {
 
                 /*Here we format the time and set it to the start time text*/
-                Statified.startTime?.text = String.format("%d:%d",
-                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
-                        TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())))
+                Statified.startTime?.text = String.format(
+                    "%d:%d",
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
+                    TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                    )
+                )
 
                 if (seconds_end >= 10) {
 
                     /*Similar to above is done for the end time text*/
-                    Statified.endTime?.text = String.format("%d:%d",
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                            TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())))
+                    Statified.endTime?.text = String.format(
+                        "%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
                 } else {
-                    Statified.endTime?.text = String.format("%d:0%d",
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                            TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())))
+                    Statified.endTime?.text = String.format(
+                        "%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
                 }
 
 
             } else if (seconds_start < 10) {
 
                 /*Here we format the time and set it to the start time text*/
-                Statified.startTime?.text = String.format("%d:0%d",
-                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
-                        TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())))
+                Statified.startTime?.text = String.format(
+                    "%d:0%d",
+                    TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong()),
+                    TimeUnit.MILLISECONDS.toSeconds(startingTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(startingTime.toLong())
+                    )
+                )
 
                 if (seconds_end >= 10) {
 
                     /*Similar to above is done for the end time text*/
-                    Statified.endTime?.text = String.format("%d:%d",
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                            TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())))
+                    Statified.endTime?.text = String.format(
+                        "%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
                 } else {
-                    Statified.endTime?.text = String.format("%d:0%d",
-                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                            TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())))
+                    Statified.endTime?.text = String.format(
+                        "%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong()) - TimeUnit.MINUTES.toSeconds(
+                            TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())
+                        )
+                    )
                 }
+            }
+
+            if (finalTime <= 0) {
+                Statified.endTime?.text = "-:--"
             }
 
 
@@ -567,91 +674,17 @@ class SongPlayingFragment : Fragment() {
             Handler().postDelayed(updateSongTime, 1000)
         }
 
-        fun upddateButton(Mode: String) {
+        fun updateButton(Mode: String) {
 
             if (Mode.equals("pause", true)) {
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                currentSongHelper?.isPlaying = false
 
             } else if (Mode.equals("play", true)) {
                 playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                currentSongHelper?.isPlaying = true
 
             }
         }
-
-
-        fun playNext(check: String) {
-
-            /*Let this one sit for a while, We'll explain this after the next section where we will be teaching to add the next and previous functionality*/
-            if (check.equals("PlayNextNormal", true)) {
-                currentPosition = currentPosition + 1
-
-            } else if (check.equals("PlayNextLikeNormalShuffle", true)) {
-                var n  = fetchSongs?.size?.plus(1) as Int
-                if(n==0) {
-                    currentPosition = 0
-                }
-                else {
-                    var randomObject = Random()                                                              // initialising a random object of the random class
-                    var randomPosition = randomObject.nextInt(fetchSongs?.size?.plus(1) as Int)                // setting range of random to size+1
-                    currentPosition = randomPosition
-                }
-            }
-            if (currentPosition == fetchSongs?.size) {    // if the currentposition exceeds the size, start over
-                currentPosition = 0
-            }
-            var nextSong = fetchSongs?.get(currentPosition)
-            currentSongHelper?.songpath = nextSong?.songData
-            currentSongHelper?.songTitle = nextSong?.songTitle
-            currentSongHelper?.songArtist = nextSong?.artist
-            currentSongHelper?.songAlbum = nextSong?.songAlbum
-            currentSongHelper?.album = nextSong?.album
-            if(null==currentSongHelper?.songId || null==nextSong?.songID) {
-                return
-            }
-            else
-                currentSongHelper?.songId = nextSong?.songID as Long
-
-            updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
-
-            Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
-
-            try {
-                Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-                Statified.mediaPlayer?.prepare()
-                Statified.mediaPlayer?.start()
-                processInformation(Statified.mediaPlayer as MediaPlayer)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            MainScreenFragment.Staticated.setTitle()
-            MainScreenFragment.Staticated.setArtist()
-
-            FavoriteFragment.Staticated.setTitle()
-            FavoriteFragment.Staticated.setArtist()
-
-            AlbumTracksFragment.setTitle()
-            AlbumTracksFragment.setArtist()
-            AlbumTracksFragment.setAlbumArt()
-
-            OfflineAlbumsFragment.setTitle()
-            OfflineAlbumsFragment.setArtist()
-            OfflineAlbumsFragment.setAlbumArt()
-
-            if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_on)
-            } else {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
-            }
-//            setData()
-        }
-
     }
-
-
-
 
     var mAcceleration: Float = 0f
 
@@ -663,9 +696,9 @@ class SongPlayingFragment : Fragment() {
 
     private val mNoisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (Statified.mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
-                inform=true
+                inform = true
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                 var play = Intent(context, EchoNotification::class.java)
@@ -680,27 +713,23 @@ class SongPlayingFragment : Fragment() {
 
     private val mCallingReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (Statified.mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                 var play = Intent(context, EchoNotification::class.java)
                 play.action = Constants.ACTION.CHANGE_TO_PLAY
                 activity?.startService(play)
-
-//                Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
             }
         }
     }
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-
-
-        //only recreating the view if it is not present beforehand
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         var view = view
 
@@ -708,14 +737,9 @@ class SongPlayingFragment : Fragment() {
             view = inflater.inflate(R.layout.fragment_song_playing, container, false)
         }
 
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-
-//        activity?.title = "Now Playing"
         setHasOptionsMenu(true)
 
-//        receiver=CaptureBroadcast()
-
-        ALbumArt = view?.findViewById(R.id.art)
+        albumArt = view?.findViewById(R.id.art)
 
         Statified.songTitle = view?.findViewById(R.id.songTitle)
         Statified.songTitle?.isSelected = true
@@ -736,23 +760,22 @@ class SongPlayingFragment : Fragment() {
         /*Linking it with the view*/
         fab = view?.findViewById(R.id.favouriteButton)
         art = view?.findViewById(R.id.showArtButton)
-
-        /*Fading the favorite icon*/
-        fab?.alpha = 0.8f
-        art?.alpha = 0.8f
+        art?.visibility = View.VISIBLE
 
         glView = view?.findViewById(R.id.visualizer_view)
 
+        controlsView = view?.findViewById(R.id.controls_layout);
+
         Statified.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
-                if (fromuser && Statified.mediaPlayer != null) {
-                    Statified.mediaPlayer?.seekTo(progress)
-                    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q) {
+                if (fromuser && mediaPlayer != null) {
+                    mediaPlayer.seekTo(progress)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.STARTFOREGROUND_ACTION
-                        play.putExtra("title", currentSongHelper?.songTitle)
-                        play.putExtra("artist", currentSongHelper?.songArtist)
-                        play.putExtra("album", currentSongHelper?.songAlbum)
+                        play.putExtra("title", currentSongHelper.songTitle)
+                        play.putExtra("artist", currentSongHelper.songArtist)
+                        play.putExtra("album", currentSongHelper.songAlbum)
                         myActivity?.startService(play)
                     }
                 }
@@ -763,10 +786,6 @@ class SongPlayingFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Statified.mediaSession = MediaSession(requireContext(), "EchoNotification")
-        }
-
         return view
 
 
@@ -776,49 +795,16 @@ class SongPlayingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /*Sensor service is activate when the fragment is created*/
-        Staticated.mSensorManager = myActivity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        Staticated.mSensorManager =
+            myActivity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         /*Default values*/
         mAcceleration = 0.0f
         /*We take earth's gravitational value to be default, this will give us good results*/
         mAccelerationCurrent = SensorManager.GRAVITY_EARTH
         mAccelerationLast = SensorManager.GRAVITY_EARTH
+        sharedPreferences = context?.getSharedPreferences(Constants.APP_PREFS, MODE_PRIVATE)
         bindShakeListener()
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-
-        menu.clear()   // clearing any previous menus
-        inflater.inflate(R.menu.song_playing_menu, menu)
-
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-
-        val item: MenuItem? = menu.findItem(R.id.action_redirect)
-        item?.isVisible = true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_redirect -> {
-                // redirecting the user to the activity from which they came
-                myActivity?.onBackPressed()
-                return false
-
-            }
-        }
-        return false
-    }
-
-
-    override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // you can extract AudioVisualization interface for simplifying things
-        audioVisualization = glView as AudioVisualization
     }
 
 
@@ -836,129 +822,116 @@ class SongPlayingFragment : Fragment() {
 
 
     @SuppressLint("UseRequireInsteadOfGet")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-        // recreating everything again only if it didn't happen before
-
-
-        super.onActivityCreated(savedInstanceState)
-
+        // you can extract AudioVisualization interface for simplifying things
+        audioVisualization = glView as AudioVisualization
 
         /*Initialising the params of the current song helper object*/
         favoriteContent = EchoDatabase(myActivity)
         currentSongHelper = CurrentSongHelper()
-        currentSongHelper?.isPlaying = true
-        currentSongHelper?.isLoop = false
-        currentSongHelper?.isShuffle = false
 
 
         var path: String? = null   // to get the args of the bundle
         var _songTitle: String? = null
         var _songArtist: String? = null
         var _songId: Long? = null
-        var _songAlbum:Long?=null
-        var _album:String?=null
+        var _songAlbum: Long? = null
+        var _album: String? = null
+        var fromBottomBar = false
 
-        try {
-            path = arguments?.getString("path")
-            _songArtist = arguments?.getString("songArtist")
-            _songTitle = arguments?.getString("songTitle")
-            _songAlbum = arguments?.getLong("songAlbum")
+        //try {
+        path = arguments?.getString("path")
+        _songArtist = arguments?.getString("songArtist")
+        _songTitle = arguments?.getString("songTitle")
+        _songAlbum = arguments?.getLong("songAlbum")
 //            var id = arguments?.getLong("SongID")
-            _songId = arguments?.getLong("SongID")
-            _album = arguments?.getString("album")
+        _songId = arguments?.getLong("SongID")
+        _album = arguments?.getString("album")
+
+        if (arguments?.getBoolean("fromBottomBar") != null)
+            fromBottomBar = arguments?.getBoolean("fromBottomBar")!!
 
 
-            /*Here we fetch the received bundle data for current position and the list of all songs*/
-            currentPosition = arguments!!.getInt("songPosition")
-            fetchSongs = arguments?.getParcelableArrayList("songData")
+        /*Here we fetch the received bundle data for current position and the list of all songs*/
+        currentPosition = arguments!!.getInt("songPosition")
+        fetchSongs = MediaUtils.songsList
 
-            /*Now store the song details to the current song helper object so that they can be used later*/
-            currentSongHelper?.songpath = path
-            currentSongHelper?.songTitle = _songTitle
-            currentSongHelper?.songArtist = _songArtist
-            currentSongHelper?.songId = _songId
-            currentSongHelper?.songAlbum = _songAlbum
-            currentSongHelper?.album = _album
-            currentSongHelper?.currentPosition = currentPosition
+        //  Now store the song details to the current song helper object so that they can be used later
+        currentSongHelper.songpath = path
+        currentSongHelper.songTitle = _songTitle
+        currentSongHelper.songArtist = _songArtist
+        currentSongHelper.songId = _songId
+        currentSongHelper.songAlbum = _songAlbum
+        currentSongHelper.album = _album
+        currentSongHelper.currentPosition = currentPosition
 
-            ALbumArt?.setImageBitmap(getAlbumart(currentSongHelper?.songAlbum!!.toLong()))
-            ALbumArt?.visibility=View.GONE
+        albumArt?.setImageBitmap(getAlbumart(currentSongHelper.songAlbum!!.toLong()))
+        albumArt?.visibility = View.GONE
 
-            // updating the textViews as soon as the song is changed and loaded
+        // updating the textViews as soon as the song is changed and loaded
 
-            updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
+        updateTextViews(
+            currentSongHelper.songTitle,
+            currentSongHelper.songArtist
+        )
 
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        var fromFavbotomBar = arguments?.get("FavBottomBar")  as? String
-        var fromMainbottomBar = arguments?.get("MainBottomBar")  as? String
-        var fromAlbumbottomBar = arguments?.get("AlbumsBottomBar")  as? String
-        var fromAlbumSongsbottomBar = arguments?.get("AlbumSongsBottomBar")  as? String
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//    }
 
 
-        if (fromFavbotomBar != null) {
+        if (fromBottomBar) {
             myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = FavoriteFragment.Statified.mediaPlayer
-        } else if (fromMainbottomBar != null) {
-            myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = MainScreenFragment.Statified.mediaPlayer
-        }
-        else if (fromAlbumbottomBar != null) {
-            myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = OfflineAlbumsFragment.mediaPlayer
-        }
-        else if (fromAlbumSongsbottomBar != null) {
-            myActivity?.title = "Now Playing"
-            Statified.mediaPlayer = AlbumTracksFragment.mediaPlayer
-        }else {
+        } else {
 
             // set up media player for default
             myActivity?.title = "Now Playing"
 
-            Statified.mediaPlayer = MediaPlayer()
-            Statified.mediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaPlayer = MediaPlayer()
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             //stopPlaying()
 
-            try {
+        try {
+            //setting the data source for the media player with the help of uri
+            mediaPlayer.setDataSource(
+                myActivity as Activity,
+                Uri.parse(path)
+            )
+            mediaPlayer.prepare()
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                mediaPlayer.start()
 
-                //setting the data source for the media player with the help of uri
-                Statified.mediaPlayer?.setDataSource(path)
-                Statified.mediaPlayer?.prepare()
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-
+        } catch (e: Exception) {
+            Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+            if(activity!=null)
+                (activity as SongPlayingActivity).finish()
+            return
+        }
 
 
 //            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // other app had stopped playing song now , so u can do u stuff now .
 
-            if(reuestAudiofocus()== AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            Statified.mediaPlayer?.start()
+
 //            }
 
 
         }
 
         // precess all the information at the start of the song
-        processInformation(Statified.mediaPlayer as MediaPlayer)
+        processInformation(mediaPlayer)
 
-        if (currentSongHelper?.isPlaying as Boolean && mediaPlayer?.isPlaying as Boolean) {
+        if (MediaUtils.isMediaPlayerPlaying()) {
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
         } else {
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
         }
 
+        mediaPlayer.setOnErrorListener { mp, what, extra -> true }
 
-
-        Statified.mediaPlayer?.setOnCompletionListener {
+        mediaPlayer.setOnCompletionListener {
             onSongComplete()
         }
 
@@ -968,62 +941,49 @@ class SongPlayingFragment : Fragment() {
          *  set visualiser helper
          *  */
 
-        var visualizationHandler = DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
-        audioVisualization?.linkTo(visualizationHandler)
+        try {
+            var visualizationHandler =
+                DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
+            audioVisualization?.linkTo(visualizationHandler)
+        }
+        catch (e:java.lang.Exception){
+            art?.visibility =  View.GONE
+            glView?.visibility = View.GONE
+            albumArt?.visibility = View.VISIBLE
+            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+        }
 
 
         /**
          *  getting the shared preferences for shuffle set by the song
          */
 
-        var prefsForShuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-
-        /*Here we extract the value of preferences and check if shuffle was ON or not*/
-        var isShuffleAllowed = prefsForShuffle?.getBoolean("feature", false)
-        if (isShuffleAllowed as Boolean) {
-
+        if (sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)) {
             /*if shuffle was found activated, then we change the icon color and tun loop OFF*/
-            currentSongHelper?.isShuffle = true
-            currentSongHelper?.isLoop = false
-            shufflebutton?.setBackgroundResource(R.drawable.shuffle_icon)
+            shufflebutton.setBackgroundResource(R.drawable.shuffle_icon)
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
         } else {
-
-
             /*Else default is set*/
-            currentSongHelper?.isShuffle = false
-            shufflebutton?.setBackgroundResource(R.drawable.shuffle_white_icon)
+            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
         }
 
-
-        /**
-         *  getting the shared preferences for loop set by the song
-         */
-
-        var prefsForLoop = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
-
-        /*Here we extract the value of preferences and check if loop was ON or not*/
-        var isLoopAllowed = prefsForLoop?.getBoolean("feature", false)
-        if (isLoopAllowed as Boolean) {
-
+        if (sharedPreferences!!.getBoolean(Constants.LOOP, false)) {
             /*If loop was activated we change the icon color and shuffle is turned OFF */
-            currentSongHelper?.isShuffle = false
-            currentSongHelper?.isLoop = true
-            shufflebutton?.setBackgroundResource(R.drawable.shuffle_white_icon)
             loopbutton?.setBackgroundResource(R.drawable.loop_icon)
+            sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
         } else {
-            /*Else defaults are used*/
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-            currentSongHelper?.isLoop = false
         }
 
 
         /*Here we check that if the song playing is a favorite, then we show a red colored heart indicating favorite else only the heart boundary
        * This action is performed whenever a new song is played, hence this will done in the playNext(), playPrevious() and onSongComplete() methods*/
-        if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-            fab?.setBackgroundResource(R.drawable.favorite_on)
+        if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+            fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
         } else {
-            fab?.setBackgroundResource(R.drawable.favorite_off)
+            fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
         }
 
 
@@ -1035,25 +995,39 @@ class SongPlayingFragment : Fragment() {
 //        var filter2 = IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL)
 //        myActivity?.registerReceiver(mCallingReceiver, filter2)
 
+        var serviceIntent = Intent(context, EchoNotification::class.java)
+
+        serviceIntent.putExtra("title", _songTitle)
+        serviceIntent.putExtra("artist", _songArtist)
+        serviceIntent.putExtra("album", _songAlbum)
+
+        serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+
+        // need to start it twice or media controls don't work
+        context?.startService(serviceIntent)
+        context?.startService(serviceIntent)
+
+        if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
+            activity?.onBackPressed()
+        }
 
     }
 
     override fun onResume() {
         super.onResume()
-        Staticated.mSensorManager?.registerListener(Staticated.mSensorListener,
-                Staticated.mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL)
-        if(null== mediaPlayer)
-            mediaPlayer = MediaPlayer()
-        audioVisualization?.onResume()
+        Staticated.mSensorManager?.registerListener(
+            Staticated.mSensorListener,
+            Staticated.mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+        if (audioVisualization != null)
+            audioVisualization!!.onResume()
     }
 
     override fun onPause() {
-        audioVisualization?.onPause()
-
-        /*When fragment is paused, we remove the sensor to prevent the battery drain*/
-
         super.onPause()
+        if (audioVisualization != null)
+            audioVisualization?.onPause()
     }
 
 
@@ -1063,14 +1037,13 @@ class SongPlayingFragment : Fragment() {
         super.onDestroyView()
 
         try {
-
-            audioVisualization?.release()
+            if (audioVisualization != null)
+                audioVisualization?.release()
             myActivity?.unregisterReceiver(mNoisyReceiver)
             myActivity?.unregisterReceiver(mCallingReceiver)
             mSensorManager?.unregisterListener(mSensorListener)
-
+        } catch (e: Exception) {
         }
-        catch (e: Exception){}
     }
 
     /*A new click handler function is created to handle all the click functions in the song playing fragment*/
@@ -1079,151 +1052,108 @@ class SongPlayingFragment : Fragment() {
         /*Here we handle the click of the favorite icon
        * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
         fab?.setOnClickListener {
-            if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-                fab?.setBackgroundResource(R.drawable.favorite_off)
-                favoriteContent?.deleteFavourite(currentSongHelper?.songId?.toInt() as Int)
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+                favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
 
                 /*Toast is prompt message at the bottom of screen indicating that an action has been performed*/
                 Toast.makeText(myActivity, "Removed from Favorites", Toast.LENGTH_SHORT).show()
             } else {
 
                 /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
-                fab?.setBackgroundResource(R.drawable.favorite_on)
-                var album = currentSongHelper?.album
-                if(null==album){
-                    album=""
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+                var album = currentSongHelper.album
+                if (null == album) {
+                    album = ""
                 }
-                var songAlbum = currentSongHelper?.songAlbum
-                if(null==songAlbum){
+                var songAlbum = currentSongHelper.songAlbum
+                if (null == songAlbum) {
                     songAlbum = 0
                 }
-                favoriteContent?.storeAsFavorite(currentSongHelper?.songId?.toInt(), currentSongHelper?.songArtist, currentSongHelper?.songTitle, currentSongHelper?.songpath, songAlbum,
-                        album)
+                favoriteContent?.storeAsFavorite(
+                    currentSongHelper.songId?.toInt(),
+                    currentSongHelper.songArtist,
+                    currentSongHelper.songTitle,
+                    currentSongHelper.songpath,
+                    songAlbum,
+                    album
+                )
                 Toast.makeText(myActivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
             }
         }
 
-        art?.setOnClickListener{
-            if(glView?.visibility==View.VISIBLE){
+        art?.setOnClickListener {
+            if (glView?.visibility == View.VISIBLE) {
                 glView?.visibility = View.GONE
-                ALbumArt?.visibility= View.VISIBLE
-            }
-            else {
-                glView?.visibility=View.VISIBLE
-                ALbumArt?.visibility=View.GONE
+                albumArt?.visibility = View.VISIBLE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+            } else {
+                glView?.visibility = View.VISIBLE
+                albumArt?.visibility = View.GONE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
             }
         }
 
 
-        shufflebutton?.setOnClickListener {
+        shufflebutton.setOnClickListener {
 
-            var shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-            var isShuffle = shuffle!!.getBoolean("feature", false)
-            var repeat = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
-
+            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             // turning off shuffle
-            if(isShuffle){
-                shuffle.edit().putBoolean("feature", false).apply()
+            if (isShuffle) {
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
-                currentSongHelper?.isShuffle = false
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
             }
             // turning on shuffle, repeat must be disabled now
-            else{
-                shuffle.edit().putBoolean("feature", true).apply()
+            else {
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
-                repeat!!.edit().putBoolean("feature", false).apply()
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
-                currentSongHelper?.isShuffle = true
-                currentSongHelper?.isLoop = false
             }
 
         }
 
 
         nextbutton?.setOnClickListener {
-            currentSongHelper?.isPlaying = true
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             play = true
-
-            if (currentSongHelper?.isLoop as Boolean) {
-                currentSongHelper?.isLoop = false
-
-                /*If the loop was on we turn it off*/
-                loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-            }
-
-            if (currentSongHelper?.isShuffle as Boolean) {
-                playNext("PlayNextLikeNormalShuffle")
-            } else {
-                playNext("PlayNextNormal")
-            }
-
-            currentSongHelper?.isLoop = false
-
-//            var play = Intent(context, EchoNotification::class.java)
-//            play.setAction(Constants.ACTION.NEXT_UPDATE);
-//            play.putExtra("title", currentSongHelper?.songTitle)
-//            play.putExtra("artist", currentSongHelper?.songArtist)
-//            activity?.startService(play)
+            stopPlayingCalled = true
+            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            playNext(isShuffle)
         }
 
 
 
         previousbutton?.setOnClickListener {
-
-
+            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             /*We set the player to be playing by setting isPlaying to be true*/
-            currentSongHelper?.isPlaying = true
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
             play = true
-            /*First we check if the loop is on or not*/
-            if (currentSongHelper?.isLoop as Boolean) {
-                currentSongHelper?.isLoop = false
-
-                /*If the loop was on we turn it off*/
-                loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-            }
-
+            stopPlayingCalled = true
+            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
             /*After all of the above is done we then play the previous song using the playPrevious() function*/
-
-            if (currentSongHelper?.isShuffle as Boolean) {
-                playPrevious("PlayNextLikeNormalShuffle")
-            } else {
-                playPrevious("PlayNextNormal")
-            }
-
-//            var play = Intent(context, EchoNotification::class.java)
-//            play.setAction(Constants.ACTION.PREV_UPDATE);
-//            play.putExtra("title", currentSongHelper?.songTitle)
-//            play.putExtra("artist", currentSongHelper?.songArtist)
-//            activity?.startService(play)
-
-
+            playPrevious(isShuffle)
         }
-
-
-
 
 
         loopbutton?.setOnClickListener {
 
-            var shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-            var repeat = myActivity?.getSharedPreferences(Staticated.MY_PREFS_LOOP, Context.MODE_PRIVATE)
-            var isRepeat = repeat!!.getBoolean("feature", false)
-
+            var isRepeat = sharedPreferences!!.getBoolean(Constants.LOOP, false)
             if (isRepeat) {
-                currentSongHelper?.isLoop = false
                 loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-                repeat.edit().putBoolean("feature", false).apply()
-
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
             } else {
-                currentSongHelper?.isLoop = true
-                currentSongHelper?.isShuffle = false
                 loopbutton?.setBackgroundResource(R.drawable.loop_icon)
-                shufflebutton?.setBackgroundResource(R.drawable.shuffle_white_icon)
-                shuffle!!.edit().putBoolean("feature", false).apply()
-                repeat.edit().putBoolean("feature", true).apply()
+                sharedPreferences!!.edit().putBoolean(Constants.LOOP, true).apply()
+                shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
             }
         }
 
@@ -1232,10 +1162,9 @@ class SongPlayingFragment : Fragment() {
 
             /*if the song is already playing and then play/pause button is tapped
             * then we pause the media player and also change the button to play button*/
-            if (Statified.mediaPlayer?.isPlaying as Boolean) {
-                Statified.mediaPlayer?.pause()
+            if (MediaUtils.isMediaPlayerPlaying()) {
+                mediaPlayer.pause()
                 play = false
-                currentSongHelper?.isPlaying = false
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
                 var play = Intent(context, EchoNotification::class.java)
@@ -1245,11 +1174,10 @@ class SongPlayingFragment : Fragment() {
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
             } else {
-                if (reuestAudiofocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    Statified.mediaPlayer?.start()
-                    MainScreenAdapter.Statified.stopPlayingCalled=true
+                if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    mediaPlayer.start()
+                    MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
-                    currentSongHelper?.isPlaying = true
                     playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
 
                     var play = Intent(activity, EchoNotification::class.java)
@@ -1263,7 +1191,7 @@ class SongPlayingFragment : Fragment() {
 
 
     /*This function handles the shake events in order to change the songs when we shake the phone*/
-    fun bindShakeListener() {
+    private fun bindShakeListener() {
 
         /*The sensor listener has two methods used for its implementation i.e. OnAccuracyChanged() and onSensorChanged*/
         Staticated.mSensorListener = object : SensorEventListener {
@@ -1298,147 +1226,61 @@ class SongPlayingFragment : Fragment() {
 
                 /*We obtain a real number for acceleration
                 * and we check if the acceleration was noticeable, considering 12 here*/
-                if ((curTime - Staticated.mLastShakeTime!!) >1000 && mAcceleration > 12) {
+                if ((curTime - Staticated.mLastShakeTime!!) > 1000 && mAcceleration > 12) {
 
                     /*If the accel was greater than 12 we change the song, given the fact our shake to change was active*/
-                    val prefs = myActivity?.getSharedPreferences(Staticated.MY_PREFS_NAME, Context.MODE_PRIVATE)
-                    val isAllowed = prefs?.getBoolean("feature", false)
-
-                    val shuffle = myActivity?.getSharedPreferences(Staticated.MY_PREFS_SHUFFLE, Context.MODE_PRIVATE)
-                    val isshuffled = shuffle?.getBoolean("feature", false)
+                    val isAllowed = sharedPreferences!!.getBoolean(Constants.SHAKE_TO_CHANGE, false)
+                    val isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
 
                     mLastShakeTime = curTime
 
-                    if(!mediaPlayer!!.isPlaying)
+                    if (!MediaUtils.isMediaPlayerPlaying())
                         return
 
-
-                    if (isAllowed as Boolean && isshuffled as Boolean != true) {
-                        playNext("PlayNextNormal")
-                    } else if (isAllowed && isshuffled as Boolean)
-                        playNext("PlayNextLikeNormalShuffle")
+                    if (isAllowed)
+                        playNext(isShuffle)
                 }
             }
 
         }
     }
 
-    fun playNext(check: String) {
-
-        /*Let this one sit for a while, We'll explain this after the next section where we will be teaching to add the next and previous functionality*/
-        if (check.equals("PlayNextNormal", true)) {
-            currentPosition = currentPosition + 1
-
-        } else if (check.equals("PlayNextLikeNormalShuffle", true)) {
-            var randomObject = Random()                                                              // initialising a random object of the random class
-            var randomPosition = randomObject.nextInt(fetchSongs?.size?.plus(1) as Int)                // setting range of random to size+1
-            currentPosition = randomPosition
-        }
-        if (currentPosition == fetchSongs?.size) {    // if the currentposition exceeds the size, start over
-            currentPosition = 0
-        }
-        var nextSong = fetchSongs?.get(currentPosition)
-        currentSongHelper?.songpath = nextSong?.songData
-        currentSongHelper?.songTitle = nextSong?.songTitle
-        currentSongHelper?.songArtist = nextSong?.artist
-        currentSongHelper?.songAlbum = nextSong?.songAlbum
-        currentSongHelper?.album = nextSong?.album
-        currentSongHelper?.songId = nextSong?.songID as Long
-
-        updateTextViews(currentSongHelper?.songTitle as String, currentSongHelper?.songArtist as String)
-
-        Statified.mediaPlayer?.reset()   // resetting the media player once a song completes or next is clicked
-
-        try {
-            Statified.mediaPlayer?.setDataSource(myActivity as Activity, Uri.parse(currentSongHelper?.songpath))
-            Statified.mediaPlayer?.prepare()
-            Statified.mediaPlayer?.start()
-            processInformation(Statified.mediaPlayer as MediaPlayer)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (favoriteContent?.checkifIdExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-            fab?.setBackgroundResource(R.drawable.favorite_on)
-        } else {
-            fab?.setBackgroundResource(R.drawable.favorite_off)
-        }
-
-
-        MainScreenFragment.Staticated.setTitle()
-        MainScreenFragment.Staticated.setArtist()
-
-        FavoriteFragment.Staticated.setTitle()
-        FavoriteFragment.Staticated.setArtist()
-
-        AlbumTracksFragment.setTitle()
-        AlbumTracksFragment.setArtist()
-        AlbumTracksFragment.setAlbumArt()
-
-        OfflineAlbumsFragment.setTitle()
-        OfflineAlbumsFragment.setArtist()
-        OfflineAlbumsFragment.setAlbumArt()
-
-        var play = Intent(myActivity, EchoNotification::class.java)
-        play.action = Constants.ACTION.NEXT_UPDATE
-        play.putExtra("title", currentSongHelper?.songTitle)
-        play.putExtra("artist", currentSongHelper?.songArtist)
-        play.putExtra("album", currentSongHelper?.songAlbum)
-
-        myActivity?.startService(play)
-    }
-
 
     fun previous() {
-        if (currentSongHelper?.isShuffle as Boolean) {
-            playPrevious("PlayNextLikeNormalShuffle")
-        } else {
-            playPrevious("PlayNextNormal")
-        }
+        playPrevious(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
     }
 
 
     fun next() {
-        if (currentSongHelper?.isShuffle as Boolean) {
-            playNext("PlayNextLikeNormalShuffle")
-        } else {
-            playNext("PlayNextNormal")
-        }
+        playNext(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
     }
 
 
     fun playorpause(): Boolean {
         var play = false
 
-        if (Statified.mediaPlayer?.isPlaying as Boolean) {
-            Statified.mediaPlayer?.pause()
-            currentSongHelper?.isPlaying = false
+        if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
+            mediaPlayer.pause()
             play = false
             playpausebutton?.setBackgroundResource(R.drawable.play_icon)
 
             /*If the song was not playing then, we start the music player and
             * change the image to pause icon*/
         } else {
-            if(reuestAudiofocus()== AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            Statified.mediaPlayer?.start()
-            currentSongHelper?.isPlaying = true
-            play = true
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                mediaPlayer.start()
+                MainScreenAdapter.Statified.stopPlayingCalled = true
+                play = true
+                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            }
         }
-
+        BottomBarUtils.updatePlayPause()
         return play
-
     }
 
-    fun getMediaPlayer():MediaPlayer?{
-        return Statified.mediaPlayer
-    }
-
-    fun unregister(){
+    fun unregister() {
         mSensorManager?.unregisterListener(mSensorListener)
     }
-
-
 
 
 }

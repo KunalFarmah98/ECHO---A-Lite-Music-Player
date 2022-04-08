@@ -37,13 +37,13 @@ import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.main_content.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -60,16 +60,16 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Constants.ACTION.CLOSE) {
-
-                SongPlayingFragment.Statified.mediaPlayer?.stop()
+                try {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.stop()
+                        mediaPlayer.release()
+                    }
+                }catch (e:Exception){}
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
                 song!!.unregister()
-
-
                 // SongPlayingFragment.Statified.mediaPlayer?.release()
                 finishAffinity()
-
-
             }
         }
     }
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun movToHome() {
+    fun moveToHome() {
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
     }
 
@@ -228,11 +228,6 @@ class MainActivity : AppCompatActivity() {
         if (Statified.drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
             Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
         }
-
-
-        if(supportFragmentManager.findFragmentByTag(SongPlayingFragment.Statified.TAG)==null)
-            MainScreenFragment.position = 0
-
 
         var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
 
@@ -244,13 +239,13 @@ class MainActivity : AppCompatActivity() {
         fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
 
         if (fragment != null && fragment.isVisible) {
-            bottom_nav.selectedItemId = R.id.navigation_main_screen
+            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
             return
         }
 
         fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
         if (fragment != null && fragment.isVisible) {
-            bottom_nav.selectedItemId = R.id.navigation_main_screen
+            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
             OfflineAlbumsFragment.postion=0
             return
         }

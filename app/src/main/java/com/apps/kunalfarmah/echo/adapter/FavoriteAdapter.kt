@@ -20,12 +20,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
+import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.util.MediaUtils
+import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
 import java.io.FileDescriptor
+import java.lang.Exception
+import kotlin.math.max
 
 class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<FavoriteAdapter.MyViewHolder>() {
 
@@ -44,82 +50,87 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
 
+        if (MediaUtils.currSong != null && songObject == MediaUtils.currSong
+        ) {
+            holder.binding.contentRow.strokeWidth = 2
+            holder.binding.contentRow.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+        }
+        else{
+            holder.binding.contentRow.strokeWidth = 0
+            holder.binding.contentRow.strokeColor = mContext?.resources?.getColor(R.color.colorPrimary)!!
+        }
+
         /*The holder object of our MyViewHolder class has two properties i.e
         * trackTitle for holding the name of the song and
         * trackArtist for holding the name of the artist*/
-        holder.trackTitle?.text = songObject?.songTitle
-        holder.trackArtist?.text = songObject?.artist
+        holder.binding.trackTitle?.text = songObject?.songTitle
+        holder.binding.trackArtist?.text = songObject?.artist
 
-        if(holder.trackTitle?.text!!.equals("<unknown>"))
-            holder.trackTitle?.text="unknown"
+        if(holder.binding.trackTitle?.text?.equals("<unknown>") == true)
+            holder.binding.trackTitle?.text="unknown"
 
-        if( holder.trackArtist?.text !!.equals("<unknown>"))
-            holder.trackArtist?.text ="unknown"
+        if(holder.binding.trackArtist?.text ?.equals("<unknown>") == true)
+            holder.binding.trackArtist?.text ="unknown"
 
         var albumId = songObject?.songAlbum as Long
 
-        if(albumId<=0L) holder.trackArt!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+        if(albumId<=0L) holder.binding.album!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
         val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
         val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.trackArt?.let { it1 -> Glide.with(it).load(uri).into(it1) } }
+        mContext?.let { holder.binding.album?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).into(it1) } }
 //        var art = getAlbumart(albumId)
 //
-//        if(art!=null) holder.trackArt?.setImageBitmap(art)
-//        else holder.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
+//        if(art!=null) holder.binding.trackArt?.setImageBitmap(art)
+//        else holder.binding.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.contentHolder?.setOnClickListener {
+        holder.binding.contentRow?.setOnClickListener {
 
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
-            val songPlayingFragment = SongPlayingFragment()
+            var intent = Intent(mContext,SongPlayingActivity::class.java)
+            notifyItemChanged(max(MediaUtils.getSongIndex(),0))
+            MediaUtils.currSong = songObject
 
             /*A bundle is used to transfer data from one point in your activity to another
             * Here we create an object of Bundle to send the sond details to the fragment so that we can display the song details there and also play the song*/
-            var args = Bundle()
-
             /*putString() function is used for adding a string to the bundle object
             * the string written in green is the name of the string which is placed in the bundle object with the value of that string written alongside
             * Note: Remember the name of the strings/entities you place inside the bundle object as you will retrieve them later using the same name. And these names are case-sensitive*/
-            args.putString("songArtist", songObject.artist)
-            args.putString("songTitle", songObject.songTitle)
-            args.putString("path", songObject.songData)
-            args.putLong("SongID", songObject.songID)
-            args.putInt("songPosition", position)
-            args.putLong("songAlbum", songObject.songAlbum as Long)
+            intent.putExtra("songArtist", songObject.artist)
+            intent.putExtra("songTitle", songObject.songTitle)
+            intent.putExtra("path", songObject.songData)
+            intent.putExtra("SongID", songObject.songID)
+            intent.putExtra("songPosition", position)
+            intent.putExtra("songAlbum", songObject.songAlbum as Long)
 
-            /*Here the complete array list is sent*/
-            args.putParcelableArrayList("songData", songDetails)
+            MediaUtils.songsList = songDetails?: ArrayList()
 
-            /*Using this we pass the arguments to the song playing fragment*/
-            songPlayingFragment.arguments = args
+            stopPlaying(intent)
 
-            stopPlaying()
+            holder.binding?.contentRow?.strokeWidth = 2
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
-            var serviceIntent = Intent(mContext, EchoNotification::class.java)
-
-            serviceIntent.putExtra("title", songObject.songTitle)
-            serviceIntent.putExtra("artist", songObject.artist)
-            serviceIntent.putExtra("album", songObject.songAlbum!!)
-
-            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-
-            mContext?.startService(serviceIntent)
+//            var serviceIntent = Intent(mContext, EchoNotification::class.java)
+//
+//            serviceIntent.putExtra("title", songObject.songTitle)
+//            serviceIntent.putExtra("artist", songObject.artist)
+//            serviceIntent.putExtra("album", songObject.songAlbum?)
+//
+//            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+//
+//            mContext?.startService(serviceIntent)
 
             /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
-            (mContext as FragmentActivity).supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.details_fragment, songPlayingFragment, SongPlayingFragment.Statified.TAG)
-                    .addToBackStack(SongPlayingFragment.Statified.TAG)
-                    .commit()
+            (mContext as FragmentActivity).startActivity(intent)
         }
     }
 
     /*This has the same implementation which we did for the navigation drawer adapter*/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.row_custom_favorite_adapter, parent, false)
+                .inflate(R.layout.row_custom_mainscreen_adapter, parent, false)
         return MyViewHolder(itemView)
     }
 
@@ -139,37 +150,18 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
     /*Every view holder class we create will serve the same purpose as it did when we created it for the navigation drawer*/
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        /*Declaring the widgets and the layout used*/
-        var trackTitle: TextView? = null
-        var trackArtist: TextView? = null
-        var trackArt: ImageView? = null
-        var contentHolder: RelativeLayout? = null
-
-        /*Constructor initialisation for the variables*/
-        init {
-            trackTitle = view.findViewById(R.id.tracktitle) as TextView
-            trackArtist = view.findViewById(R.id.trackartist) as TextView
-            trackArt = view.findViewById(R.id.album) as ImageView
-            contentHolder = view.findViewById(R.id.content_row_fav) as RelativeLayout
-        }
+        
+        val binding = RowCustomMainscreenAdapterBinding.bind(view)
     }
 
-    private fun stopPlaying() {
-        if (SongPlayingFragment.Statified.mediaPlayer != null) {
-
-            MainScreenAdapter.Statified.stopPlayingCalled=true
-
-            SongPlayingFragment.Statified.mediaPlayer?.stop()
-            SongPlayingFragment.Statified.mediaPlayer?.reset()
-
-            FavoriteFragment.Statified.mediaPlayer?.stop()
-            FavoriteFragment.Statified.mediaPlayer?.reset()
-
-            MainScreenFragment.Statified.mediaPlayer?.stop()
-            MainScreenFragment.Statified.mediaPlayer?.reset()
-
-        }
+    private fun stopPlaying(intent: Intent) {
+        try {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
+                mediaPlayer.stop()
+                intent.putExtra(Constants.WAS_MEDIA_PLAYING,true)
+            }
+            MainScreenAdapter.Statified.stopPlayingCalled = true
+        }catch (e:Exception){}
 
 
     }
@@ -180,8 +172,8 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
-            val pfd: ParcelFileDescriptor? = mContext!!.contentResolver
-                    .openFileDescriptor(uri, "r")
+            val pfd: ParcelFileDescriptor? = mContext?.contentResolver
+                    ?.openFileDescriptor(uri, "r")
             if (pfd != null) {
                 val fd: FileDescriptor = pfd.fileDescriptor
                 bm = BitmapFactory.decodeFileDescriptor(fd)

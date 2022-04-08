@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,11 +9,10 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.media.MediaMetadata;
-import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.net.Uri;
@@ -22,6 +20,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -29,21 +28,20 @@ import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
-import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment;
-import com.apps.kunalfarmah.echo.fragment.FavoriteFragment;
-import com.apps.kunalfarmah.echo.fragment.MainScreenFragment;
-import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment;
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
+import com.apps.kunalfarmah.echo.util.BottomBarUtils;
 import com.apps.kunalfarmah.echo.util.Constants;
+import com.apps.kunalfarmah.echo.util.MediaUtils;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
-import com.bumptech.glide.Glide;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -64,15 +62,10 @@ public class EchoNotification extends Service {
     SongsViewModel songsViewModel;
     ArrayList<String> thoughts;
 
-     public final  String MY_PREFS_SHUFFLE = "Shuffle feature";
 
     MainActivity main;
-    static MediaPlayer mMediaPlayer;
-
-
     String title = "";
     String artist = "";
-    String artworkUri = "";
     Long albumID;
     SongPlayingFragment msong;
     RemoteViews views;
@@ -80,6 +73,7 @@ public class EchoNotification extends Service {
     ImageView imageView;
     String CHANNEL_ID = "Echo_Music";// The id of the channel.
     CharSequence name = "Echo-Notification";
+    Notification status;
 
 
     @Nullable
@@ -125,46 +119,45 @@ public class EchoNotification extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         try {
 
-            if(null == intent){
+            if (null == intent || intent.getAction() == null) {
                 stopForeground(true);
                 stopSelf();
+                Log.e("ECHONotification", "intent is null");
+                super.onStartCommand(intent,flags,startId);
             }
 
-            mMediaPlayer = msong.getMediaPlayer();
-
-            if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
+            if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
-                albumID = intent.getLongExtra("album",-1);
+                albumID = intent.getLongExtra("album", -1);
                 main.setNotify_val(true);
-
                 showNotification();
 
-            } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
 
                 msong.previous();
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
 
                 Bitmap img = getAlbumart(getBaseContext(), albumID);
-                if(img!=null){
+                if (img != null) {
                     views.setImageViewBitmap(R.id.song_image, img);
                     smallviews.setImageViewBitmap(R.id.song_image, img);
-                }
-                else{
+                } else {
                     views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                     smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                 }
 
                 updateNotiUI();
-                setAlbumArt();
 
 
-            } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
 
                 msong.setPlay(msong.playorpause());
 
@@ -181,51 +174,51 @@ public class EchoNotification extends Service {
 
 
                 updateNotiUI();
-                setAlbumArt();
 
-            } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
                 songsViewModel.setPlayStatus(true);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
-            } else if (intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
                 songsViewModel.setPlayStatus(false);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
                 updateNotiUI();
-                setAlbumArt();
 
-            } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
                 msong.next();
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
 
                 Bitmap img = getAlbumart(getBaseContext(), albumID);
-                if(img!=null){
+                if (img != null) {
                     views.setImageViewBitmap(R.id.song_image, img);
                     smallviews.setImageViewBitmap(R.id.song_image, img);
-                }
-                else{
+                } else {
                     views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                     smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                 }
 
                 updateNotiUI();
-                setAlbumArt();
 
 
-            } else if (intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.NEXT_UPDATE)) {
 
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
-                albumID = intent.getLongExtra("album",-1);
+                albumID = intent.getLongExtra("album", -1);
 
 
-                if (title.equals("<unknown>"))
+                if (title == null || title.equals("<unknown>"))
                     title = "Unknown";
 
-                if (artist.equals("<unknown>"))
+                if (artist == null || artist.equals("<unknown>"))
                     artist = "unknown";
 
                 views.setTextViewText(R.id.song_title_nav, title);
@@ -236,30 +229,26 @@ public class EchoNotification extends Service {
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
 
                 Bitmap img = getAlbumart(getBaseContext(), albumID);
-                if(img!=null){
+                if (img != null) {
                     views.setImageViewBitmap(R.id.song_image, img);
                     smallviews.setImageViewBitmap(R.id.song_image, img);
-                }
-                else{
+                } else {
                     views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                     smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                 }
 
 
                 updateNotiUI();
-                setAlbumArt();
-            }
-
-
-            else if (intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.PREV_UPDATE)) {
                 title = intent.getStringExtra("title");
                 artist = intent.getStringExtra("artist");
-                albumID = intent.getLongExtra("album",-1);
+                albumID = intent.getLongExtra("album", -1);
 
-                if (title.equals("<unknown>"))
+                if (title == null || title.equals("<unknown>"))
                     title = "Unknown";
 
-                if (artist.equals("<unknown>"))
+                if (artist == null || artist.equals("<unknown>"))
                     artist = "unknown";
                 views.setTextViewText(R.id.song_title_nav, title);
                 views.setTextViewText(R.id.song_artist_nav, artist);
@@ -270,28 +259,22 @@ public class EchoNotification extends Service {
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
 
                 Bitmap img = getAlbumart(getBaseContext(), albumID);
-                if(img!=null){
+                if (img != null) {
                     views.setImageViewBitmap(R.id.song_image, img);
                     smallviews.setImageViewBitmap(R.id.song_image, img);
-                }
-                else{
+                } else {
                     views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                     smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
                 }
 
 
                 updateNotiUI();
-                setAlbumArt();
 
-            }
-            else if(intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)){
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(Constants.ACTION.SHUFFLE_ACTION)) {
                 SongPlayingFragment.Statified.shufflebutton.callOnClick();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    buildMediaNotification();
-                }
-            }
-
-            else if (intent.getAction().equals(
+            } else if (null != intent && intent.getAction() != null
+                    && intent.getAction().equals(
                     Constants.ACTION.STOPFOREGROUND_ACTION)) {
 
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
@@ -300,36 +283,37 @@ public class EchoNotification extends Service {
                         Constants.ACTION.CLOSE));
 
                 msong.unregister();
-
-                mMediaPlayer = msong.getMediaPlayer();
-                mMediaPlayer.stop();
+                SongPlayingActivity act = SongPlayingActivity.Companion.getInstance();
 
                 try {
+                    MediaUtils.INSTANCE.getMediaPlayer().stop();
+                    MediaUtils.INSTANCE.getMediaPlayer().release();
+                    MediaUtils.INSTANCE.setCurrSong(null);
+                    MediaUtils.INSTANCE.setSongsList(null);
                     main.setNotify_val(false);
-                    main.finishAffinity();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        if(act!=null)
+                            act.onBackPressed();
+                        main.finishAndRemoveTask();
+                    }
+                    else{
+                        if(act!=null)
+                            act.onBackPressed();
+                        main.finishAffinity();
+                    }
+                } catch (Exception e) {
                 }
-                catch (Exception e){}
                 stopForeground(true);
                 stopSelf();
 
             }
-
+            return START_STICKY;
+        } catch (Exception e) {
+            if(e.getMessage()!=null)
+                FirebaseCrashlytics.getInstance().log("EchoNotification: "+e.getMessage());
+            return START_STICKY;
         }
-
-    catch(Exception e) {
-        main.finishAffinity();
     }
-    finally {
-            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.Q)
-                return START_STICKY;
-            else{
-                return super.onStartCommand(intent, flags, startId);
-            }
-    }
-
-}
-
-    Notification status;
 
     private void showNotification() {
 // Using RemoteViews to bind custom layouts into Notification
@@ -340,13 +324,11 @@ public class EchoNotification extends Service {
                 R.layout.notificaiton_smalll);
 
 
-
         Intent openIntent = new Intent(this, EchoNotification.class);
         PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, 0);
 
 
-
-        Intent notificationIntent = new Intent(this,MainActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -386,12 +368,12 @@ public class EchoNotification extends Service {
 
 
         views.setOnClickPendingIntent(R.id.close, pcloseIntent);
-        smallviews.setOnClickPendingIntent(R.id.close,pcloseIntent);
+        smallviews.setOnClickPendingIntent(R.id.close, pcloseIntent);
 
 
         // setting thoughts of the day
-        Random randomObject =new  Random() ;                                                            // initialising a random object of the random class
-        int randomPosition = randomObject.nextInt(thoughts.size()+1);                // setting range of random to size+1
+        Random randomObject = new Random();                                                            // initialising a random object of the random class
+        int randomPosition = randomObject.nextInt(thoughts.size() + 1);                // setting range of random to size+1
         int currentPosition = randomPosition;
 
         if (currentPosition == thoughts.size()) {    // if the currentposition exceeds the size, start over
@@ -401,12 +383,11 @@ public class EchoNotification extends Service {
         views.setTextViewText(R.id.logo, thoughts.get(currentPosition));
 
 
+        if (title == null || title.equals("<unknown>"))
+            title = "Unknown";
 
-        if(title.equals("<unknown>"))
-            title="Unknown";
-
-        if(artist.equals("<unknown>"))
-            artist="unknown";
+        if (artist == null || artist.equals("<unknown>"))
+            artist = "unknown";
 
         views.setTextViewText(R.id.song_title_nav, title);
         smallviews.setTextViewText(R.id.song_title_nav, title);
@@ -416,32 +397,29 @@ public class EchoNotification extends Service {
         smallviews.setTextViewText(R.id.song_artist_nav, artist);
 
 
-
         views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
         smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
 
 
         Bitmap img = getAlbumart(getBaseContext(), albumID);
-        if(img!=null){
-        views.setImageViewBitmap(R.id.song_image, img);
-        smallviews.setImageViewBitmap(R.id.song_image, img);
-        }
-        else {
+        if (img != null) {
+            views.setImageViewBitmap(R.id.song_image, img);
+            smallviews.setImageViewBitmap(R.id.song_image, img);
+        } else {
             views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             buildMediaNotification();
-        }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             // Sets an ID for the notification, so it can be updated.
             int importance = NotificationManager.IMPORTANCE_HIGH;
 
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
             mChannel.setSound(null, null);
             mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             mChannel.enableVibration(false);
@@ -449,24 +427,22 @@ public class EchoNotification extends Service {
 
             status = new Notification.Builder(this, CHANNEL_ID).setOnlyAlertOnce(true)
                     .setVisibility(Notification.VISIBILITY_PUBLIC).setContentIntent(pOpenIntent).build();
-            status.contentView=smallviews;
+            status.contentView = smallviews;
             status.bigContentView = views;
-            status.priority=Notification.PRIORITY_MAX;
-            status.when =0;
+            status.priority = Notification.PRIORITY_MAX;
+            status.when = 0;
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
             status.icon = R.mipmap.ic_launcher;
             status.contentIntent = pendingIntent;
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
 
-        }
-
-        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.O ){
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
             status = new Notification.Builder(this).setWhen(0).setContentIntent(pOpenIntent).build();
-            status.contentView=smallviews;
+            status.contentView = smallviews;
             status.bigContentView = views;
-            status.visibility=Notification.VISIBILITY_PUBLIC;
+            status.visibility = Notification.VISIBILITY_PUBLIC;
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
             status.icon = R.mipmap.ic_launcher;
             status.contentIntent = pendingIntent;
@@ -474,14 +450,9 @@ public class EchoNotification extends Service {
 
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
 
-        }
-
-
-        else {
+        } else {
             status = new Notification.Builder(this).setWhen(0).setContentIntent(pOpenIntent).build();
-
-
-            status.contentView=smallviews;
+            status.contentView = smallviews;
             status.bigContentView = views;
 
             status.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
@@ -495,14 +466,14 @@ public class EchoNotification extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void buildMediaNotification(){
+    private void buildMediaNotification() {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Sets an ID for the notification, so it can be updated.
         int importance = NotificationManager.IMPORTANCE_MIN;
 
 
-        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,  importance);
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
 
         mChannel.setSound(null, null);
         mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
@@ -510,15 +481,16 @@ public class EchoNotification extends Service {
 
         mNotificationManager.createNotificationChannel(mChannel);
 
-        MediaSession mediaSession = SongPlayingFragment.Statified.INSTANCE.getMediaSession();
+        MediaSession mediaSession = new MediaSession(getBaseContext(), "EchoNotification");
+        mediaSession.setActive(true);
         addMetaData(mediaSession);
 
 
         // Create a MediaStyle object and supply your media session token to it.
         Notification.MediaStyle mediaStyle = new Notification.MediaStyle().setMediaSession(mediaSession.getSessionToken());
-        mediaStyle.setShowActionsInCompactView(1,2,3);
+        mediaStyle.setShowActionsInCompactView(1, 2, 3);
 
-        Intent notificationIntent = new Intent(this,MainActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -530,7 +502,7 @@ public class EchoNotification extends Service {
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
                 closeIntent, 0);
 
-        Notification.Builder builder =  new Notification.Builder(this, CHANNEL_ID)
+        Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
                 .setSmallIcon(R.drawable.ic_echo_icon)
                 .setContentIntent(pendingIntent)
@@ -538,38 +510,54 @@ public class EchoNotification extends Service {
 
         addActions(builder);
 
-        status =builder.build();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            addInfo(builder);
+        }
+
+        status = builder.build();
         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
     }
 
-    public static Bitmap getAlbumart(Context context,Long album_id){
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void addInfo(Notification.Builder builder) {
+        Bitmap icon = getAlbumart(getBaseContext(), albumID);
+        builder.setContentTitle(title);
+        builder.setContentText(artist);
+        if (icon == null)
+            builder.setLargeIcon(Icon.createWithContentUri(getUriToDrawable(getBaseContext(), R.drawable.echo_icon)));
+        else
+            builder.setLargeIcon(icon);
+    }
+
+    public static Bitmap getAlbumart(Context context, Long album_id) {
         Bitmap bm = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
-        try{
+        try {
             final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
             Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
             ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
-            if (pfd != null){
+            if (pfd != null) {
                 FileDescriptor fd = pfd.getFileDescriptor();
                 bm = BitmapFactory.decodeFileDescriptor(fd, null, options);
                 pfd = null;
                 fd = null;
             }
-        } catch(Error ee){}
-        catch (Exception e) {}
+        } catch (Error ee) {
+        } catch (Exception e) {
+        }
         return bm;
     }
 
-    public String getAlbumArtUri(Long album_id){
-        Bitmap img = getAlbumart(getBaseContext(),albumID);
-        if(img==null)
-            return getUriToDrawable(getBaseContext(),R.drawable.echo_icon).toString();
+    public String getAlbumArtUri(Long album_id) {
+        Bitmap img = getAlbumart(getBaseContext(), albumID);
+        if (img == null)
+            return getUriToDrawable(getBaseContext(), R.drawable.echo_icon).toString();
         final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(sArtworkUri, album_id).toString();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void addActions(Notification.Builder builder){
+    private void addActions(Notification.Builder builder) {
 
         Intent previousIntent = new Intent(this, EchoNotification.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
@@ -596,21 +584,16 @@ public class EchoNotification extends Service {
         PendingIntent pShuffleIntent = PendingIntent.getService(this, 0,
                 shuffleIntent, 0);
 
-        SharedPreferences prefsForShuffle =getSharedPreferences(MY_PREFS_SHUFFLE, Context.MODE_PRIVATE);
-
-        /*Here we extract the value of preferences and check if shuffle was ON or not*/
-        boolean isShuffleAllowed = prefsForShuffle.getBoolean("feature", false);
-
         Notification.Action mShuffleAction =
                 new Notification.Action(
-                        isShuffleAllowed?R.drawable.shuffle_icon:R.drawable.shuffle_white_icon,
+                        R.drawable.shuffle_white_icon,
                         "shuffle",
                         pShuffleIntent);
 
         Notification.Action mPrevAction =
                 new Notification.Action(
                         R.drawable.skip_previous_white,
-                        "pause",
+                        "prev",
                         ppreviousIntent);
 
         Notification.Action mPlayAction =
@@ -627,7 +610,7 @@ public class EchoNotification extends Service {
         Notification.Action mNextAction =
                 new Notification.Action(
                         R.drawable.skip_next_white,
-                        "pause",
+                        "next",
                         pnextIntent);
 
         Notification.Action mCloseAction =
@@ -639,7 +622,7 @@ public class EchoNotification extends Service {
         builder.addAction(mShuffleAction);
         builder.addAction(mPrevAction);
 
-        if(SongPlayingFragment.Statified.INSTANCE.getMediaPlayer().isPlaying())
+        if (MediaUtils.INSTANCE.isMediaPlayerPlaying())
             builder.addAction(mPauseAction);
         else
             builder.addAction(mPlayAction);
@@ -647,35 +630,26 @@ public class EchoNotification extends Service {
         builder.addAction(mCloseAction);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void addMetaData(MediaSession mediaSession){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void addMetaData(MediaSession mediaSession) {
         mediaSession.setMetadata(
                 new MediaMetadata.Builder()
                         .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                         .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
                         .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI, getAlbumArtUri(albumID))
-                        .putLong(MediaMetadata.METADATA_KEY_DURATION, mMediaPlayer.getDuration())
+                        .putLong(MediaMetadata.METADATA_KEY_DURATION, MediaUtils.INSTANCE.getDuration())
                         .build()
         );
 
         mediaSession.setPlaybackState(
                 new PlaybackState.Builder()
                         .setState(
-                                PlaybackState.STATE_PLAYING,
-
-                                // Playback position.
-                                // Used to update the elapsed time and the progress bar. 
-                                (long) mMediaPlayer.getCurrentPosition(),
-
-                                // Playback speed. 
-                                // Determines the rate at which the elapsed time changes. 
-                                mMediaPlayer.getPlaybackParams().getSpeed()
+                                MediaUtils.INSTANCE.isMediaPlayerPlaying() ?
+                                        PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
+                                (long) MediaUtils.INSTANCE.getCurrentPosition(),
+                                1f
                         )
-
-                        // isSeekable. 
-                        // Adding the SEEK_TO action indicates that seeking is supported 
-                        // and makes the seekbar position marker draggable. If this is not 
-                        // supplied seek will be disabled but progress will still be shown.
+                        // isSeekable.
                         .setActions(PlaybackState.ACTION_SEEK_TO)
                         .build()
         );
@@ -684,65 +658,29 @@ public class EchoNotification extends Service {
             @Override
             public void onSeekTo(long pos) {
                 super.onSeekTo(pos);
-                mMediaPlayer.seekTo((int)pos);
+                MediaUtils.INSTANCE.getMediaPlayer().seekTo((int) pos);
+                buildMediaNotification();
             }
         });
 
     }
 
     private Uri getUriToDrawable(@NonNull Context context,
-                                             @AnyRes int drawableId) {
+                                 @AnyRes int drawableId) {
         Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                 + "://" + context.getResources().getResourcePackageName(drawableId)
                 + '/' + context.getResources().getResourceTypeName(drawableId)
-                + '/' + context.getResources().getResourceEntryName(drawableId) );
+                + '/' + context.getResources().getResourceEntryName(drawableId));
         return imageUri;
     }
 
 
-
     public void updateNotiUI() {
-        getApplicationContext().getSharedPreferences("Notification",Context.MODE_PRIVATE).edit().putLong("albumId",albumID).apply();
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.Q)
+        getApplicationContext().getSharedPreferences("Notification", Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
+        BottomBarUtils.INSTANCE.updatePlayPause();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)
             buildMediaNotification();
         else
             this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);
     }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    void setAlbumArt(){
-        Long albumId = albumID;
-        if(albumId<=0L) Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                .getResources().getDrawable(R.drawable.echo_icon));
-        Uri sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart");
-        Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(MainScreenFragment.Statified.getSongImg()));
-
-
-        if(albumId<=0L) Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext().getResources()
-                .getDrawable(R.drawable.echo_icon));
-         sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart");
-        uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(FavoriteFragment.Statified.getSongImg()));
-
-
-        if(albumId<=0L) Objects.requireNonNull(OfflineAlbumsFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                .getResources().getDrawable(R.drawable.echo_icon));
-        sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart");
-        uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(OfflineAlbumsFragment.Statified.getSongImg()));
-
-
-        if(albumId<=0L) Objects.requireNonNull(AlbumTracksFragment.Statified.getSongImg()).setImageDrawable(getApplicationContext()
-                .getResources().getDrawable(R.drawable.echo_icon));
-        sArtworkUri = Uri
-                .parse("content://media/external/audio/albumart");
-        uri = ContentUris.withAppendedId(sArtworkUri, albumId);
-        Glide.with(getApplicationContext()).load(uri).placeholder(R.drawable.echo_icon).into(Objects.requireNonNull(AlbumTracksFragment.Statified.getSongImg()));
-    }
-
-
 }
