@@ -109,8 +109,12 @@ class MainScreenFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
 
-        BottomBarUtils.bottomBarSetup(myActivity!!,main!!,requireFragmentManager(),binding.nowPlayingBottomBarMain)
+        BottomBarUtils.bottomBarSetup(myActivity!!,main!!,requireFragmentManager(),binding.nowPlayingBottomBarMain,MainScreenFragment@this)
 
+    }
+
+    fun updateCurrentSong(){
+        mainScreenAdapter?.notifyDataSetChanged()
     }
 
     fun setView() {
@@ -190,6 +194,11 @@ class MainScreenFragment : Fragment() {
         })
 
         return
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateCurrentSong()
     }
 
 

@@ -61,6 +61,7 @@ import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
+import com.apps.kunalfarmah.echo.util.MediaUtils.songsList
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
@@ -580,6 +581,7 @@ class SongPlayingFragment : Fragment() {
         /*function used to update the time*/
         fun processInformation(mediaPlayer: MediaPlayer) {
 
+            MediaUtils.currSong = songsList?.get(currentPosition)
             /*Obtaining the final time*/
             val finalTime = MediaUtils.getDuration()
 

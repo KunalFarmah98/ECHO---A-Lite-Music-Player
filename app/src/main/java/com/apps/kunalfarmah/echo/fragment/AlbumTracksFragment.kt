@@ -34,6 +34,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
     var binding: FragmentAlbumTracksBinding? = null
     var main: MainActivity? = null
     var songAlbum: Long? = null
+    var adapter: MainScreenAdapter? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,18 +70,28 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
         /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
 
         BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
-        binding!!.nowPlayingBottomBarMain)
+        binding!!.nowPlayingBottomBarMain,AlbumTracksFragment@this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateCurrentSong()
+    }
+
+    fun updateCurrentSong(){
+        adapter?.notifyDataSetChanged()
     }
 
 
     private fun setView(list: ArrayList<Songs>) {
+        adapter = MainScreenAdapter(list, activity as Context)
         binding!!.tracks.layoutManager = LinearLayoutManager(context)
         binding!!.tracks.itemAnimator = DefaultItemAnimator()
         binding!!.tracks.setHasFixedSize(true)
         binding!!.tracks.setItemViewCacheSize(100)
         binding!!.tracks.isDrawingCacheEnabled = true
         binding!!.tracks.isAlwaysDrawnWithCacheEnabled = true
-        binding!!.tracks.adapter = MainScreenAdapter(list, activity as Context)
+        binding!!.tracks.adapter = adapter
     }
 
 }

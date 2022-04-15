@@ -99,7 +99,12 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getFavorites()
         BottomBarUtils.bottomBarSetup(myActivity!!,main!!,requireFragmentManager(),
-        binding.nowPlayingBottomBar)
+        binding.nowPlayingBottomBar,FavoriteFragment@this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateCurrentSong()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -240,6 +245,10 @@ class FavoriteFragment : Fragment() {
             binding.recyclerView?.visibility = View.INVISIBLE
             binding.noFavorites?.visibility = View.VISIBLE
         }
+    }
+
+    fun updateCurrentSong(){
+        favouriteAdapter?.notifyDataSetChanged()
     }
 
 }

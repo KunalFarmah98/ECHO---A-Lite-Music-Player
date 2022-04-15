@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.Keep
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
@@ -21,7 +22,7 @@ import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.BottomBarBinding
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.fragment.*
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.bumptech.glide.Glide
@@ -32,8 +33,8 @@ object BottomBarUtils {
     var bottomBarBinding: BottomBarBinding  ?= null
 
 
-    fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding) {
-        bottomBarClickHandler(activity, main, fragmentManager, bottomBarBinding)
+    fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding, fragment: Fragment?) {
+        bottomBarClickHandler(activity, main, fragmentManager, bottomBarBinding ,fragment)
         this.bottomBarBinding = bottomBarBinding
         if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
                 EchoNotification::class.java,
@@ -63,7 +64,8 @@ object BottomBarUtils {
         myActivity: Activity,
         main: MainActivity,
         fragmentManager: FragmentManager,
-        bottomBarBinding: BottomBarBinding
+        bottomBarBinding: BottomBarBinding,
+        fragment: Fragment?
     ) {
 
         bottomBarBinding.bottomBar.setOnClickListener {
@@ -141,6 +143,12 @@ object BottomBarUtils {
         bottomBarBinding.next.setOnClickListener {
             SongPlayingFragment.playNext(isshuffled)
             bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
+            when (fragment){
+                is MainScreenFragment -> fragment.updateCurrentSong()
+                is FavoriteFragment -> fragment.updateCurrentSong()
+                is OfflineAlbumsFragment -> fragment.updateCurrentSong()
+                is AlbumTracksFragment -> fragment.updateCurrentSong()
+            }
         }
     }
 

@@ -85,9 +85,19 @@ class OfflineAlbumsFragment : Fragment() {
         /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
 
         BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
-            binding!!.nowPlayingBottomBarMain)
+            binding!!.nowPlayingBottomBarMain,OfflineAlbumsFragment@this)
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateCurrentSong()
+    }
+
+    fun updateCurrentSong(){
+        mAdapter?.notifyDataSetChanged()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         inflater.inflate(R.menu.main, menu)
