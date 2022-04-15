@@ -56,7 +56,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
         if(MediaUtils.currSong != null && songObject == MediaUtils.currSong){
-            holder.binding?.contentRow?.strokeWidth = 2
+            holder.binding?.contentRow?.strokeWidth = 1
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
         else{
@@ -110,7 +110,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
             stopPlaying(intent)
 
-            holder.binding?.contentRow?.strokeWidth = 2
+            holder.binding?.contentRow?.strokeWidth = 1
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
 //            var serviceIntent = Intent(mContext, EchoNotification::class.java)

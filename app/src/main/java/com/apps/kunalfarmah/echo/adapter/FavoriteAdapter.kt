@@ -52,7 +52,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
         if (MediaUtils.currSong != null && songObject == MediaUtils.currSong
         ) {
-            holder.binding.contentRow.strokeWidth = 2
+            holder.binding.contentRow.strokeWidth = 1
             holder.binding.contentRow.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
         else{
@@ -109,7 +109,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
             stopPlaying(intent)
 
-            holder.binding?.contentRow?.strokeWidth = 2
+            holder.binding?.contentRow?.strokeWidth = 1
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
 //            var serviceIntent = Intent(mContext, EchoNotification::class.java)
