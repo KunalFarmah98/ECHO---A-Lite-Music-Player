@@ -1,47 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/content_row"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/_70sdp">
 
-    <RelativeLayout
-
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/_70sdp">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/content_row"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardElevation="0dp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        app:strokeColor="@color/colorAccent"
+        app:cardCornerRadius="0dp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        app:strokeWidth="1dp">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true">
 
 
             <ImageView
                 android:id="@+id/album"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:srcCompat="@drawable/now_playing_bar_eq_image"
-                />
+                app:srcCompat="@drawable/now_playing_bar_eq_image" />
+
             <LinearLayout
                 android:id="@+id/details"
-                android:layout_toRightOf="@id/album"
                 android:layout_width="match_parent"
-                android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/album"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/trackTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:maxLines="2"
                     android:paddingRight="9dp"
                     android:paddingBottom="-7dp"
-                    android:maxLines="2"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit ="marquee_forever"
                     android:scrollHorizontally="true"
                     android:text="Stairway to Heaven"
                     android:textColor="#ffffff"
@@ -53,12 +61,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:paddingRight="7dp"
-                    android:text="The Smithies"
-                    android:singleLine="true"
                     android:ellipsize="marquee"
-                    android:marqueeRepeatLimit ="marquee_forever"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingRight="7dp"
                     android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="The Smithies"
                     android:textColor="#858585"
                     android:textSize="15sp"
                     android:textStyle="normal" />
@@ -68,12 +76,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:paddingRight="7dp"
-                    android:text="The Smithies"
-                    android:singleLine="true"
                     android:ellipsize="marquee"
-                    android:marqueeRepeatLimit ="marquee_forever"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingRight="7dp"
                     android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="The Smithies"
                     android:textColor="#858585"
                     android:textSize="15sp"
                     android:textStyle="normal" />
@@ -83,15 +91,13 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="11dp"
-            android:layout_marginRight="11dp"
-            android:background="#e0e0e0" />
+    </com.google.android.material.card.MaterialCardView>
 
-
-    </RelativeLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:background="#e0e0e0" />
 
 </RelativeLayout>

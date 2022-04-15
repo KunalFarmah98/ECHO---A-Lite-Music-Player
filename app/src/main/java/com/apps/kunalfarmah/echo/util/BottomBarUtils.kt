@@ -10,6 +10,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentManager
@@ -17,6 +18,7 @@ import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.BottomBarBinding
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
@@ -27,7 +29,7 @@ import java.lang.Exception
 
 @Keep
 object BottomBarUtils {
-    lateinit var bottomBarBinding: BottomBarBinding
+    var bottomBarBinding: BottomBarBinding  ?= null
 
 
     fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding) {
@@ -65,21 +67,17 @@ object BottomBarUtils {
     ) {
 
         bottomBarBinding.bottomBar.setOnClickListener {
-            val songPlayingFragment = SongPlayingFragment()
-            var args = Bundle()
-            args.putString("songArtist", currentSongHelper.songArtist)
-            args.putString("songTitle", currentSongHelper.songTitle)
-            args.putString("path", currentSongHelper.songpath)
-            args.putLong("SongID", currentSongHelper.songId!!)
-            args.putLong("songAlbum", currentSongHelper.songAlbum!!)
-            args.putInt("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
-            args.putParcelableArrayList("songData", SongPlayingFragment.Statified.fetchSongs)
-            args.putBoolean("fromBottomBar",true)
-            songPlayingFragment.arguments = args
-            fragmentManager.beginTransaction()
-                .replace(R.id.details_fragment, songPlayingFragment)
-                .addToBackStack("SongPlayingFragment")
-                .commit()
+            var intent = Intent(App.context,SongPlayingActivity::class.java)
+            intent.putExtra("songArtist", currentSongHelper.songArtist)
+            intent.putExtra("songTitle", currentSongHelper.songTitle)
+            intent.putExtra("path", currentSongHelper.songpath)
+            intent.putExtra("SongID", currentSongHelper.songId!!)
+            intent.putExtra("songAlbum", currentSongHelper.songAlbum!!)
+            intent.putExtra("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
+            intent.putExtra("fromBottomBar",true)
+            MediaUtils.songsList = SongPlayingFragment.Statified.fetchSongs?:ArrayList()
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            App.context.startActivity(intent)
         }
 
         bottomBarBinding.playPause.setOnClickListener {
@@ -150,7 +148,7 @@ object BottomBarUtils {
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum
         if (albumId == null || albumId <= 0L) {
-            bottomBarBinding.songImg.setImageDrawable(
+            bottomBarBinding?.songImg?.setImageDrawable(
                 App.context.resources?.getDrawable(
                     R.drawable.echo_icon
                 )
@@ -162,7 +160,7 @@ object BottomBarUtils {
                 .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
             Glide.with(App.context).load(uri).placeholder(R.drawable.echo_icon)
-                .into(bottomBarBinding.songImg)
+                .into(bottomBarBinding?.songImg!!)
         } catch (e: Exception) {
         }
     }
@@ -180,43 +178,43 @@ object BottomBarUtils {
 
     fun setTitle() {
         if (null != currentSongHelper.songTitle && null != currentSongHelper)
-            bottomBarBinding.songTitle.text = currentSongHelper?.songTitle
+            bottomBarBinding?.songTitle?.text = currentSongHelper?.songTitle
     }
 
     fun setArtist() {
         if (null != currentSongHelper.songArtist && null != currentSongHelper) {
             var artist = currentSongHelper.songArtist
             if (artist.equals("<unknown>", ignoreCase = true))
-                bottomBarBinding.songArtist.visibility = View.GONE
+                bottomBarBinding?.songArtist?.visibility = View.GONE
             else {
-                bottomBarBinding.songArtist.visibility = View.VISIBLE
-                bottomBarBinding.songArtist.text = artist
+                bottomBarBinding?.songArtist?.visibility = View.VISIBLE
+                bottomBarBinding?.songArtist?.text = artist
             }
         }
     }
 
     fun setAlbumArt() {
-        if (null != bottomBarBinding.songImg && null != currentSongHelper) {
+        if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
             val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
             val uri: Uri = ContentUris.withAppendedId(sArtworkUri, currentSongHelper.songAlbum!!)
             if (currentSongHelper.songAlbum!! < 0 || null == uri || uri.toString().isEmpty())
-                bottomBarBinding.songImg.setImageResource(R.drawable.echo_icon)
+                bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             else
-                bottomBarBinding.songImg.setImageURI(uri)
+                bottomBarBinding?.songImg?.setImageURI(uri)
 
-            if (null == bottomBarBinding.songImg.drawable) {
-                bottomBarBinding.songImg.setImageResource(R.drawable.echo_icon)
+            if (null == bottomBarBinding?.songImg?.drawable) {
+                bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             }
         }
     }
 
     fun updatePlayPause(){
         if(MediaUtils.isMediaPlayerPlaying()){
-            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+            bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
         }
         else{
-            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
+            bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
         }
     }
 }

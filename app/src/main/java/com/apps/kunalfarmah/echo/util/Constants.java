@@ -1,7 +1,10 @@
 package com.apps.kunalfarmah.echo.util;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Constants {
     public static final String SETTINGS_APP_SETTINGS = "ECHO_A_LITE_MUSIC_PLAYER";
+    public static final String WAS_MEDIA_PLAYING = "WAS_MEDIA_PLAYING";
 
     public interface ACTION {
         String MAIN_ACTION = "com.apps.kunalfarmah.action.main";

@@ -25,6 +25,12 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.SongPlayingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:exported="false" />
+        <activity
             android:name=".activity.WizardActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

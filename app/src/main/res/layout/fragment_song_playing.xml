@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:srcCompat="http://schemas.android.com/tools"
     android:clickable="true"
     android:forceDarkAllowed="false"
     android:orientation="vertical"
@@ -24,9 +25,8 @@
                 android:layout_width="@dimen/_300sdp"
                 android:layout_height="@dimen/_270sdp"
                 android:layout_centerInParent="true"
-                android:visibility="visible"
                 android:background="@color/colorPrimary"
-                />
+                android:visibility="visible" />
 
 
             <com.cleveroad.audiovisualization.GLAudioVisualizationView
@@ -52,7 +52,7 @@
                 android:layout_marginRight="11dp"
                 android:layout_alignParentRight="true"
                 android:orientation="horizontal">
-                <ImageButton
+                <ImageView
                     android:id="@+id/showArtButton"
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"
@@ -60,15 +60,15 @@
                     android:clickable="true"
                     android:layout_marginRight="11dp"
                     android:layout_toLeftOf="@+id/favouriteButton"
-                    android:background="@drawable/baseline_album"
+                    app:srcCompat = "@drawable/baseline_album"
                     />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/favouriteButton"
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/white_circle_icon" />
+                    app:srcCompat = "@drawable/white_circle_icon"
+                    android:layout_alignParentRight="true"/>
             </LinearLayout>
         </RelativeLayout>
 

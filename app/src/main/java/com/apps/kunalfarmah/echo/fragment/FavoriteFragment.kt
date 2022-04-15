@@ -21,8 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.math.max
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
@@ -32,7 +34,7 @@ class FavoriteFragment : Fragment() {
         val TAG = "FavoriteFragment"
         var noNext: Boolean? = true
     }
-    var _FavouriteAdapter: FavoriteAdapter? = null
+    var favouriteAdapter: FavoriteAdapter? = null
     var main: MainActivity? = null
     var myActivity: Activity? = null
     var trackPosition: Int = 0
@@ -63,12 +65,20 @@ class FavoriteFragment : Fragment() {
         binding.nowPlayingBottomBar.songTitle.isSelected = true
         binding.nowPlayingBottomBar.songArtist.isSelected = true
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-        viewModel.isSongPlaying.observe(viewLifecycleOwner,{
-            if(it)
-                binding.nowPlayingBottomBar.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
+        viewModel.isSongPlaying.observe(viewLifecycleOwner) {
+            if (it)
+                binding.nowPlayingBottomBar.playPause.setImageDrawable(
+                    requireContext().resources.getDrawable(
+                        R.drawable.pause_icon
+                    )
+                )
             else
-                binding.nowPlayingBottomBar.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
-        })
+                binding.nowPlayingBottomBar.playPause.setImageDrawable(
+                    requireContext().resources.getDrawable(
+                        R.drawable.play_icon
+                    )
+                )
+        }
 
 //        MainActivity.Statified.MainorFavOn=true
 
@@ -85,9 +95,9 @@ class FavoriteFragment : Fragment() {
         myActivity = activity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        display_favorites_by_searching()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getFavorites()
         BottomBarUtils.bottomBarSetup(myActivity!!,main!!,requireFragmentManager(),
         binding.nowPlayingBottomBar)
     }
@@ -120,7 +130,7 @@ class FavoriteFragment : Fragment() {
                     }
                     //Task HERE
 
-                    _FavouriteAdapter?.filter_data(newList)
+                    favouriteAdapter?.filter_data(newList)
                 } catch (e: Exception) {
                     Toast.makeText(context, "Aw Snap! Something Wrong Happened", Toast.LENGTH_SHORT).show()
                 }
@@ -152,7 +162,7 @@ class FavoriteFragment : Fragment() {
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.nameComparator)
             }
-            _FavouriteAdapter?.notifyDataSetChanged()
+            favouriteAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
             val editortwo = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
@@ -162,62 +172,11 @@ class FavoriteFragment : Fragment() {
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.dateComparator)
             }
-            _FavouriteAdapter?.notifyDataSetChanged()
+            favouriteAdapter?.notifyDataSetChanged()
             return false
         }
         return super.onOptionsItemSelected(item)
     }
-
-
-    /*As the name suggests, this function is used to fetch the songs present in your phones and returns the arraylist of the same*/
-    fun getSongsFromPhone(): ArrayList<Songs>? {
-        var arrayList = ArrayList<Songs>()
-
-        /*A content resolver is used to access the data present in your phone
-        * In this case it is used for obtaining the songs present your phone*/
-        var contentResolver = myActivity?.contentResolver
-
-        /*Here we are accessing the Media class of Audio class which in turn a class of Media Store, which contains information about all the media files present
-        * on our mobile device*/
-        var songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-
-        /*Here we make the request of songs to the content resolver to get the music files from our device*/
-        var songCursor = contentResolver?.query(songUri, null, null, null, null)
-
-        /*In the if condition we check whether the number of music files are null or not. The moveToFirst() function returns the first row of the results*/
-        if (songCursor != null && songCursor.moveToFirst()) {
-            val songId = songCursor.getColumnIndex(MediaStore.Audio.Media._ID)
-            val songTitle = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
-            val songArtist = songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
-            val songData = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
-            val dateIndex = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
-            val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
-            val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
-            /*moveToNext() returns the next row of the results. It returns null if there is no row after the current row*/
-            while (songCursor.moveToNext()) {
-
-                var currentId = songCursor.getLong(songId)
-                var currentTitle = songCursor.getString(songTitle)
-                var album = songCursor.getString(songAlbumName)
-                var currentArtist = songCursor.getString(songArtist)
-                var currentData = songCursor.getString(songData)
-                var currentDate = songCursor.getLong(dateIndex)
-                var currAlbum = songCursor.getLong(songAlbum)
-                if(null==currentArtist)
-                    currentArtist = ""
-                if(null==album)
-                    album = ""
-                /*Adding the fetched songs to the arraylist*/
-                arrayList.add(Songs(currentId, currentTitle, currentArtist,album, currentData, currentDate, currAlbum))
-            }
-        } else {
-            return null
-        }
-
-        /*Returning the arraylist of songs*/
-        return arrayList
-    }
-
 
     private fun getCoverArtPath(context: Context?, androidAlbumId: Long): String? {
         var path: String? = null
@@ -234,7 +193,7 @@ class FavoriteFragment : Fragment() {
         return path
     }
     /*The below function is used to search the favorites and display*/
-    fun display_favorites_by_searching() {
+    fun getFavorites() {
 
         /*Checking if database has any entry or not*/
         if (favoriteContent?.checkSize() as Int > 0) {
@@ -245,28 +204,10 @@ class FavoriteFragment : Fragment() {
             /*Getting the list of songs from database*/
             getListfromDatabase = favoriteContent?.queryDBList()
 
-            /*Getting list of songs from phone storage*/
-            val fetchListfromDevice = getSongsFromPhone()
-
-            /*If there are no songs in phone then there cannot be any favorites*/
-            if (fetchListfromDevice != null) {
-
-                /*Then we check all the songs in the phone*/
-                for (i in 0..fetchListfromDevice.size - 1) {
-
-                    /*We iterate through every song in database*/
-                    for (j in 0..getListfromDatabase?.size as Int - 1) {
-
-                        /*While iterating through all the songs we check for the songs which are in both the lists
-                        * i.e. the favorites songs*/
-                        if (getListfromDatabase?.get(j)?.songID === fetchListfromDevice.get(i).songID) {
-
-                            /*on getting the favorite songs we add them to the refresh list*/
-                            refreshList?.add((getListfromDatabase as ArrayList<Songs>)[j])
-                        }
-                    }
-                }
-            } else {
+            /*We iterate through every song in database*/
+            for (i in 0..getListfromDatabase?.size as Int - 1) {
+                /*on getting the favorite songs we add them to the refresh list*/
+                refreshList?.add((getListfromDatabase as ArrayList<Songs>)[i])
             }
 
             /*If refresh list is null we display that there are no favorites*/
@@ -279,12 +220,19 @@ class FavoriteFragment : Fragment() {
                 // recyclerView?.visibility = View.VISIBLE
 
                 /*Else we setup our recycler view for displaying the favorite songs*/
-                _FavouriteAdapter = FavoriteAdapter(refreshList as java.util.ArrayList<Songs>, myActivity as Context)
+                favouriteAdapter = FavoriteAdapter(
+                    refreshList as java.util.ArrayList<Songs>,
+                    myActivity as Context
+                )
                 val mLayoutManager = LinearLayoutManager(activity)
                 binding.recyclerView?.layoutManager = mLayoutManager
                 binding.recyclerView?.itemAnimator = DefaultItemAnimator()
-                binding.recyclerView?.adapter = _FavouriteAdapter
+                binding.recyclerView?.adapter = favouriteAdapter
                 binding.recyclerView?.setHasFixedSize(true)
+                try {
+                    binding.recyclerView.scrollToPosition(max(0, MediaUtils.getSongIndex() - 2))
+                }
+                catch (e:java.lang.Exception){}
             }
         } else {
 

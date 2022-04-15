@@ -17,6 +17,7 @@ import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlaying
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
@@ -25,6 +26,7 @@ import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import kotlin.math.max
 
 
 /*This adapter class also serves the same function to act as a bridge between the single row view and its data. The implementation is quite similar to the one we did
@@ -53,6 +55,14 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
+        if(MediaUtils.currSong != null && songObject == MediaUtils.currSong){
+            holder.binding?.contentRow?.strokeWidth = 1
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+        }
+        else{
+            holder.binding?.contentRow?.strokeWidth = 0
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorPrimary)!!
+        }
 
         /*The holder object of our MyViewHolder class has two properties i.e
         * trackTitle for holding the name of the song and
@@ -85,25 +95,23 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
-            val songPlayingFragment = SongPlayingFragment()
-            MainScreenFragment.position = position
+            var intent = Intent(mContext,SongPlayingActivity::class.java)
+            notifyItemChanged(max(MediaUtils.getSongIndex(),0))
+            MediaUtils.currSong = songObject
             mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
-            var args = Bundle()
-            args.putString("songArtist", songObject.artist)
-            args.putString("songTitle", songObject.songTitle)
-            args.putString("path", songObject.songData)
-            args.putLong("SongID", songObject.songID)
-            args.putLong("songAlbum", songObject.songAlbum?:-1)
-            args.putString("album", songObject.album)
-            args.putInt("songPosition", position)
+            intent.putExtra("songArtist", songObject.artist)
+            intent.putExtra("songTitle", songObject.songTitle)
+            intent.putExtra("path", songObject.songData)
+            intent.putExtra("SongID", songObject.songID)
+            intent.putExtra("songAlbum", songObject.songAlbum?:-1)
+            intent.putExtra("album", songObject.album)
+            intent.putExtra("songPosition", position)
+            MediaUtils.songsList = songDetails?: ArrayList()
 
-            args.putParcelableArrayList("songData", songDetails)  // sending the details as a parcel to the bundle
+            stopPlaying(intent)
 
-            songPlayingFragment.arguments = args
-
-
-            stopPlaying()
-
+            holder.binding?.contentRow?.strokeWidth = 1
+            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
 //            var serviceIntent = Intent(mContext, EchoNotification::class.java)
 //
@@ -115,11 +123,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 //
 //            mContext?.startService(serviceIntent)
 
-            (mContext as MainActivity).supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.details_fragment, songPlayingFragment,SongPlayingFragment.Statified.TAG)
-                    .addToBackStack(SongPlayingFragment.Statified.TAG)
-                    .commit()
+            (mContext as MainActivity).startActivity(intent)
         }
     }
 
@@ -154,10 +158,11 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     }
 
 
-    private fun stopPlaying() {
+    private fun stopPlaying(intent: Intent) {
         try {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer.stop()
+                intent.putExtra(Constants.WAS_MEDIA_PLAYING,true)
             }
             stopPlayingCalled = true
         }catch (e:Exception){}

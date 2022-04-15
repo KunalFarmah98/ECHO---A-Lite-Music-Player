@@ -91,11 +91,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun resetScreen(){
-        if(bottomNav!=null)
-            bottomNav!!.selectedItemId = bottomNav!!.selectedItemId
-    }
-
 
     fun setNotify_val(bool: Boolean) {
         notify = bool
@@ -223,7 +218,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun movToHome() {
+    fun moveToHome() {
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
     }
 
@@ -233,11 +228,6 @@ class MainActivity : AppCompatActivity() {
         if (Statified.drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
             Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
         }
-
-
-        if(supportFragmentManager.findFragmentByTag(SongPlayingFragment.Statified.TAG)==null)
-            MainScreenFragment.position = 0
-
 
         var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
 
