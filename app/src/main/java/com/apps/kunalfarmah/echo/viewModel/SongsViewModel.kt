@@ -1,12 +1,15 @@
 package com.apps.kunalfarmah.echo.viewModel
 
+import android.os.Build
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.repository.SongsRepository
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import kotlinx.coroutines.launch
 
 class SongsViewModel
@@ -67,5 +70,19 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
 
     fun setPlayStatus(play:Boolean){
         isSongPlaying.value = play
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                if (MediaUtils.mediaPlayer != null) {
+                    MediaUtils.mediaPlayer.stop()
+                    MediaUtils.mediaPlayer.release()
+                }
+            } catch (e: Exception) {
+            }
+            SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(SongPlayingFragment.Staticated.mSensorListener)
+        }
     }
 }

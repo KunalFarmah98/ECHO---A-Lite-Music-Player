@@ -20,11 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private val viewModel: SongsViewModel by viewModels()
-    private var permission_String = arrayOf(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
-            android.Manifest.permission.RECORD_AUDIO)
+    private var permission_String = arrayOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +35,27 @@ class SplashActivity : AppCompatActivity() {
         catch (e:Exception){
             Log.e("ERROR","Couldn't change status bar color")
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            permission_String = arrayOf(
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
+            permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                    android.Manifest.permission.RECORD_AUDIO)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+            permission_String = arrayOf(
+                    android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
                     android.Manifest.permission.RECORD_AUDIO,
-                    android.Manifest.permission.ACCESS_MEDIA_LOCATION)
+                    android.Manifest.permission.ACCESS_MEDIA_LOCATION,
+            )
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permission_String = arrayOf(
+                    android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                    android.Manifest.permission.RECORD_AUDIO,
+                    android.Manifest.permission.ACCESS_MEDIA_LOCATION,
+                    android.Manifest.permission.READ_MEDIA_AUDIO,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (!hasPermissions(this@SplashActivity, *permission_String)) {
@@ -62,31 +72,25 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
+    private fun grantedPermissions(grantResults: IntArray): Boolean {
+        grantResults.forEach { if(it == PackageManager.PERMISSION_DENIED) return false }
+        return true
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
             131 -> {
-                if (grantResults.isNotEmpty()
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED
-                ) {
+                if (grantResults.isNotEmpty() && grantedPermissions(grantResults)){
                     DisplayActivity()
                 } else {
                     Toast.makeText(this@SplashActivity, "Please Grant All the Permissions To Continue", Toast.LENGTH_SHORT).show()
                     this.finish()
                 }
-
             }
             1001 -> {
-                if (grantResults.isNotEmpty()
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[3] == PackageManager.PERMISSION_GRANTED
-                ) {
+                if (grantResults.isNotEmpty() && grantedPermissions(grantResults)){
                     DisplayActivity()
                 } else {
                     Toast.makeText(this@SplashActivity, "Please Grant All the Permissions To Continue", Toast.LENGTH_SHORT).show()
@@ -106,6 +110,12 @@ class SplashActivity : AppCompatActivity() {
 
         for (permission in Permissions) {
             val res = context.checkCallingOrSelfPermission(permission)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if(permission === android.Manifest.permission.READ_EXTERNAL_STORAGE || permission ===
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE){
+                    continue
+                }
+            }
             if (res != PackageManager.PERMISSION_GRANTED)
                 hasAllPermisisons = false
         }

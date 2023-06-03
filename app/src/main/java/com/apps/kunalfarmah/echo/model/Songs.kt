@@ -13,17 +13,16 @@ data class Songs(var songID :Long, var songTitle:String, var artist:String, var 
         parcel.readString()?:"",
         parcel.readLong(),
         parcel.readValue(Long::class.java.classLoader) as? Long
-    ) {
-    }
+    )
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeLong(songID)
-        dest?.writeString(songTitle)
-        dest?.writeString(artist)
-        dest?.writeString(album)
-        dest?.writeString(songData)
-        dest?.writeLong(dateAdded)
-        dest?.writeValue(songAlbum)
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeLong(songID)
+        dest.writeString(songTitle)
+        dest.writeString(artist)
+        dest.writeString(album)
+        dest.writeString(songData)
+        dest.writeLong(dateAdded)
+        dest.writeValue(songAlbum)
     }
 
     override fun describeContents(): Int {
