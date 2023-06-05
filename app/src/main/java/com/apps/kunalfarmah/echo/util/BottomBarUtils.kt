@@ -9,6 +9,7 @@ import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,9 +87,11 @@ object BottomBarUtils {
 
                 mediaPlayer.pause()
                 bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.play_icon))
-                var play = Intent(App.context, EchoNotification::class.java)
-                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                myActivity.startService(play)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    var play = Intent(App.context, EchoNotification::class.java)
+                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+                    myActivity.startService(play)
+                }
                 SongPlayingFragment.Staticated.updateButton("pause")
             } else {
                 MainScreenAdapter.Statified.stopPlayingCalled = true
@@ -107,10 +110,11 @@ object BottomBarUtils {
 
 
                     myActivity.startService(serviceIntent)
-
-                    var play = Intent(myActivity, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                    myActivity.startService(play)
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        var play = Intent(myActivity, EchoNotification::class.java)
+                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                        myActivity.startService(play)
+                    }
                     SongPlayingFragment.Staticated.updateButton("play")
 
                 } else if (main.getnotify_val()) {
@@ -124,11 +128,12 @@ object BottomBarUtils {
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
-
-                    var play = Intent(myActivity, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                    myActivity.startService(play)
-                    SongPlayingFragment.Staticated.updateButton("play")
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        var play = Intent(myActivity, EchoNotification::class.java)
+                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                        myActivity.startService(play)
+                        SongPlayingFragment.Staticated.updateButton("play")
+                    }
                 }
             }
         }

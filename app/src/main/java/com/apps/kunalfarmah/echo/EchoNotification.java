@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -30,9 +31,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.media3.ui.PlayerNotificationManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
+import com.apps.kunalfarmah.echo.adapter.PlayerDescriptionAdapter;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.util.BottomBarUtils;
 import com.apps.kunalfarmah.echo.util.Constants;
@@ -411,9 +414,10 @@ public class EchoNotification extends Service {
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
             buildMediaNotification();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -681,7 +685,7 @@ public class EchoNotification extends Service {
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences("Notification", Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
         BottomBarUtils.INSTANCE.updatePlayPause();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S)
             buildMediaNotification();
         else
             this.startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, this.status);

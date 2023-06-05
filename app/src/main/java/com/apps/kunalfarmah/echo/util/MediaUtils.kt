@@ -1,46 +1,59 @@
 package com.apps.kunalfarmah.echo.util
 
 import android.content.Intent
+import android.media.session.MediaSession
+import android.os.Build
 import androidx.annotation.Keep
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerNotificationManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
+import com.apps.kunalfarmah.echo.adapter.PlayerDescriptionAdapter
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.Player.PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS
-import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 
 @Keep
 object MediaUtils {
-     var mediaPlayer:ExoPlayer = ExoPlayer.Builder(App.context).build()
+     var mediaPlayer = ExoPlayer.Builder(App.context).build()
+     var mediaSession: MediaSession? = null
 
      init {
           var audioAttributes = AudioAttributes.Builder()
-               .setUsage(C.USAGE_MEDIA)
-               .setContentType(C.CONTENT_TYPE_MUSIC)
-               .build()
-          mediaPlayer.setAudioAttributes(audioAttributes,true)
-          mediaPlayer.addListener(object : Player.Listener{
+                  .setUsage(C.USAGE_MEDIA)
+                  .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                  .build()
+          mediaPlayer.setAudioAttributes(audioAttributes, true)
+          mediaPlayer.addListener(object : Player.Listener {
                override fun onPlaybackStateChanged(state: Int) {
-                    when(state){
+                    when (state) {
                          Player.STATE_ENDED -> SongPlayingFragment.Staticated.onSongComplete()
                          Player.STATE_READY -> {
+                              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                   mediaSession = MediaSession(App.context, "ECHO-MUSIC")
+                                   mediaSession?.isActive = true
+                              }
                               mediaPlayer.play()
                               SongPlayingFragment.Staticated.processInformation()
-                              var serviceIntent = Intent(App.context, EchoNotification::class.java)
+                              if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                                   var serviceIntent = Intent(App.context, EchoNotification::class.java)
 
-                              serviceIntent.putExtra("title", SongHelper.currentSongHelper.songTitle)
-                              serviceIntent.putExtra("artist", SongHelper.currentSongHelper.songArtist)
-                              serviceIntent.putExtra("album", SongHelper.currentSongHelper.songAlbum)
+                                   serviceIntent.putExtra("title", SongHelper.currentSongHelper.songTitle)
+                                   serviceIntent.putExtra("artist", SongHelper.currentSongHelper.songArtist)
+                                   serviceIntent.putExtra("album", SongHelper.currentSongHelper.songAlbum)
 
-                              serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+                                   serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
 
-                              // need to start it twice or media controls don't work
-                              App.context.startService(serviceIntent)
-                              App.context.startService(serviceIntent)
+                                   // need to start it twice or media controls don't work
+                                   App.context.startService(serviceIntent)
+                                   App.context.startService(serviceIntent)
+                              }
                          }
 
                     }
@@ -60,11 +73,26 @@ object MediaUtils {
                }
 
                override fun onPlayerError(error: PlaybackException) {
-                    FirebaseCrashlytics.getInstance().log("Player Error: ${error.javaClass.name} ${error.message?:""}")
+                    FirebaseCrashlytics.getInstance().log("Player Error: ${error.javaClass.name} ${error.message ?: ""}")
                     super.onPlayerError(error)
                }
           })
+
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+               var playerNotificationManager = PlayerNotificationManager.Builder(
+                       App.context,
+                       Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
+                       "Echo_Music"
+               ).setMediaDescriptionAdapter(PlayerDescriptionAdapter()).build()
+               playerNotificationManager.setUseFastForwardAction(false)
+               playerNotificationManager.setUseRewindAction(false)
+               playerNotificationManager.setUseFastForwardActionInCompactView(false)
+               playerNotificationManager.setUseRewindActionInCompactView(false)
+               playerNotificationManager.setPlayer(mediaPlayer)
+               playerNotificationManager.setMediaSessionToken(android.support.v4.media.session.MediaSessionCompat.Token.fromToken(mediaSession?.sessionToken))
+          }
      }
+
      var songsList:ArrayList<Songs> = ArrayList()
      var currInd: Int = -1
      var currSong: Songs? = null
