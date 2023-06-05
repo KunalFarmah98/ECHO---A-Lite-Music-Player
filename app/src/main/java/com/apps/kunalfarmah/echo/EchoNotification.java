@@ -316,6 +316,7 @@ public class EchoNotification extends Service {
     }
 
     private void showNotification() {
+        int pendingIntentFlag = Build.VERSION.SDK_INT<Build.VERSION_CODES.S ? 0 : PendingIntent.FLAG_IMMUTABLE;
 // Using RemoteViews to bind custom layouts into Notification
         views = new RemoteViews(getPackageName(),
                 R.layout.notification_bar);
@@ -325,7 +326,7 @@ public class EchoNotification extends Service {
 
 
         Intent openIntent = new Intent(this, EchoNotification.class);
-        PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, 0);
+        PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, pendingIntentFlag);
 
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -333,27 +334,27 @@ public class EchoNotification extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+                notificationIntent, pendingIntentFlag);
 
         Intent previousIntent = new Intent(this, EchoNotification.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
         PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
-                previousIntent, 0);
+                previousIntent, pendingIntentFlag);
 
         Intent playIntent = new Intent(this, EchoNotification.class);
         playIntent.setAction(Constants.ACTION.PLAY_ACTION);
         PendingIntent pplayIntent = PendingIntent.getService(this, 0,
-                playIntent, 0);
+                playIntent, pendingIntentFlag);
 
         Intent nextIntent = new Intent(this, EchoNotification.class);
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
         PendingIntent pnextIntent = PendingIntent.getService(this, 0,
-                nextIntent, 0);
+                nextIntent, pendingIntentFlag);
 
         Intent closeIntent = new Intent(this, EchoNotification.class);
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
-                closeIntent, 0);
+                closeIntent, pendingIntentFlag);
 
         views.setOnClickPendingIntent(R.id.playpausebutton_not, pplayIntent);
         smallviews.setOnClickPendingIntent(R.id.playpausebutton_not, pplayIntent);
@@ -467,6 +468,7 @@ public class EchoNotification extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void buildMediaNotification() {
+        int pendingIntentFlag = Build.VERSION.SDK_INT<Build.VERSION_CODES.S ? 0 : PendingIntent.FLAG_IMMUTABLE;
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Sets an ID for the notification, so it can be updated.
@@ -495,12 +497,12 @@ public class EchoNotification extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+                notificationIntent, pendingIntentFlag);
 
         Intent closeIntent = new Intent(this, EchoNotification.class);
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
-                closeIntent, 0);
+                closeIntent, pendingIntentFlag);
 
         Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
@@ -558,31 +560,32 @@ public class EchoNotification extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void addActions(Notification.Builder builder) {
+        int pendingIntentFlag = Build.VERSION.SDK_INT<Build.VERSION_CODES.S ? 0 : PendingIntent.FLAG_IMMUTABLE;
 
         Intent previousIntent = new Intent(this, EchoNotification.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
         PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
-                previousIntent, 0);
+                previousIntent, pendingIntentFlag);
 
         Intent playIntent = new Intent(this, EchoNotification.class);
         playIntent.setAction(Constants.ACTION.PLAY_ACTION);
         PendingIntent pplayIntent = PendingIntent.getService(this, 0,
-                playIntent, 0);
+                playIntent, pendingIntentFlag);
 
         Intent nextIntent = new Intent(this, EchoNotification.class);
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
         PendingIntent pnextIntent = PendingIntent.getService(this, 0,
-                nextIntent, 0);
+                nextIntent, pendingIntentFlag);
 
         Intent closeIntent = new Intent(this, EchoNotification.class);
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
-                closeIntent, 0);
+                closeIntent, pendingIntentFlag);
 
         Intent shuffleIntent = new Intent(this, EchoNotification.class);
         shuffleIntent.setAction(Constants.ACTION.SHUFFLE_ACTION);
         PendingIntent pShuffleIntent = PendingIntent.getService(this, 0,
-                shuffleIntent, 0);
+                shuffleIntent, pendingIntentFlag);
 
         Notification.Action mShuffleAction =
                 new Notification.Action(
