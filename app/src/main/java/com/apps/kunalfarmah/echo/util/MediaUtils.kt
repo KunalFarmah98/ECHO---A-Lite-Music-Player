@@ -1,7 +1,6 @@
 package com.apps.kunalfarmah.echo.util
 
 import android.content.Intent
-import android.media.session.MediaSession
 import android.os.Build
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
@@ -9,6 +8,7 @@ import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
 import androidx.media3.ui.PlayerNotificationManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
@@ -23,7 +23,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
      var mediaSession: MediaSession? = null
-
+     lateinit var playerNotificationManager :PlayerNotificationManager
      init {
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
@@ -35,10 +35,6 @@ object MediaUtils {
                     when (state) {
                          Player.STATE_ENDED -> SongPlayingFragment.Staticated.onSongComplete()
                          Player.STATE_READY -> {
-                              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                   mediaSession = MediaSession(App.context, "ECHO-MUSIC")
-                                   mediaSession?.isActive = true
-                              }
                               mediaPlayer.play()
                               SongPlayingFragment.Staticated.processInformation()
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
@@ -74,22 +70,25 @@ object MediaUtils {
 
                override fun onPlayerError(error: PlaybackException) {
                     FirebaseCrashlytics.getInstance().log("Player Error: ${error.javaClass.name} ${error.message ?: ""}")
+                    playerNotificationManager.setPlayer(null)
                     super.onPlayerError(error)
                }
           })
 
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-               var playerNotificationManager = PlayerNotificationManager.Builder(
+               mediaSession = MediaSession.Builder(App.context, mediaPlayer)
+                       .build()
+               playerNotificationManager = PlayerNotificationManager.Builder(
                        App.context,
-                       Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
-                       "Echo_Music"
+                       Constants.NOTIFICATION_ID.PLAYER_NOTIFICATION_MANAGER,
+                       "Echo_Music_ExoPlayer"
                ).setMediaDescriptionAdapter(PlayerDescriptionAdapter()).build()
                playerNotificationManager.setUseFastForwardAction(false)
                playerNotificationManager.setUseRewindAction(false)
                playerNotificationManager.setUseFastForwardActionInCompactView(false)
                playerNotificationManager.setUseRewindActionInCompactView(false)
                playerNotificationManager.setPlayer(mediaPlayer)
-               playerNotificationManager.setMediaSessionToken(android.support.v4.media.session.MediaSessionCompat.Token.fromToken(mediaSession?.sessionToken))
+               playerNotificationManager.setMediaSessionToken(mediaSession!!.sessionCompatToken)
           }
      }
 

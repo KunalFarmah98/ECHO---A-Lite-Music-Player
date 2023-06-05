@@ -32,6 +32,7 @@ public class Constants {
 
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;
+        int PLAYER_NOTIFICATION_MANAGER = 102;
     }
 
 }
