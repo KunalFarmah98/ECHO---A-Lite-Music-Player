@@ -22,6 +22,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 @Keep
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
+     var mediaSession: MediaSession? = null
+     lateinit var playerNotificationManager :PlayerNotificationManager
      init {
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
@@ -35,17 +37,19 @@ object MediaUtils {
                          Player.STATE_READY -> {
                               mediaPlayer.play()
                               SongPlayingFragment.Staticated.processInformation()
-                              var serviceIntent = Intent(App.context, EchoNotification::class.java)
+                              if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                                   var serviceIntent = Intent(App.context, EchoNotification::class.java)
 
-                              serviceIntent.putExtra("title", SongHelper.currentSongHelper.songTitle)
-                              serviceIntent.putExtra("artist", SongHelper.currentSongHelper.songArtist)
-                              serviceIntent.putExtra("album", SongHelper.currentSongHelper.songAlbum)
+                                   serviceIntent.putExtra("title", SongHelper.currentSongHelper.songTitle)
+                                   serviceIntent.putExtra("artist", SongHelper.currentSongHelper.songArtist)
+                                   serviceIntent.putExtra("album", SongHelper.currentSongHelper.songAlbum)
 
-                              serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+                                   serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
 
-                              // need to start it twice or media controls don't work
-                              App.context.startService(serviceIntent)
-                              App.context.startService(serviceIntent)
+                                   // need to start it twice or media controls don't work
+                                   App.context.startService(serviceIntent)
+                                   App.context.startService(serviceIntent)
+                              }
                          }
 
                     }
@@ -66,9 +70,26 @@ object MediaUtils {
 
                override fun onPlayerError(error: PlaybackException) {
                     FirebaseCrashlytics.getInstance().log("Player Error: ${error.javaClass.name} ${error.message ?: ""}")
+                    playerNotificationManager.setPlayer(null)
                     super.onPlayerError(error)
                }
           })
+
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+               mediaSession = MediaSession.Builder(App.context, mediaPlayer)
+                       .build()
+               playerNotificationManager = PlayerNotificationManager.Builder(
+                       App.context,
+                       Constants.NOTIFICATION_ID.PLAYER_NOTIFICATION_MANAGER,
+                       "Echo_Music_ExoPlayer"
+               ).setMediaDescriptionAdapter(PlayerDescriptionAdapter()).build()
+               playerNotificationManager.setUseFastForwardAction(false)
+               playerNotificationManager.setUseRewindAction(false)
+               playerNotificationManager.setUseFastForwardActionInCompactView(false)
+               playerNotificationManager.setUseRewindActionInCompactView(false)
+               playerNotificationManager.setPlayer(mediaPlayer)
+               playerNotificationManager.setMediaSessionToken(mediaSession!!.sessionCompatToken)
+          }
      }
 
      var songsList:ArrayList<Songs> = ArrayList()

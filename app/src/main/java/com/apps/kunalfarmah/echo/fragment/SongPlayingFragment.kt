@@ -124,14 +124,14 @@ class SongPlayingFragment : Fragment() {
             BottomBarUtils.setArtist()
             BottomBarUtils.setAlbumArt()
 
-
-            var play = Intent(myActivity, EchoNotification::class.java)
-            play.action = Constants.ACTION.NEXT_UPDATE
-            play.putExtra("title", currentSongHelper.songTitle)
-            play.putExtra("artist", currentSongHelper.songArtist)
-            play.putExtra("album", currentSongHelper.songAlbum)
-
-            myActivity?.startService(play)
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                var play = Intent(myActivity, EchoNotification::class.java)
+                play.action = Constants.ACTION.NEXT_UPDATE
+                play.putExtra("title", currentSongHelper.songTitle)
+                play.putExtra("artist", currentSongHelper.songArtist)
+                play.putExtra("album", currentSongHelper.songAlbum)
+                myActivity?.startService(play)
+            }
         }
 
         /*The function playPrevious() is used to play the previous song again*/
@@ -199,13 +199,14 @@ class SongPlayingFragment : Fragment() {
             BottomBarUtils.setArtist()
             BottomBarUtils.setAlbumArt()
 
-
-            var play = Intent(myActivity, EchoNotification::class.java)
-            play.action = Constants.ACTION.PREV_UPDATE
-            play.putExtra("title", currentSongHelper.songTitle)
-            play.putExtra("artist", currentSongHelper.songArtist)
-            play.putExtra("album", currentSongHelper.songAlbum)
-            myActivity?.startService(play)
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                var play = Intent(myActivity, EchoNotification::class.java)
+                play.action = Constants.ACTION.PREV_UPDATE
+                play.putExtra("title", currentSongHelper.songTitle)
+                play.putExtra("artist", currentSongHelper.songArtist)
+                play.putExtra("album", currentSongHelper.songAlbum)
+                myActivity?.startService(play)
+            }
         }
     }
 
@@ -409,13 +410,14 @@ class SongPlayingFragment : Fragment() {
 //                FavoriteFragment.noNext = true
 //            }
 
-
-            var play = Intent(myActivity, EchoNotification::class.java)
-            play.action = Constants.ACTION.NEXT_UPDATE
-            play.putExtra("title", currentSongHelper.songTitle)
-            play.putExtra("artist", currentSongHelper.songArtist)
-            play.putExtra("album", currentSongHelper.songAlbum)
-            myActivity?.startService(play)
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                var play = Intent(myActivity, EchoNotification::class.java)
+                play.action = Constants.ACTION.NEXT_UPDATE
+                play.putExtra("title", currentSongHelper.songTitle)
+                play.putExtra("artist", currentSongHelper.songArtist)
+                play.putExtra("album", currentSongHelper.songAlbum)
+                myActivity?.startService(play)
+            }
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
@@ -578,10 +580,11 @@ class SongPlayingFragment : Fragment() {
                 mediaPlayer?.pause()
                 inform = true
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-                var play = Intent(context, EchoNotification::class.java)
-                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                activity?.startService(play)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    var play = Intent(context, EchoNotification::class.java)
+                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+                    activity?.startService(play)
+                }
 
                 Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
             }
@@ -594,10 +597,11 @@ class SongPlayingFragment : Fragment() {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-                var play = Intent(context, EchoNotification::class.java)
-                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                activity?.startService(play)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    var play = Intent(context, EchoNotification::class.java)
+                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+                    activity?.startService(play)
+                }
             }
         }
     }
@@ -1013,10 +1017,11 @@ class SongPlayingFragment : Fragment() {
                 mediaPlayer.pause()
                 play = false
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-
-                var play = Intent(context, EchoNotification::class.java)
-                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                activity?.startService(play)
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    var play = Intent(context, EchoNotification::class.java)
+                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+                    activity?.startService(play)
+                }
 
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
@@ -1025,10 +1030,11 @@ class SongPlayingFragment : Fragment() {
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
                     playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                     var play = Intent(activity, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PAUSE
                     activity?.startService(play)
+                }
             }
         }
     }
