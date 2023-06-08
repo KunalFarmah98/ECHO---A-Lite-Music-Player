@@ -107,6 +107,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             intent.putExtra("album", songObject.album)
             intent.putExtra("songPosition", position)
             MediaUtils.songsList = songDetails?: ArrayList()
+            MediaUtils.setMediaItems()
 
             stopPlaying(intent)
 

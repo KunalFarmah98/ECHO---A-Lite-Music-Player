@@ -1,5 +1,7 @@
 package com.apps.kunalfarmah.echo.util
 
+import android.net.Uri
+
 
 class CurrentSongHelper{
     var songTitle: String? = null
@@ -11,5 +13,6 @@ class CurrentSongHelper{
     var songId: Long? = 0
 
     var currentPosition:Int?=0
+    var albumArt: Uri? = null
 
 }

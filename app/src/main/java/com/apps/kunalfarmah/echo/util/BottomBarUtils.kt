@@ -56,7 +56,12 @@ object BottomBarUtils {
             bottomBarBinding.songArtist.visibility = View.GONE
         else
             bottomBarBinding.songArtist.text = artist
-        setAlbumArt(currentSongHelper.songAlbum)
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            setAlbumArt(currentSongHelper.songAlbum)
+        }
+        else{
+            setAlbumArt(currentSongHelper.albumArt)
+        }
 
     }
 
@@ -102,15 +107,13 @@ object BottomBarUtils {
                     mediaPlayer.play()
 
                     bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
-                    var serviceIntent = Intent(myActivity, EchoNotification::class.java)
-
-                    serviceIntent.putExtra("title", bottomBarBinding.songTitle.text.toString())
-                    serviceIntent.putExtra("artist", bottomBarBinding.songArtist.text.toString())
-                    serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-
-
-                    myActivity.startService(serviceIntent)
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        var serviceIntent = Intent(myActivity, EchoNotification::class.java)
+                        serviceIntent.putExtra("title", bottomBarBinding.songTitle.text.toString())
+                        serviceIntent.putExtra("artist", bottomBarBinding.songArtist.text.toString())
+                        serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+                        myActivity.startService(serviceIntent)
+
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.CHANGE_TO_PAUSE
                         myActivity.startService(play)
@@ -168,6 +171,22 @@ object BottomBarUtils {
         }
     }
 
+    fun setAlbumArt(artwork: Uri?) {
+        if (artwork == null) {
+            bottomBarBinding?.songImg?.setImageDrawable(
+                    App.context.resources?.getDrawable(
+                            R.drawable.echo_icon
+                    )
+            )
+            return
+        }
+        try {
+            Glide.with(App.context).load(artwork).placeholder(R.drawable.echo_icon)
+                    .into(bottomBarBinding?.songImg!!)
+        } catch (e: Exception) {
+        }
+    }
+
 
     private fun isMyServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -197,17 +216,32 @@ object BottomBarUtils {
     }
 
     fun setAlbumArt() {
-        if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
-            val sArtworkUri: Uri = Uri
-                .parse("content://media/external/audio/albumart")
-            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, currentSongHelper.songAlbum!!)
-            if (currentSongHelper.songAlbum!! < 0 || null == uri || uri.toString().isEmpty())
-                bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
-            else
-                bottomBarBinding?.songImg?.setImageURI(uri)
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
+                if(currentSongHelper.songAlbum == null){
+                    bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                    return
+                }
+                val sArtworkUri: Uri = Uri
+                        .parse("content://media/external/audio/albumart")
+                val uri: Uri = ContentUris.withAppendedId(sArtworkUri, currentSongHelper.songAlbum!!)
+                if (currentSongHelper.songAlbum!! < 0 || null == uri || uri.toString().isEmpty())
+                    bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                else
+                    bottomBarBinding?.songImg?.setImageURI(uri)
 
-            if (null == bottomBarBinding?.songImg?.drawable) {
-                bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                if (null == bottomBarBinding?.songImg?.drawable) {
+                    bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                }
+            }
+        }
+        else{
+            if (null != bottomBarBinding?.songImg && null != currentSongHelper){
+                val uri = currentSongHelper.albumArt
+                if(uri != null)
+                    bottomBarBinding?.songImg?.setImageURI(uri)
+                else
+                    bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             }
         }
     }

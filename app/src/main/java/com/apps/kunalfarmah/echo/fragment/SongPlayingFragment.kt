@@ -21,6 +21,7 @@ import android.widget.*
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import com.apps.kunalfarmah.echo.*
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
@@ -75,6 +76,11 @@ class SongPlayingFragment : Fragment() {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                MediaUtils.mediaPlayer.seekToNextMediaItem()
+                return
+            }
 
             /*Let this one sit for a while, We'll explain this after the next section where we will be teaching to add the next and previous functionality*/
             if (!shuffle) {
@@ -139,6 +145,11 @@ class SongPlayingFragment : Fragment() {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                MediaUtils.mediaPlayer.seekToPreviousMediaItem()
+                return
+            }
 
             /*Decreasing the current position by 1 to get the position of the previous song*/
             if (!shuffle) {
@@ -353,13 +364,12 @@ class SongPlayingFragment : Fragment() {
         }
 
 
-        fun previousSong() {
-            playPrevious(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
-        }
-
-
         /*Function to handle the event where the song completes playing*/
         fun onSongComplete() {
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                return
+            }
             /*If loop was ON, then play the same song again*/
             if (sharedPreferences?.getBoolean(Constants.LOOP, false) == true) {
                 var nextSong = fetchSongs?.get(currentPosition)
@@ -435,18 +445,46 @@ class SongPlayingFragment : Fragment() {
             Statified.songTitle?.text = songtitleupdted
             Statified.songArtist?.text = songartistupdted
 
-            var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
-            if (img == null) {
-                albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-                glView?.visibility = View.VISIBLE
-                albumArt?.visibility = View.GONE
-                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
-            } else {
-                albumArt?.setImageBitmap(img)
-                if (myActivity != null) {
-                    glView?.visibility = View.GONE
-                    albumArt?.visibility = View.VISIBLE
-                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                currentSongHelper.songAlbum.let {
+                    if (it != null) {
+                        var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
+                        if (img == null) {
+                            albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                            glView?.visibility = View.VISIBLE
+                            albumArt?.visibility = View.GONE
+                            controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                        } else {
+                            albumArt?.setImageBitmap(img)
+                            if (myActivity != null) {
+                                glView?.visibility = View.GONE
+                                albumArt?.visibility = View.VISIBLE
+                                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                            }
+                            else{}
+                        }
+                    } else {
+                        albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                        glView?.visibility = View.VISIBLE
+                        albumArt?.visibility = View.GONE
+                        controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                    }
+                }
+            }
+            else{
+                var img = currentSongHelper.albumArt
+                if (img == null) {
+                    albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                    glView?.visibility = View.VISIBLE
+                    albumArt?.visibility = View.GONE
+                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                } else {
+                    albumArt?.setImageURI(img)
+                    if (myActivity != null) {
+                        glView?.visibility = View.GONE
+                        albumArt?.visibility = View.VISIBLE
+                        controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                    }
                 }
             }
 
@@ -652,7 +690,7 @@ class SongPlayingFragment : Fragment() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
                 if (fromuser && mediaPlayer != null) {
                     mediaPlayer.seekTo(progress.toLong())
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.STARTFOREGROUND_ACTION
                         play.putExtra("title", currentSongHelper.songTitle)
@@ -749,7 +787,23 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper.album = _album
         currentSongHelper.currentPosition = currentPosition
 
-        albumArt?.setImageBitmap(getAlbumart(currentSongHelper.songAlbum!!.toLong()))
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            currentSongHelper.songAlbum.let {
+                if (it != null)
+                    albumArt?.setImageBitmap(getAlbumart(it))
+                else
+                    albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+            }
+        } else {
+            currentSongHelper.albumArt.let {
+                if (it != null) {
+                    albumArt?.setImageURI(it)
+                } else {
+                    albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                }
+            }
+        }
+
         albumArt?.visibility = View.GONE
 
         // updating the textViews as soon as the song is changed and loaded
@@ -774,7 +828,10 @@ class SongPlayingFragment : Fragment() {
 
         try {
             //setting the data source for the media player with the help of uri
-            mediaPlayer.setMediaItem(MediaItem.fromUri( Uri.parse(path)),true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                mediaPlayer.setMediaItems(MediaUtils.mediaItemsList, currentPosition, 0L)
+            else
+                mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(path)), true)
             mediaPlayer.prepare()
 
 
@@ -964,6 +1021,10 @@ class SongPlayingFragment : Fragment() {
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
             }
 
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                MediaUtils.mediaPlayer.shuffleModeEnabled = !isShuffle
+            }
+
         }
 
 
@@ -1005,6 +1066,9 @@ class SongPlayingFragment : Fragment() {
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, true).apply()
                 shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            }
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                MediaUtils.mediaPlayer.repeatMode = if(isRepeat) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
             }
         }
 
