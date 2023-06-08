@@ -6,6 +6,7 @@ import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -60,7 +61,7 @@ object BottomBarUtils {
             setAlbumArt(currentSongHelper.songAlbum)
         }
         else{
-            setAlbumArt(currentSongHelper.albumArt)
+            loadAlbumArt(currentSongHelper.albumArt)
         }
 
     }
@@ -171,7 +172,7 @@ object BottomBarUtils {
         }
     }
 
-    fun setAlbumArt(artwork: Uri?) {
+    private fun loadAlbumArt(artwork: Bitmap?) {
         if (artwork == null) {
             bottomBarBinding?.songImg?.setImageDrawable(
                     App.context.resources?.getDrawable(
@@ -198,13 +199,24 @@ object BottomBarUtils {
         return false
     }
 
-    fun setTitle() {
-        if (null != currentSongHelper.songTitle && null != currentSongHelper)
+    fun setTitle(title: String? = null) {
+        if(title != null){
+            bottomBarBinding?.songTitle?.text = title
+        }
+        else if (null != currentSongHelper.songTitle && null != currentSongHelper)
             bottomBarBinding?.songTitle?.text = currentSongHelper?.songTitle
     }
 
-    fun setArtist() {
-        if (null != currentSongHelper.songArtist && null != currentSongHelper) {
+    fun setArtist(artist: String? = null) {
+        if(artist != null) {
+            if (artist.equals("<unknown>", ignoreCase = true))
+                bottomBarBinding?.songArtist?.visibility = View.GONE
+            else {
+                bottomBarBinding?.songArtist?.visibility = View.VISIBLE
+                bottomBarBinding?.songArtist?.text = artist
+            }
+        }
+        else if (null != currentSongHelper.songArtist && null != currentSongHelper) {
             var artist = currentSongHelper.songArtist
             if (artist.equals("<unknown>", ignoreCase = true))
                 bottomBarBinding?.songArtist?.visibility = View.GONE
@@ -215,7 +227,11 @@ object BottomBarUtils {
         }
     }
 
-    fun setAlbumArt() {
+    fun setAlbumArt(artwork: Bitmap? = null) {
+        if(artwork != null){
+            bottomBarBinding?.songImg?.setImageBitmap(artwork)
+            return
+        }
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
                 if(currentSongHelper.songAlbum == null){
@@ -237,9 +253,9 @@ object BottomBarUtils {
         }
         else{
             if (null != bottomBarBinding?.songImg && null != currentSongHelper){
-                val uri = currentSongHelper.albumArt
-                if(uri != null)
-                    bottomBarBinding?.songImg?.setImageURI(uri)
+                val bitmap = currentSongHelper.albumArt
+                if(bitmap != null)
+                    bottomBarBinding?.songImg?.setImageBitmap(bitmap)
                 else
                     bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             }

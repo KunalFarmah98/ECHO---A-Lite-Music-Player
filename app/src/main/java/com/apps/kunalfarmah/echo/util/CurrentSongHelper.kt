@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.echo.util
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 
@@ -13,6 +14,6 @@ class CurrentSongHelper{
     var songId: Long? = 0
 
     var currentPosition:Int?=0
-    var albumArt: Uri? = null
+    var albumArt: Bitmap? = null
 
 }

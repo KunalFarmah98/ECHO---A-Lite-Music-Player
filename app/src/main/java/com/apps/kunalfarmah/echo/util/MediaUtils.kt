@@ -2,6 +2,8 @@ package com.apps.kunalfarmah.echo.util
 
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
@@ -12,13 +14,10 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
-import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
-import androidx.media3.ui.PlayerNotificationManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.adapter.PlayerDescriptionAdapter
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.PlaybackService
@@ -30,8 +29,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 @Keep
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
-     var mediaSession: MediaSession? = null
-     lateinit var playerNotificationManager :PlayerNotificationManager
      lateinit var controllerFuture: ListenableFuture<MediaController>
      lateinit var controller: MediaController
      val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
@@ -46,6 +43,8 @@ object MediaUtils {
                     when (state) {
                          Player.STATE_ENDED -> SongPlayingFragment.Staticated.onSongComplete()
                          Player.STATE_READY -> {
+                              SongPlayingFragment.Staticated.processInformation()
+                              mediaPlayer.play()
                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                    controllerFuture = MediaController.Builder(App.context, sessionToken).buildAsync()
                                    controllerFuture.addListener(
@@ -55,11 +54,8 @@ object MediaUtils {
                                            },
                                            MoreExecutors.directExecutor()
                                    )
-                                   setCurrentSong()
+                                   setCurrentSong(mediaPlayer.currentMediaItem?.mediaMetadata)
                               }
-
-                              mediaPlayer.play()
-                              SongPlayingFragment.Staticated.processInformation()
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                                    var serviceIntent = Intent(App.context, EchoNotification::class.java)
 
@@ -79,12 +75,21 @@ object MediaUtils {
                     super.onPlaybackStateChanged(state)
                }
 
+
+
                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                    SongPlayingFragment.Staticated.updateTextViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString())
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                         setCurrentSong()
-                    }
                     super.onMediaMetadataChanged(mediaMetadata)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                         if(mediaMetadata.title != null) {
+                              setCurrentSong(mediaMetadata)
+                              val albumArtData = mediaMetadata?.artworkData
+                              var bitmap : Bitmap ?= null
+                              if(albumArtData != null) {
+                                   bitmap = BitmapFactory.decodeByteArray(albumArtData, 0, albumArtData.size)
+                              }
+                              SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), bitmap)
+                         }
+                    }
                }
 
                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -103,7 +108,6 @@ object MediaUtils {
 
                override fun onPlayerError(error: PlaybackException) {
                     FirebaseCrashlytics.getInstance().log("Player Error: ${error.javaClass.name} ${error.message ?: ""}")
-                    playerNotificationManager.setPlayer(null)
                     super.onPlayerError(error)
                }
           })
@@ -144,16 +148,27 @@ object MediaUtils {
      }
 
      fun getSongIndex(): Int {
-          if(currSong == null)
-               return -1
-          return songsList?.indexOf(currSong)!!
+          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+               if (currSong == null)
+                    return -1
+               return songsList?.indexOf(currSong)!!
+          }
+          else{
+               return mediaPlayer.currentMediaItemIndex
+          }
      }
 
-     fun setCurrentSong() {
-          val metadata = mediaPlayer.currentMediaItem?.mediaMetadata
-          SongHelper.currentSongHelper.songTitle = metadata?.title.toString()
-          SongHelper.currentSongHelper.songArtist = metadata?.artist.toString()
-          SongHelper.currentSongHelper.album = metadata?.albumTitle.toString()
-          SongHelper.currentSongHelper.albumArt = metadata?.artworkUri
+     fun setCurrentSong(metadata: MediaMetadata?) {
+          if(metadata != null && metadata.title != null) {
+               SongHelper.currentSongHelper.songTitle = metadata?.title.toString()
+               SongHelper.currentSongHelper.songArtist = metadata?.artist.toString()
+               SongHelper.currentSongHelper.album = metadata?.albumTitle.toString()
+               val albumArtData = metadata?.artworkData
+               var bitmap : Bitmap ?= null
+               if(albumArtData != null) {
+                    bitmap = BitmapFactory.decodeByteArray(albumArtData, 0, albumArtData.size)
+               }
+               SongHelper.currentSongHelper.albumArt = bitmap
+          }
      }
 }

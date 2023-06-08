@@ -31,7 +31,8 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.getAlbu
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastShakeTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateTextViews
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateViews
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.audioVisualization
@@ -104,7 +105,7 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper.album = nextSong?.album
             currentSongHelper.songId = nextSong?.songID as Long
 
-            updateTextViews(
+            updateViews(
                 currentSongHelper.songTitle as String,
                 currentSongHelper.songArtist as String
             )
@@ -184,7 +185,7 @@ class SongPlayingFragment : Fragment() {
             currentSongHelper.album = nextSong?.album
             currentSongHelper.songId = nextSong?.songID as Long
 
-            updateTextViews(
+            updateViews(
                 currentSongHelper.songTitle as String,
                 currentSongHelper.songArtist as String
             )
@@ -381,7 +382,7 @@ class SongPlayingFragment : Fragment() {
                 currentSongHelper.album = nextSong?.album
                 currentSongHelper.songId = nextSong?.songID as Long
 
-                updateTextViews(
+                updateViews(
                     currentSongHelper.songTitle as String,
                     currentSongHelper.songArtist as String
                 )
@@ -431,7 +432,7 @@ class SongPlayingFragment : Fragment() {
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun updateTextViews(songtitle: String?, songartist: String?) {
+        fun updateViews(songtitle: String?, songartist: String?, artwork: Bitmap? = null) {
 
             var songtitleupdted = songtitle
             var songartistupdted = songartist
@@ -472,14 +473,20 @@ class SongPlayingFragment : Fragment() {
                 }
             }
             else{
-                var img = currentSongHelper.albumArt
+                var img: Bitmap? = null
+                if(artwork != null){
+                    img = artwork
+                }
+                else if(currentSongHelper.songAlbum != null){
+                    img = getAlbumart(currentSongHelper.songAlbum!!)
+                }
                 if (img == null) {
                     albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                     glView?.visibility = View.VISIBLE
                     albumArt?.visibility = View.GONE
                     controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
                 } else {
-                    albumArt?.setImageURI(img)
+                    albumArt?.setImageBitmap(img)
                     if (myActivity != null) {
                         glView?.visibility = View.GONE
                         albumArt?.visibility = View.VISIBLE
@@ -488,9 +495,9 @@ class SongPlayingFragment : Fragment() {
                 }
             }
 
-            BottomBarUtils.setTitle()
-            BottomBarUtils.setArtist()
-            BottomBarUtils.setAlbumArt()
+            BottomBarUtils.setTitle(songtitle)
+            BottomBarUtils.setArtist(songartist)
+            BottomBarUtils.setAlbumArt(artwork)
 
         }
 
@@ -787,31 +794,33 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper.album = _album
         currentSongHelper.currentPosition = currentPosition
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            currentSongHelper.songAlbum.let {
-                if (it != null)
-                    albumArt?.setImageBitmap(getAlbumart(it))
-                else
-                    albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-            }
+/*        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        currentSongHelper.songAlbum.let {
+            if (it != null)
+                albumArt?.setImageBitmap(getAlbumart(it))
+            else
+                albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+        }
         } else {
             currentSongHelper.albumArt.let {
                 if (it != null) {
-                    albumArt?.setImageURI(it)
+                    albumArt?.setImageBitmap(it)
                 } else {
                     albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                 }
             }
-        }
+        }*/
 
         albumArt?.visibility = View.GONE
 
         // updating the textViews as soon as the song is changed and loaded
 
-        updateTextViews(
-            currentSongHelper.songTitle,
-            currentSongHelper.songArtist
-        )
+        updateViews(currentSongHelper.songTitle, currentSongHelper.songArtist,
+                currentSongHelper.songAlbum.let {
+                    if (it != null) {
+                        getAlbumart(currentSongHelper.songAlbum!!)
+                    } else null
+                })
 
 //    } catch (e: Exception) {
 //        e.printStackTrace()
@@ -820,6 +829,7 @@ class SongPlayingFragment : Fragment() {
 
         if (fromBottomBar) {
             myActivity?.title = "Now Playing"
+            processInformation()
         } else {
 
             // set up media player for default
@@ -1043,7 +1053,7 @@ class SongPlayingFragment : Fragment() {
         previousbutton?.setOnClickListener {
             var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             /*We set the player to be playing by setting isPlaying to be true*/
-            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             play = true
             stopPlayingCalled = true
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
