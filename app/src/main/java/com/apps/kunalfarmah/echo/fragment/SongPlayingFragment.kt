@@ -821,7 +821,9 @@ class SongPlayingFragment : Fragment() {
                 currentSongHelper.songAlbum.let {
                     if (it != null) {
                         getAlbumart(currentSongHelper.songAlbum!!)
-                    } else null
+                    } else {
+                        currentSongHelper.albumArt
+                    }
                 })
 
 //    } catch (e: Exception) {

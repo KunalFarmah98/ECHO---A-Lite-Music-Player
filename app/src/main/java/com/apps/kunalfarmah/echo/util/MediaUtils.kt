@@ -164,6 +164,10 @@ object MediaUtils {
                SongHelper.currentSongHelper.songTitle = metadata?.title.toString()
                SongHelper.currentSongHelper.songArtist = metadata?.artist.toString()
                SongHelper.currentSongHelper.album = metadata?.albumTitle.toString()
+               SongHelper.currentSongHelper.songAlbum = songsList[mediaPlayer.currentMediaItemIndex].songAlbum
+               SongHelper.currentSongHelper.currentPosition = mediaPlayer.currentMediaItemIndex
+               SongHelper.currentSongHelper.songId = songsList[mediaPlayer.currentMediaItemIndex].songID
+               SongHelper.currentSongHelper.songpath = songsList[mediaPlayer.currentMediaItemIndex].songData
                val albumArtData = metadata?.artworkData
                var bitmap : Bitmap ?= null
                if(albumArtData != null) {
