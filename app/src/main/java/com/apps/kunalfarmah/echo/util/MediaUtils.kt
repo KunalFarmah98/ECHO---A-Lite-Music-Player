@@ -29,10 +29,18 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 @Keep
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
-     lateinit var controllerFuture: ListenableFuture<MediaController>
+     var controllerFuture: ListenableFuture<MediaController>
      lateinit var controller: MediaController
      val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
      init {
+          controllerFuture = MediaController.Builder(App.context, sessionToken).buildAsync()
+          controllerFuture.addListener(
+                  {
+                       controller = controllerFuture.get()
+                       // call playback command methods on the controller like `controller.play()`
+                  },
+                  MoreExecutors.directExecutor()
+          )
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
@@ -46,14 +54,7 @@ object MediaUtils {
                               SongPlayingFragment.Staticated.processInformation()
                               mediaPlayer.play()
                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                   controllerFuture = MediaController.Builder(App.context, sessionToken).buildAsync()
-                                   controllerFuture.addListener(
-                                           {
-                                                controller = controllerFuture.get()
-                                                // call playback command methods on the controller like `controller.play()`
-                                           },
-                                           MoreExecutors.directExecutor()
-                                   )
+
                                    setCurrentSong(mediaPlayer.currentMediaItem?.mediaMetadata)
                               }
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

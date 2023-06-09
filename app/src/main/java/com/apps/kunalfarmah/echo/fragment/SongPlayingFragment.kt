@@ -79,6 +79,7 @@ class SongPlayingFragment : Fragment() {
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
                 MediaUtils.mediaPlayer.seekToNextMediaItem()
                 return
             }
@@ -148,6 +149,7 @@ class SongPlayingFragment : Fragment() {
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
                 MediaUtils.mediaPlayer.seekToPreviousMediaItem()
                 return
             }
