@@ -25,9 +25,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.media3.session.MediaController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.util.Constants
 
 
@@ -37,9 +39,12 @@ import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -52,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     var song: SongPlayingFragment? = null
     var bottomNav: BottomNavigationView? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    var controllerFuture: ListenableFuture<MediaController> ?= null
+    var controller: MediaController ?= null
 
     //setting up a broadcast receiver to close the activity when notification is closed
 
@@ -104,6 +111,16 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
+            controllerFuture?.addListener(
+                    {
+                        controller = controllerFuture?.get()
+                        // call playback command methods on the controller like `controller.play()`
+                    },
+                    MoreExecutors.directExecutor()
+            )
+        }
         firebaseAnalytics = Firebase.analytics
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
