@@ -72,6 +72,8 @@ object MediaUtils {
                     super.onMediaMetadataChanged(mediaMetadata)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                          if(mediaMetadata.title != null) {
+                              SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                              SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
                               setCurrentSong(mediaMetadata)
                               val albumArtData = mediaMetadata?.artworkData
                               var bitmap : Bitmap ?= null
