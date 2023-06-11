@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo.util
 
-import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -12,7 +11,6 @@ import com.apps.kunalfarmah.echo.R
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.Arrays
-import java.util.concurrent.Future
 
 
 class EchoBitmapLoader() : BitmapLoader {
@@ -82,7 +80,7 @@ class EchoBitmapLoader() : BitmapLoader {
         } else if (metadata.artworkUri != null) {
             loadBitmap(metadata.artworkUri!!)
         } else {
-            val bitmap = BitmapFactory.decodeResource(App.context.resources, com.apps.kunalfarmah.echo.R.drawable.echo_icon)
+            val bitmap = BitmapFactory.decodeResource(App.context.resources, R.drawable.echo_icon)
             Futures.immediateFuture(bitmap)
         }
         return future
