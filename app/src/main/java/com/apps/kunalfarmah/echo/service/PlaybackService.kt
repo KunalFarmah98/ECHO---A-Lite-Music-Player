@@ -5,8 +5,8 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.activity.MainActivity
+import com.apps.kunalfarmah.echo.util.EchoBitmapLoader
 import com.apps.kunalfarmah.echo.util.MediaUtils
 
 // Extend MediaSessionService
@@ -17,7 +17,10 @@ class PlaybackService : MediaSessionService() {
         Toast.makeText(this, "PlayBackService Running", Toast.LENGTH_SHORT).show()
         val openIntent = Intent(this, MainActivity::class.java)
         val pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, PendingIntent.FLAG_IMMUTABLE)
-        mediaSession = MediaSession.Builder(this, MediaUtils.mediaPlayer).setSessionActivity(pOpenIntent).build()
+        mediaSession = MediaSession.Builder(this, MediaUtils.mediaPlayer)
+                .setSessionActivity(pOpenIntent)
+                .setBitmapLoader(EchoBitmapLoader())
+                .build()
         super.onCreate()
     }
 
