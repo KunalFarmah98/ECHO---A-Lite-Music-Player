@@ -71,9 +71,16 @@ object MediaUtils {
                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                     super.onMediaMetadataChanged(mediaMetadata)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                         if(mediaMetadata.title != null) {
-                              SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-                              SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                         SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                         SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                         if(mediaMetadata.title == null && mediaMetadata.albumArtist == null && mediaMetadata.albumTitle == null){
+                              val index = mediaPlayer.currentMediaItemIndex
+                              val currSong = songsList[index]
+                              val metaData = MediaMetadata.Builder().setAlbumArtist(currSong.artist ?: "").setAlbumTitle(currSong.album ?:"").setTitle(currSong.songTitle ?: "").build()
+                              setCurrentSong(metaData)
+                              SongPlayingFragment.Staticated.updateViews(metaData.title.toString(), metaData.artist.toString(), null)
+                         }
+                         else if(mediaMetadata.title != null) {
                               setCurrentSong(mediaMetadata)
                               val albumArtData = mediaMetadata?.artworkData
                               var bitmap : Bitmap ?= null

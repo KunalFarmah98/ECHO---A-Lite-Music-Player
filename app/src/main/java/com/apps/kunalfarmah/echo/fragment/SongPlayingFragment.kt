@@ -439,10 +439,10 @@ class SongPlayingFragment : Fragment() {
             var songtitleupdted = songtitle
             var songartistupdted = songartist
 
-            if (songtitle == null || songtitle.equals("<unknown>", true)) {
+            if (songtitle == null || songtitle == "null" || songtitle.equals("<unknown>", true)) {
                 songtitleupdted = "Unknown"
             }
-            if (songartist == null || songartist.equals("<unknown>", true)) {
+            if (songartist == null || songartist == "null" || songartist.equals("<unknown>", true)) {
                 songartistupdted = "Unknown"
             }
             Statified.songTitle?.text = songtitleupdted

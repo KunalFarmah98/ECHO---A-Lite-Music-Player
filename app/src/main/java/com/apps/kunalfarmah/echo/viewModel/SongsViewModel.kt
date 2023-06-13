@@ -42,14 +42,14 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
 
     fun init() {
         viewModelScope.launch {
-            songsRepository.fetchSongs()
+            //songsRepository.fetchSongs()
             songsRepository.fetchAlbums()
         }.invokeOnCompletion { isDataReady.value = true }
     }
 
     fun getAllSongs() {
         viewModelScope.launch {
-            list = songsRepository.getAllSongs()
+            list = songsRepository.getSongsFromPhone()//songsRepository.getAllSongs()
         }.invokeOnCompletion { songsList.value = list?:ArrayList() }
     }
 

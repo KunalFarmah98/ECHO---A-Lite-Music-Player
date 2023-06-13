@@ -22,7 +22,9 @@ constructor(
 
     suspend fun fetchSongs(){
         var songs = getSongsFromPhone()
-            echoDao.insertAll(cacheMapper.mapToEntityList(songs))
+        if(songs.isNotEmpty())
+            echoDao.deleteAllSongs()
+        echoDao.insertAll(cacheMapper.mapToEntityList(songs))
     }
 
     suspend fun getAllSongs(): List<Songs> {
@@ -31,6 +33,8 @@ constructor(
 
     suspend fun fetchAlbums(){
         var albums = echoDao.getAllAlbums()
+        if(albums.isNotEmpty())
+            echoDao.deleteAllAlbums()
         echoDao.insertAllAlbums(albums)
     }
 
@@ -57,8 +61,9 @@ constructor(
                 } else {
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 }
-//        var songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        var songCursor = contentResolver?.query(songURI, null, null, null, null)
+        var selection = "${MediaStore.Audio.Media.DURATION} > 30000 AND ${MediaStore.Audio.Media.TITLE} NOT LIKE 'AUD%' AND ${MediaStore.Audio.Media.TITLE} NOT LIKE 'PTT%'"
+
+        var songCursor = contentResolver?.query(songURI, null, selection, null, null)
 
         if (songCursor != null && songCursor.moveToFirst()) {
             // getting column indices to query

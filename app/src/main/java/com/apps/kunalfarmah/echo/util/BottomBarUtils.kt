@@ -201,15 +201,24 @@ object BottomBarUtils {
 
     fun setTitle(title: String? = null) {
         if(title != null){
-            bottomBarBinding?.songTitle?.text = title
+            var titleToShow = title
+            if (title == "null" || title.equals("<unknown>", true)) {
+                titleToShow = "Unknown"
+            }
+            bottomBarBinding?.songTitle?.text = titleToShow
         }
-        else if (null != currentSongHelper.songTitle && null != currentSongHelper)
-            bottomBarBinding?.songTitle?.text = currentSongHelper?.songTitle
+        else if (null != currentSongHelper.songTitle && null != currentSongHelper) {
+            var titleToShow = currentSongHelper?.songTitle
+            if (titleToShow == "null" || titleToShow.equals("<unknown>", true)) {
+                titleToShow = "Unknown"
+            }
+            bottomBarBinding?.songTitle?.text = titleToShow
+        }
     }
 
     fun setArtist(artist: String? = null) {
         if(artist != null) {
-            if (artist.equals("<unknown>", ignoreCase = true))
+            if (artist == "null" || artist.equals("<unknown>", ignoreCase = true))
                 bottomBarBinding?.songArtist?.visibility = View.GONE
             else {
                 bottomBarBinding?.songArtist?.visibility = View.VISIBLE
@@ -218,7 +227,7 @@ object BottomBarUtils {
         }
         else if (null != currentSongHelper.songArtist && null != currentSongHelper) {
             var artist = currentSongHelper.songArtist
-            if (artist.equals("<unknown>", ignoreCase = true))
+            if (artist == "null" || artist.equals("<unknown>", ignoreCase = true))
                 bottomBarBinding?.songArtist?.visibility = View.GONE
             else {
                 bottomBarBinding?.songArtist?.visibility = View.VISIBLE

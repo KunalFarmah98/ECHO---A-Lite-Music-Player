@@ -46,5 +46,11 @@ interface EchoDao {
     @Query("SELECT * FROM albums")
     suspend fun getAlbums() : List<SongAlbumEntity>
 
+    @Query("DELETE FROM songs")
+    suspend fun deleteAllSongs()
+
+    @Query("DELETE FROM albums")
+    suspend fun deleteAllAlbums()
+
 
 }
