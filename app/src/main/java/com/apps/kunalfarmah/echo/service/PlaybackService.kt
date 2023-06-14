@@ -17,6 +17,7 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity.Companion.instance
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.provider.EchoNotificationProvider
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.EchoBitmapLoader
@@ -65,6 +66,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     // Create your Player and MediaSession in the onCreate lifecycle event
     override fun onCreate() {
         Toast.makeText(this, "PlayBackService Running", Toast.LENGTH_SHORT).show()
+        this.setMediaNotificationProvider(EchoNotificationProvider(this))
         val openIntent = Intent(this, MainActivity::class.java)
         val pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, PendingIntent.FLAG_IMMUTABLE)
 
