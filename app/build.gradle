@@ -7,7 +7,7 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     defaultConfig {
         applicationId "com.apps.kunalfarmah.echo"
         minSdkVersion 17
@@ -85,8 +85,6 @@ dependencies {
     def fragment_ktx = "1.4.1"
     implementation "androidx.fragment:fragment-ktx:$fragment_ktx"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-
-    implementation "androidx.media:media:1.5.0"
 
     implementation "androidx.media3:media3-exoplayer:1.0.2"
     implementation "androidx.media3:media3-ui:1.0.2"
