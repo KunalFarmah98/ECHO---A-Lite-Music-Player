@@ -98,7 +98,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             var intent = Intent(mContext,SongPlayingActivity::class.java)
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
-            mContext?.getSharedPreferences("position", Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
+            mContext?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
             intent.putExtra("songArtist", songObject.artist)
             intent.putExtra("songTitle", songObject.songTitle)
             intent.putExtra("path", songObject.songData)
