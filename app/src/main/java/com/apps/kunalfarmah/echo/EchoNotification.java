@@ -683,7 +683,7 @@ public class EchoNotification extends Service {
 
 
     public void updateNotiUI() {
-        getApplicationContext().getSharedPreferences("Notification", Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
+        getApplicationContext().getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
         BottomBarUtils.INSTANCE.updatePlayPause();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S)
             buildMediaNotification();

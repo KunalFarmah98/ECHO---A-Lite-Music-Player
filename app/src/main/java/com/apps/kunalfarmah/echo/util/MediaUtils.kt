@@ -36,7 +36,6 @@ object MediaUtils {
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                   .build()
           mediaPlayer.setAudioAttributes(audioAttributes, true)
-          mediaPlayer.shuffleModeEnabled = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
           mediaPlayer.addListener(object : Player.Listener {
                override fun onPlaybackStateChanged(state: Int) {
                     when (state) {
@@ -112,6 +111,7 @@ object MediaUtils {
                     super.onPlayerError(error)
                }
           })
+          mediaPlayer.shuffleModeEnabled = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
      }
 
      var songsList:ArrayList<Songs> = ArrayList()

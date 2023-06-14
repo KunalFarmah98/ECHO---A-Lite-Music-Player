@@ -16,6 +16,7 @@ import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentMainScreenBinding
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -114,7 +115,7 @@ class MainScreenFragment : Fragment() {
     }
 
     fun setView() {
-        val prefs = activity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)
+        val prefs = activity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)
         val action_sort_ascending = prefs?.getString(getString(R.string.sort_by_name), "false")
         val action_sort_recent = prefs?.getString(getString(R.string.sort_by_recent), "true")
 
@@ -196,7 +197,7 @@ class MainScreenFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {
-            val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            val editor = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
             editor?.putString(getString(R.string.sort_by_name), "true")
             editor?.putString(getString(R.string.sort_by_recent), "false")
             editor?.apply()
@@ -206,7 +207,7 @@ class MainScreenFragment : Fragment() {
             mainScreenAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
-            val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            val editor = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
             editor?.putString(getString(R.string.sort_by_recent), "true")
             editor?.putString(getString(R.string.sort_by_name), "false")
             editor?.apply()

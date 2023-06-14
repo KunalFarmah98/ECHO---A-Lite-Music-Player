@@ -5,6 +5,6 @@ import android.content.SharedPreferences;
 
 public class AppUtil {
     public static SharedPreferences getAppPreferences(Context context) {
-        return context.getSharedPreferences(Constants.SETTINGS_APP_SETTINGS, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE);
     }
 }

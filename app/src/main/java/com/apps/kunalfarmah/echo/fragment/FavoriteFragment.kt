@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import androidx.appcompat.widget.SearchView
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -155,7 +156,7 @@ class FavoriteFragment : Fragment() {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {
             /*Whichever action item is selected, we save the preferences and perform the operation of comparison*/
-            val editor = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            val editor = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
             editor?.putString(getString(R.string.sort_by_name), "true")
             editor?.putString(getString(R.string.sort_by_recent), "false")
             editor?.apply()
@@ -165,7 +166,7 @@ class FavoriteFragment : Fragment() {
             favouriteAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
-            val editortwo = myActivity?.getSharedPreferences(getString(R.string.sorting), Context.MODE_PRIVATE)?.edit()
+            val editortwo = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
             editortwo?.putString(getString(R.string.sort_by_recent), "true")
             editortwo?.putString(getString(R.string.sort_by_name), "false")
             editortwo?.apply()
