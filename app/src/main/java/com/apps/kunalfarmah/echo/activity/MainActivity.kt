@@ -111,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // loop should be off on app launch
+        getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE).edit().putBoolean(Constants.LOOP,false).apply()
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
             controllerFuture?.addListener(
