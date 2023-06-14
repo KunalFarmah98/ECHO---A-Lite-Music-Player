@@ -33,19 +33,19 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private var customCommands = listOf(
             CommandButton.Builder().setSessionCommand(
                     SessionCommand(ShuffleActions.CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON.name, Bundle()))
-                    .setIconResId(R.drawable.shuffle_white_icon)
+                    .setIconResId(R.drawable.baseline_shuffle_24)
                     .setEnabled(true)
                     .setDisplayName("shuffle on")
                     .build(),
             CommandButton.Builder().setSessionCommand(
                     SessionCommand(ShuffleActions.CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF.name, Bundle()))
-                    .setIconResId(R.drawable.shuffle_icon)
+                    .setIconResId(R.drawable.baseline_shuffle_on_24)
                     .setEnabled(true)
                     .setDisplayName("shuffle off")
                     .build(),
             CommandButton.Builder().setSessionCommand(
                     SessionCommand("action_close", Bundle()))
-                    .setIconResId(R.drawable.close_white)
+                    .setIconResId(R.drawable.baseline_close_24)
                     .setEnabled(true)
                     .setDisplayName("close")
                     .build()
