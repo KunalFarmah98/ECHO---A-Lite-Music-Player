@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.media3.common.Player
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -53,6 +54,12 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     enum class ShuffleActions(name: String) {
         CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON("action_shuffle_on"),
         CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF("action_shuffle_on")
+    }
+
+    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
+        if(session.player.playbackState == Player.STATE_BUFFERING)
+            return
+        super.onUpdateNotification(session, startInForegroundRequired)
     }
 
     // Create your Player and MediaSession in the onCreate lifecycle event
