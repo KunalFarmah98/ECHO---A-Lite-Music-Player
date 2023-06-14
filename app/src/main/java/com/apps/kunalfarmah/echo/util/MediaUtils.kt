@@ -1,19 +1,23 @@
 package com.apps.kunalfarmah.echo.util
 
 import android.content.ComponentName
+import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MediaMetadata.PICTURE_TYPE_FRONT_COVER
+import androidx.media3.common.MediaMetadata.PictureType
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
@@ -21,9 +25,12 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.PlaybackService
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.IOException
 
 
 @Keep
@@ -65,8 +72,6 @@ object MediaUtils {
                     }
                     super.onPlaybackStateChanged(state)
                }
-
-
 
                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                     super.onMediaMetadataChanged(mediaMetadata)
@@ -127,8 +132,21 @@ object MediaUtils {
      }
 
      fun setMediaItems(){
+          val artworkUri = Uri.parse("content://media/external/audio/albumart")
           songsList.forEach {
-               mediaItemsList.add(MediaItem.fromUri(it.songData))
+               val metadata = MediaMetadata.Builder()
+                       .setTitle(it.songTitle)
+                       .setAlbumTitle(it.album)
+                       .setArtist(it.artist)
+               if(it.songAlbum != null){
+                    metadata.setArtworkData(AppUtil.convertVideoToBytes(App.context, ContentUris.withAppendedId(artworkUri, it.songAlbum!!)),PICTURE_TYPE_FRONT_COVER)
+               }
+               mediaItemsList.add(
+                       MediaItem.Builder()
+                         .setUri(it.songData)
+                         .setMediaMetadata(metadata.build())
+                         .build()
+               )
           }
      }
 
@@ -161,14 +179,15 @@ object MediaUtils {
 
      fun setCurrentSong(metadata: MediaMetadata?) {
           if(metadata != null && metadata.title != null) {
+               val index = mediaPlayer.currentMediaItemIndex
                SongHelper.currentSongHelper.songTitle = metadata?.title.toString()
                SongHelper.currentSongHelper.songArtist = metadata?.artist.toString()
                SongHelper.currentSongHelper.album = metadata?.albumTitle.toString()
-               SongHelper.currentSongHelper.songAlbum = songsList[mediaPlayer.currentMediaItemIndex].songAlbum
-               SongHelper.currentSongHelper.currentPosition = mediaPlayer.currentMediaItemIndex
-               SongHelper.currentSongHelper.songId = songsList[mediaPlayer.currentMediaItemIndex].songID
-               SongHelper.currentSongHelper.songpath = songsList[mediaPlayer.currentMediaItemIndex].songData
-               val albumArtData = metadata?.artworkData
+               SongHelper.currentSongHelper.songAlbum = songsList[index].songAlbum
+               SongHelper.currentSongHelper.currentPosition = index
+               SongHelper.currentSongHelper.songId = songsList[index].songID
+               SongHelper.currentSongHelper.songpath = songsList[index].songData
+               val albumArtData = metadata.artworkData
                var bitmap : Bitmap ?= null
                if(albumArtData != null) {
                     bitmap = BitmapFactory.decodeByteArray(albumArtData, 0, albumArtData.size)

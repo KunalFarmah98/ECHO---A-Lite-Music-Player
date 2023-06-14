@@ -259,11 +259,10 @@ object BottomBarUtils {
                     bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
                 }
             }
-        }
-        else{
-            if (null != bottomBarBinding?.songImg && null != currentSongHelper){
+        } else {
+            if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
                 val bitmap = currentSongHelper.albumArt
-                if(bitmap != null)
+                if (bitmap != null)
                     bottomBarBinding?.songImg?.setImageBitmap(bitmap)
                 else
                     bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
