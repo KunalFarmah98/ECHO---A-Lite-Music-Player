@@ -79,10 +79,14 @@ class MainScreenFragment : Fragment() {
         })
 
         viewModel.isSongPlaying.observeForever {
-            if (it)
+            if (it) {
                 binding.nowPlayingBottomBarMain.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
-            else
+                binding.nowPlayingBottomBarMain.next.visibility = View.VISIBLE
+            }
+            else {
                 binding.nowPlayingBottomBarMain.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
+                binding.nowPlayingBottomBarMain.next.visibility = View.GONE
+            }
         }
 
         binding.help.text = (Html.fromHtml("<u>Need Help?</u>"))

@@ -77,8 +77,14 @@ class SongPlayingFragment : Fragment() {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            BottomBarUtils.updatePlayPause()
+
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                try{
+                    mediaPlayer.prepare()
+                }
+                catch (ignored: java.lang.Exception){}
                 MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
                 MediaUtils.mediaPlayer.seekToNextMediaItem()
                 return
@@ -147,10 +153,14 @@ class SongPlayingFragment : Fragment() {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-
+            BottomBarUtils.updatePlayPause()
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                MediaUtils.mediaPlayer.seekToPreviousMediaItem()
+                try{
+                    mediaPlayer.prepare()
+                }
+                catch (ignored: java.lang.Exception){}
+                mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
+                mediaPlayer.seekToPreviousMediaItem()
                 return
             }
 
@@ -628,6 +638,7 @@ class SongPlayingFragment : Fragment() {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 inform = true
+                BottomBarUtils.updatePlayPause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
                 if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                     var play = Intent(context, EchoNotification::class.java)
@@ -1089,7 +1100,7 @@ class SongPlayingFragment : Fragment() {
 
         /*Here we handle the click event on the play/pause button*/
         playpausebutton?.setOnClickListener {
-
+            BottomBarUtils.updatePlayPause()
             /*if the song is already playing and then play/pause button is tapped
             * then we pause the media player and also change the button to play button*/
             if (MediaUtils.isMediaPlayerPlaying()) {
@@ -1191,7 +1202,7 @@ class SongPlayingFragment : Fragment() {
 
     fun playorpause(): Boolean {
         var play = false
-
+        BottomBarUtils.updatePlayPause()
         if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
             mediaPlayer.pause()
             play = false

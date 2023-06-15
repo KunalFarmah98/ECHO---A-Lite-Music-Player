@@ -51,8 +51,10 @@ object BottomBarUtils {
         bottomBarBinding.bottomBar.visibility = View.VISIBLE
         if (MediaUtils.isMediaPlayerPlaying()) {
             bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+            bottomBarBinding.next.visibility = View.VISIBLE
         } else {
             bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
+            bottomBarBinding.next.visibility = View.GONE
         }
         bottomBarBinding.songTitle.text = currentSongHelper.songTitle
         var artist = currentSongHelper.songArtist
@@ -107,6 +109,7 @@ object BottomBarUtils {
 
                 mediaPlayer.pause()
                 bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.play_icon))
+                bottomBarBinding.next.visibility = View.GONE
                 if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                     var play = Intent(App.context, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PLAY
@@ -115,6 +118,7 @@ object BottomBarUtils {
                 SongPlayingFragment.Staticated.updateButton("pause")
             } else {
                 MainScreenAdapter.Statified.stopPlayingCalled = true
+                bottomBarBinding.next.visibility = View.VISIBLE
                 if (!main.getnotify_val()) {
                     var trackPosition =
                         MediaUtils.getCurrentPosition()
@@ -126,6 +130,7 @@ object BottomBarUtils {
                     mediaPlayer.play()
 
                     bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+                    bottomBarBinding.next.visibility = View.VISIBLE
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                         var serviceIntent = Intent(myActivity, EchoNotification::class.java)
                         serviceIntent.putExtra("title", bottomBarBinding.songTitle.text.toString())
@@ -154,6 +159,7 @@ object BottomBarUtils {
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
+                    bottomBarBinding.next.visibility = View.VISIBLE
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.CHANGE_TO_PAUSE
@@ -307,9 +313,11 @@ object BottomBarUtils {
 
     fun updatePlayPause(){
         if(MediaUtils.isMediaPlayerPlaying()){
+            bottomBarBinding?.next?.visibility = View.VISIBLE
             bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
         }
         else{
+            bottomBarBinding?.next?.visibility = View.GONE
             bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
         }
     }
