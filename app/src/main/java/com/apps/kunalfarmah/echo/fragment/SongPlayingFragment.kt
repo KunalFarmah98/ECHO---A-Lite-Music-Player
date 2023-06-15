@@ -434,7 +434,7 @@ class SongPlayingFragment : Fragment() {
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun updateViews(songtitle: String?, songartist: String?, artwork: Bitmap? = null) {
+        fun updateViews(songtitle: String?, songartist: String?, artworkUri: Uri? = null) {
 
             var songtitleupdted = songtitle
             var songartistupdted = songartist
@@ -476,30 +476,32 @@ class SongPlayingFragment : Fragment() {
             }
             else{
                 var img: Bitmap? = null
-                if(artwork != null){
-                    img = artwork
+                if(artworkUri != null){
+                    albumArt?.setImageURI(artworkUri)
                 }
-                else if(currentSongHelper.songAlbum != null){
-                    img = getAlbumart(currentSongHelper.songAlbum!!)
-                }
-                if (img == null) {
-                    albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-                    glView?.visibility = View.VISIBLE
-                    albumArt?.visibility = View.GONE
-                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
-                } else {
-                    albumArt?.setImageBitmap(img)
-                    if (myActivity != null) {
-                        glView?.visibility = View.GONE
-                        albumArt?.visibility = View.VISIBLE
-                        controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                else {
+                    if (currentSongHelper.songAlbum != null) {
+                        img = getAlbumart(currentSongHelper.songAlbum!!)
+                    }
+                    if (img == null) {
+                        albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+                        glView?.visibility = View.VISIBLE
+                        albumArt?.visibility = View.GONE
+                        controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                    } else {
+                        albumArt?.setImageBitmap(img)
+                        if (myActivity != null) {
+                            glView?.visibility = View.GONE
+                            albumArt?.visibility = View.VISIBLE
+                            controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                        }
                     }
                 }
             }
 
             BottomBarUtils.setTitle(songtitle)
             BottomBarUtils.setArtist(songartist)
-            BottomBarUtils.setAlbumArt(artwork)
+            BottomBarUtils.setAlbumArt(artworkUri)
 
         }
 
@@ -817,14 +819,7 @@ class SongPlayingFragment : Fragment() {
 
         // updating the textViews as soon as the song is changed and loaded
 
-        updateViews(currentSongHelper.songTitle, currentSongHelper.songArtist,
-                currentSongHelper.songAlbum.let {
-                    if (it != null) {
-                        getAlbumart(currentSongHelper.songAlbum!!)
-                    } else {
-                        currentSongHelper.albumArt
-                    }
-                })
+        updateViews(currentSongHelper.songTitle, currentSongHelper.songArtist, currentSongHelper.albumArtUri)
 
 //    } catch (e: Exception) {
 //        e.printStackTrace()

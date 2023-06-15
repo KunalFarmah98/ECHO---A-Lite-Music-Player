@@ -1,11 +1,7 @@
 package com.apps.kunalfarmah.echo.util
 
 import android.content.ComponentName
-import android.content.ContentUris
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.Keep
@@ -13,8 +9,6 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MediaMetadata.PICTURE_TYPE_FRONT_COVER
-import androidx.media3.common.MediaMetadata.PictureType
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -26,11 +20,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.PlaybackService
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.IOException
 
 
 @Keep
@@ -87,12 +76,7 @@ object MediaUtils {
                          }
                          else if(mediaMetadata.title != null) {
                               setCurrentSong(mediaMetadata)
-                              val albumArtData = mediaMetadata?.artworkData
-                              var bitmap : Bitmap ?= null
-                              if(albumArtData != null) {
-                                   bitmap = BitmapFactory.decodeByteArray(albumArtData, 0, albumArtData.size)
-                              }
-                              SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), bitmap)
+                              SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), mediaMetadata.artworkUri)
                          }
                     }
                }
@@ -138,13 +122,11 @@ object MediaUtils {
                        .setTitle(it.songTitle)
                        .setAlbumTitle(it.album)
                        .setArtist(it.artist)
-               if(it.songAlbum != null){
-                    metadata.setArtworkData(AppUtil.convertVideoToBytes(App.context, ContentUris.withAppendedId(artworkUri, it.songAlbum!!)),PICTURE_TYPE_FRONT_COVER)
-               }
+                       .build()
                mediaItemsList.add(
                        MediaItem.Builder()
                          .setUri(it.songData)
-                         .setMediaMetadata(metadata.build())
+                         .setMediaMetadata(metadata)
                          .build()
                )
           }
@@ -187,12 +169,7 @@ object MediaUtils {
                SongHelper.currentSongHelper.currentPosition = index
                SongHelper.currentSongHelper.songId = songsList[index].songID
                SongHelper.currentSongHelper.songpath = songsList[index].songData
-               val albumArtData = metadata.artworkData
-               var bitmap : Bitmap ?= null
-               if(albumArtData != null) {
-                    bitmap = BitmapFactory.decodeByteArray(albumArtData, 0, albumArtData.size)
-               }
-               SongHelper.currentSongHelper.albumArt = bitmap
+               SongHelper.currentSongHelper.albumArtUri = metadata.artworkUri
           }
      }
 }

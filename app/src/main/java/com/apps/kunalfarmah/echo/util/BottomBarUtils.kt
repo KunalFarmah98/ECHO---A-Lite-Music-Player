@@ -6,13 +6,8 @@ import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.media.AudioManager
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.Keep
 import androidx.fragment.app.FragmentManager
@@ -61,7 +56,14 @@ object BottomBarUtils {
             setAlbumArt(currentSongHelper.songAlbum)
         }
         else{
-            loadAlbumArt(currentSongHelper.albumArt)
+            currentSongHelper.albumArtUri.let {
+                if(it != null){
+                    loadAlbumArt(currentSongHelper.albumArtUri)
+                }
+                else{
+                    setAlbumArt(currentSongHelper.songAlbum)
+                }
+            }
         }
 
     }
@@ -172,8 +174,8 @@ object BottomBarUtils {
         }
     }
 
-    private fun loadAlbumArt(artwork: Bitmap?) {
-        if (artwork == null) {
+    private fun loadAlbumArt(artworkUri: Uri?) {
+        if (artworkUri == null) {
             bottomBarBinding?.songImg?.setImageDrawable(
                     App.context.resources?.getDrawable(
                             R.drawable.echo_icon
@@ -182,7 +184,7 @@ object BottomBarUtils {
             return
         }
         try {
-            Glide.with(App.context).load(artwork).placeholder(R.drawable.echo_icon)
+            Glide.with(App.context).load(artworkUri).placeholder(R.drawable.echo_icon)
                     .into(bottomBarBinding?.songImg!!)
         } catch (e: Exception) {
         }
@@ -236,9 +238,9 @@ object BottomBarUtils {
         }
     }
 
-    fun setAlbumArt(artwork: Bitmap? = null) {
-        if(artwork != null){
-            bottomBarBinding?.songImg?.setImageBitmap(artwork)
+    fun setAlbumArt(artworkUri: Uri? = null) {
+        if(artworkUri != null){
+            bottomBarBinding?.songImg?.setImageURI(artworkUri)
             return
         }
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
@@ -252,20 +254,33 @@ object BottomBarUtils {
                 val uri: Uri = ContentUris.withAppendedId(sArtworkUri, currentSongHelper.songAlbum!!)
                 if (currentSongHelper.songAlbum!! < 0 || null == uri || uri.toString().isEmpty())
                     bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
-                else
-                    bottomBarBinding?.songImg?.setImageURI(uri)
-
+                else{
+                    val img = SongPlayingFragment.Staticated.getAlbumart(currentSongHelper.songAlbum!!)
+                    if(img != null){
+                        bottomBarBinding?.songImg?.setImageBitmap(img)
+                    }
+                    else{
+                        bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                    }
+                }
                 if (null == bottomBarBinding?.songImg?.drawable) {
                     bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
                 }
             }
         } else {
             if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
-                val bitmap = currentSongHelper.albumArt
-                if (bitmap != null)
-                    bottomBarBinding?.songImg?.setImageBitmap(bitmap)
-                else
-                    bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                currentSongHelper.songAlbum.let {
+                    if (it != null) {
+                        val img = SongPlayingFragment.Staticated.getAlbumart(currentSongHelper.songAlbum!!)
+                        if (img != null) {
+                            bottomBarBinding?.songImg?.setImageBitmap(img)
+                        } else {
+                            bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                        }
+                    } else {
+                        bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
+                    }
+                }
             }
         }
     }
