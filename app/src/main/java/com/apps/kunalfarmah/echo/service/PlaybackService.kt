@@ -59,9 +59,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
         if(session.player.playbackState == Player.STATE_BUFFERING)
             return
-        else if(session.player.playbackState == Player.STATE_IDLE && startInForegroundRequired == false && session.player.mediaItemCount>0){
-            killApp()
-        }
         super.onUpdateNotification(session, startInForegroundRequired)
     }
 
