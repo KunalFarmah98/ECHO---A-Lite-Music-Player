@@ -57,8 +57,6 @@ class MainActivity : AppCompatActivity() {
     var song: SongPlayingFragment? = null
     var bottomNav: BottomNavigationView? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    var controllerFuture: ListenableFuture<MediaController> ?= null
-    var controller: MediaController ?= null
 
     //setting up a broadcast receiver to close the activity when notification is closed
 
@@ -70,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     if (mediaPlayer != null) {
                         mediaPlayer.stop()
-                        mediaPlayer.release()
+                        //mediaPlayer.release()
                     }
                 }catch (e:Exception){}
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
@@ -113,16 +111,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         // loop should be off on app launch
         getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE).edit().putBoolean(Constants.LOOP,false).apply()
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
-            controllerFuture?.addListener(
-                    {
-                        controller = controllerFuture?.get()
-                        // call playback command methods on the controller like `controller.play()`
-                    },
-                    MoreExecutors.directExecutor()
-            )
-        }
         firebaseAnalytics = Firebase.analytics
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)

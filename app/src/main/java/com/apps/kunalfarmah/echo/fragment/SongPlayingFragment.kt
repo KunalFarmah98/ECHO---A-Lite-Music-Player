@@ -828,6 +828,12 @@ class SongPlayingFragment : Fragment() {
 
         if (fromBottomBar) {
             myActivity?.title = "Now Playing"
+            if(!mediaPlayer.isPlaying){
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+            }
+            else{
+                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            }
             processInformation()
         } else {
 
@@ -1099,6 +1105,10 @@ class SongPlayingFragment : Fragment() {
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
             } else {
+                try {
+                    mediaPlayer.prepare()
+                }
+                catch (ignored: java.lang.Exception){}
                     mediaPlayer.play()
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true

@@ -71,7 +71,8 @@
         <service
             android:name=".EchoNotification"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback" />
 
         <service
             android:name=".service.PlaybackService"

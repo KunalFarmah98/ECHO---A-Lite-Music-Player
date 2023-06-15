@@ -32,13 +32,21 @@ object BottomBarUtils {
     fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding) {
         bottomBarClickHandler(activity, main, fragmentManager, bottomBarBinding)
         this.bottomBarBinding = bottomBarBinding
-        if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
-                EchoNotification::class.java,
-                App.context
-            )
-        ) {
-            bottomBarBinding.bottomBar.visibility = View.GONE
-            return
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
+                            EchoNotification::class.java,
+                            App.context
+                    )
+            ) {
+                bottomBarBinding.bottomBar.visibility = View.GONE
+                return
+            }
+        }
+        else{
+            if(!mediaPlayer.isPlaying && mediaPlayer.mediaItemCount == 0){
+                bottomBarBinding.bottomBar.visibility = View.GONE
+                return
+            }
         }
         bottomBarBinding.bottomBar.visibility = View.VISIBLE
         if (MediaUtils.isMediaPlayerPlaying()) {
@@ -84,7 +92,11 @@ object BottomBarUtils {
             intent.putExtra("songAlbum", currentSongHelper.songAlbum!!)
             intent.putExtra("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
             intent.putExtra("fromBottomBar",true)
-            MediaUtils.songsList = SongPlayingFragment.Statified.fetchSongs?:ArrayList()
+            SongPlayingFragment.Statified.fetchSongs.let {
+                if(it!=null){
+                    MediaUtils.songsList = it
+                }
+            }
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             App.context.startActivity(intent)
         }
@@ -106,6 +118,10 @@ object BottomBarUtils {
                 if (!main.getnotify_val()) {
                     var trackPosition =
                         MediaUtils.getCurrentPosition()
+                    try {
+                        mediaPlayer.prepare()
+                    }
+                    catch (ignored: Exception){}
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
 
@@ -131,6 +147,10 @@ object BottomBarUtils {
                 * and change the button to pause button*/
                     var trackPosition =
                         MediaUtils.getCurrentPosition()  // current postiton where the player as stopped
+                    try {
+                        mediaPlayer.prepare()
+                    }
+                    catch (ignored: Exception){}
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))

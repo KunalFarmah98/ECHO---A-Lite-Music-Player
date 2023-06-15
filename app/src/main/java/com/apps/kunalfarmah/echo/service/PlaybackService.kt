@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.Player
@@ -21,10 +22,8 @@ import com.apps.kunalfarmah.echo.provider.EchoNotificationProvider
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.EchoBitmapLoader
-import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.currSong
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
-import com.apps.kunalfarmah.echo.util.MediaUtils.songsList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -60,6 +59,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
         if(session.player.playbackState == Player.STATE_BUFFERING)
             return
+        else if(session.player.playbackState == Player.STATE_IDLE && startInForegroundRequired == false && session.player.mediaItemCount>0){
+            killApp()
+        }
         super.onUpdateNotification(session, startInForegroundRequired)
     }
 
@@ -70,7 +72,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         val openIntent = Intent(this, MainActivity::class.java)
         val pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        mediaSession = MediaSession.Builder(this, MediaUtils.mediaPlayer)
+        mediaSession = MediaSession.Builder(this, mediaPlayer)
                 .setSessionActivity(pOpenIntent)
                 .setBitmapLoader(EchoBitmapLoader())
                 .setCallback(this)
@@ -140,28 +142,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             session.setCustomLayout(customLayout)
         }
         else if(customCommand.customAction == "action_close" ){
-            val localBroadcastManager = LocalBroadcastManager
-                    .getInstance(this)
-            localBroadcastManager.sendBroadcast(Intent(
-                    Constants.ACTION.CLOSE))
-
-            val act = instance
-            val main=  MainActivity()
-            try {
-                mediaPlayer.stop()
-                mediaPlayer.release()
-                currSong = null
-                songsList.clear()
-                main.setNotify_val(false)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    act?.onBackPressed()
-                    main.finishAndRemoveTask()
-                } else {
-                    act?.onBackPressed()
-                    main.finishAffinity()
-                }
-            } catch (e: Exception) {
-            }
+            killApp()
         }
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
     }
@@ -170,6 +151,30 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         if (customLayout.isNotEmpty()) {
             // Let the controller now about the custom layout right after it connected.
             mediaSession?.setCustomLayout(controller, customLayout)
+        }
+    }
+
+    fun killApp(){
+        val localBroadcastManager = LocalBroadcastManager
+                .getInstance(this)
+        localBroadcastManager.sendBroadcast(Intent(
+                Constants.ACTION.CLOSE))
+
+        val act = instance
+        val main=  MainActivity()
+        try {
+            mediaPlayer.stop()
+//            mediaPlayer.release()
+            currSong = null
+            main.setNotify_val(false)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                act?.onBackPressed()
+                main.finishAndRemoveTask()
+            } else {
+                act?.onBackPressed()
+                main.finishAffinity()
+            }
+        } catch (e: Exception) {
         }
     }
 

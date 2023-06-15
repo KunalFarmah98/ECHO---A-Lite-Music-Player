@@ -12,6 +12,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
@@ -19,18 +20,32 @@ import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.PlaybackService
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 
 @Keep
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
-     val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
+     private val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
+     lateinit var controllerFuture: ListenableFuture<MediaController>
+     lateinit var controller: MediaController
      init {
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                   .build()
+          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+               controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
+               controllerFuture.addListener(
+                       {
+                            controller = controllerFuture.get()
+                            // call playback command methods on the controller like `controller.play()`
+                       },
+                       MoreExecutors.directExecutor()
+               )
+          }
           mediaPlayer.setAudioAttributes(audioAttributes, true)
           mediaPlayer.addListener(object : Player.Listener {
                override fun onPlaybackStateChanged(state: Int) {
@@ -40,8 +55,9 @@ object MediaUtils {
                               SongPlayingFragment.Staticated.processInformation()
                               mediaPlayer.play()
                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-
-                                   setCurrentSong(mediaPlayer.currentMediaItem?.mediaMetadata)
+                                   val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
+                                   SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), mediaMetadata?.artworkUri)
+                                   setCurrentSong(mediaMetadata)
                               }
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                                    var serviceIntent = Intent(App.context, EchoNotification::class.java)

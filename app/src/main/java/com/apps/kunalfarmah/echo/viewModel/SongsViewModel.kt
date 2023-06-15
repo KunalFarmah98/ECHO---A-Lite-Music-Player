@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.repository.SongsRepository
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import kotlinx.coroutines.launch
 
 class SongsViewModel
@@ -44,13 +45,18 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         viewModelScope.launch {
             //songsRepository.fetchSongs()
             songsRepository.fetchAlbums()
-        }.invokeOnCompletion { isDataReady.value = true }
+        }.invokeOnCompletion {
+            isDataReady.value = true
+        }
     }
 
     fun getAllSongs() {
         viewModelScope.launch {
             list = songsRepository.getSongsFromPhone()//songsRepository.getAllSongs()
-        }.invokeOnCompletion { songsList.value = list?:ArrayList() }
+        }.invokeOnCompletion {
+            songsList.value = list?:ArrayList()
+            MediaUtils.songsList = (list ?: ArrayList()) as ArrayList<Songs>
+        }
     }
 
     fun getAllAlbums(){

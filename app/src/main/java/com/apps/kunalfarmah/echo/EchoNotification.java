@@ -95,6 +95,7 @@ public class EchoNotification extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MediaUtils.INSTANCE.getMediaPlayer().release();
     }
 
     @Override
