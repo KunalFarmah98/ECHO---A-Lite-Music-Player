@@ -6,21 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.util.Constants
-import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
-import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
@@ -31,7 +27,7 @@ import kotlin.math.max
 
 /*This adapter class also serves the same function to act as a bridge between the single row view and its data. The implementation is quite similar to the one we did
 * for the navigation drawer adapter*/
-class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context, val isAlbum: Boolean?) : RecyclerView.Adapter<MainScreenAdapter.MyViewHolder>() {
+class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<AlbumTracksAdapter.MyViewHolder>() {
 
     /*Local variables used for storing the data sent from the fragment to be used in the adapter
     * These variables are initially null*/
@@ -55,7 +51,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context, val i
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
-        if(MediaUtils.isAllSongsPLaying && position == MediaUtils.currInd){
+        if(MediaUtils.isAlbumPlaying && position == MediaUtils.currInd){
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
@@ -98,18 +94,9 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context, val i
             var intent = Intent(mContext,SongPlayingActivity::class.java)
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
-            if(isAlbum == true){
-                MediaUtils.currInd = -1
-                MediaUtils.isAlbumPlaying = true
-                MediaUtils.isAllSongsPLaying = false
-                MediaUtils.isFavouritesPlaying = false
-            }
-            else {
-                MediaUtils.currInd = mediaPlayer.currentMediaItemIndex
-                MediaUtils.isAllSongsPLaying = true
-                MediaUtils.isAlbumPlaying = false
-                MediaUtils.isFavouritesPlaying = false
-            }
+            MediaUtils.isAlbumPlaying = true
+            MediaUtils.isAllSongsPLaying = false
+            MediaUtils.isFavouritesPlaying = false
 
             intent.putExtra("songArtist", songObject.artist)
             intent.putExtra("songTitle", songObject.songTitle)
@@ -126,15 +113,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context, val i
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
-//            var serviceIntent = Intent(mContext, EchoNotification::class.java)
-//
-//            serviceIntent.putExtra("title", songObject.songTitle)
-//            serviceIntent.putExtra("artist", songObject.artist)
-//            serviceIntent.putExtra("album", songObject.songAlbum?)
-//
-//            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-//
-//            mContext?.startService(serviceIntent)
 
             (mContext as MainActivity).startActivity(intent)
         }

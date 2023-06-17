@@ -50,8 +50,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
 
-        if (MediaUtils.currSong != null && songObject == MediaUtils.currSong
-        ) {
+        if (MediaUtils.isFavouritesPlaying && MediaUtils.currInd == position) {
             holder.binding.contentRow.strokeWidth = 2
             holder.binding.contentRow.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
@@ -85,7 +84,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 //        else holder.binding.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.binding.contentRow?.setOnClickListener {
+        holder.binding.contentRow.setOnClickListener {
 
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
@@ -106,21 +105,15 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             intent.putExtra("songAlbum", songObject.songAlbum as Long)
 
             MediaUtils.songsList = songDetails?: ArrayList()
-
+            MediaUtils.setMediaItems()
             stopPlaying(intent)
 
-            holder.binding?.contentRow?.strokeWidth = 2
-            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+            holder.binding.contentRow.strokeWidth = 2
+            holder.binding.contentRow.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
 
-//            var serviceIntent = Intent(mContext, EchoNotification::class.java)
-//
-//            serviceIntent.putExtra("title", songObject.songTitle)
-//            serviceIntent.putExtra("artist", songObject.artist)
-//            serviceIntent.putExtra("album", songObject.songAlbum?)
-//
-//            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-//
-//            mContext?.startService(serviceIntent)
+            MediaUtils.isAllSongsPLaying = false
+            MediaUtils.isAlbumPlaying = false
+            MediaUtils.isFavouritesPlaying = true
 
             /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
             (mContext as FragmentActivity).startActivity(intent)

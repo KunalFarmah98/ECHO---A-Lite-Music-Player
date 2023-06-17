@@ -22,8 +22,7 @@ constructor(
 
     suspend fun fetchSongs(){
         var songs = getSongsFromPhone()
-        if(songs.isNotEmpty())
-            echoDao.deleteAllSongs()
+        echoDao.deleteAllSongs()
         echoDao.insertAll(cacheMapper.mapToEntityList(songs))
     }
 

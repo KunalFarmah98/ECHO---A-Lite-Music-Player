@@ -34,6 +34,7 @@ class FavoriteFragment : Fragment() {
     companion object{
         val TAG = "FavoriteFragment"
         var noNext: Boolean? = true
+        var mInstance: FavoriteFragment ?= null
     }
     var favouriteAdapter: FavoriteAdapter? = null
     var main: MainActivity? = null
@@ -53,6 +54,11 @@ class FavoriteFragment : Fragment() {
     val viewModel: SongsViewModel by viewModels()
     var songAlbum: Long? = null
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mInstance = this
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

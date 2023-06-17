@@ -55,7 +55,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
-        if(position == MediaUtils.currInd){
+        if(MediaUtils.isAllSongsPLaying && position == MediaUtils.currInd){
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
@@ -98,8 +98,10 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             var intent = Intent(mContext,SongPlayingActivity::class.java)
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
-            MediaUtils.currInd = mediaPlayer.currentMediaItemIndex
-            mContext?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()?.putInt("listPosition",position)?.apply()
+            MediaUtils.isAllSongsPLaying = true
+            MediaUtils.isAlbumPlaying = false
+            MediaUtils.isFavouritesPlaying = false
+
             intent.putExtra("songArtist", songObject.artist)
             intent.putExtra("songTitle", songObject.songTitle)
             intent.putExtra("path", songObject.songData)

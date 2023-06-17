@@ -75,7 +75,6 @@ class SearchAdapter(
                 var intent = Intent(mContext, SongPlayingActivity::class.java)
                 notifyItemChanged(max(MediaUtils.getSongIndex(), 0))
                 MediaUtils.currSong = songObject
-                MediaUtils.currInd = MediaUtils.mediaPlayer.currentMediaItemIndex
                 intent.putExtra("songArtist", songObject.artist)
                 intent.putExtra("songTitle", songObject.songTitle)
                 intent.putExtra("path", songObject.songData)
@@ -84,6 +83,11 @@ class SearchAdapter(
                 intent.putExtra("album", songObject.album)
                 intent.putExtra("fromSearch", true)
 
+                MediaUtils.isAllSongsPLaying = true
+                MediaUtils.isAlbumPlaying = false
+                MediaUtils.isFavouritesPlaying = false
+
+                MediaUtils.songsList = MediaUtils.allSongsList
                 MediaUtils.setMediaItems()
 
                 (mContext as? MainActivity)?.startActivity(intent)

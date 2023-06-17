@@ -2,7 +2,6 @@ package com.apps.kunalfarmah.echo.util
 
 import android.content.ComponentName
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
@@ -17,6 +16,8 @@ import androidx.media3.session.SessionToken
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
+import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment
+import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
@@ -32,6 +33,9 @@ object MediaUtils {
      private val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
      lateinit var controllerFuture: ListenableFuture<MediaController>
      lateinit var controller: MediaController
+     var isAlbumPlaying = false
+     var isAllSongsPLaying = false
+     var isFavouritesPlaying = false
      init {
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
@@ -54,12 +58,8 @@ object MediaUtils {
                          Player.STATE_ENDED -> SongPlayingFragment.Staticated.onSongComplete()
                          Player.STATE_READY -> {
                               SongPlayingFragment.Staticated.processInformation()
+                              updateCurrentSongIndex()
                               mediaPlayer.play()
-                              if(currInd >= 0){
-                                   MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
-                              }
-                              currInd = mediaPlayer.currentMediaItemIndex
-                              MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                    val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
                                    SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), mediaMetadata?.artworkUri)
@@ -89,11 +89,7 @@ object MediaUtils {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                          SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                          SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-                         if(currInd >= 0){
-                              MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
-                         }
-                         currInd = mediaPlayer.currentMediaItemIndex
-                         MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
+                         updateCurrentSongIndex()
                          if(mediaMetadata.title == null && mediaMetadata.albumArtist == null && mediaMetadata.albumTitle == null){
                               val index = mediaPlayer.currentMediaItemIndex
                               val currSong = songsList[index]
@@ -130,7 +126,20 @@ object MediaUtils {
           mediaPlayer.shuffleModeEnabled = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
      }
 
+     fun updateCurrentSongIndex() {
+          if(currInd >= 0){
+               MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
+               FavoriteFragment.mInstance?.favouriteAdapter?.notifyItemChanged(currInd)
+               AlbumTracksFragment.mInstance?.tracksAdapter?.notifyItemChanged(currInd)
+          }
+          currInd = mediaPlayer.currentMediaItemIndex
+          MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
+          FavoriteFragment.mInstance?.favouriteAdapter?.notifyItemChanged(currInd)
+          AlbumTracksFragment.mInstance?.tracksAdapter?.notifyItemChanged(currInd)
+     }
+
      var songsList:ArrayList<Songs> = ArrayList()
+     var allSongsList: ArrayList<Songs> = ArrayList()
      var mediaItemsList = ArrayList<MediaItem>()
      var currInd: Int = -1
      var currSong: Songs? = null
@@ -144,7 +153,6 @@ object MediaUtils {
 
      fun setMediaItems(){
           mediaItemsList.clear()
-          val artworkUri = Uri.parse("content://media/external/audio/albumart")
           songsList.forEach {
                val metadata = MediaMetadata.Builder()
                        .setTitle(it.songTitle)

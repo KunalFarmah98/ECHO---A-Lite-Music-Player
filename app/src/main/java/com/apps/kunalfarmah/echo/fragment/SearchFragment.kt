@@ -37,13 +37,13 @@ class SearchFragment : Fragment() {
         BottomBarUtils.bottomBarSetup(requireActivity(),MainActivity(),parentFragmentManager,
                 binding.nowPlayingBottomBarMain)
 
-        searchAdapter = SearchAdapter(MediaUtils.songsList, context)
+        searchAdapter = SearchAdapter(MediaUtils.allSongsList, context)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = searchAdapter
 
         binding.searchEt.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                searchAdapter?.setList(MediaUtils.songsList)
+                searchAdapter?.setList(MediaUtils.allSongsList)
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -61,7 +61,7 @@ class SearchFragment : Fragment() {
 
         binding.iconClear.setOnClickListener {
             binding.searchEt.text = null
-            searchAdapter?.setList(MediaUtils.songsList)
+            searchAdapter?.setList(MediaUtils.allSongsList)
             binding.recyclerView.visibility = View.GONE
             hideKeyboard(activity)
         }

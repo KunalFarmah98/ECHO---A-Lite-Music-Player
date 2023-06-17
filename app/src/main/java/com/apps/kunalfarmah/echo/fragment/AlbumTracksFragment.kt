@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
+import com.apps.kunalfarmah.echo.adapter.AlbumTracksAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentAlbumTracksBinding
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
@@ -27,6 +27,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
 
     companion object {
         val TAG = "AlbumTracksFragment"
+        var mInstance: AlbumTracksFragment ?= null
     }
 
     var albumId: Long = id!!
@@ -34,10 +35,12 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
     var binding: FragmentAlbumTracksBinding? = null
     var main: MainActivity? = null
     var songAlbum: Long? = null
+    var tracksAdapter: AlbumTracksAdapter ?= null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.getAlbumSongs(albumId)
+        mInstance = this
         super.onCreate(savedInstanceState)
     }
 
@@ -74,13 +77,14 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
 
 
     private fun setView(list: ArrayList<Songs>) {
+        tracksAdapter = AlbumTracksAdapter(list, activity as Context)
         binding!!.tracks.layoutManager = LinearLayoutManager(context)
         binding!!.tracks.itemAnimator = DefaultItemAnimator()
         binding!!.tracks.setHasFixedSize(true)
         binding!!.tracks.setItemViewCacheSize(100)
         binding!!.tracks.isDrawingCacheEnabled = true
         binding!!.tracks.isAlwaysDrawnWithCacheEnabled = true
-        binding!!.tracks.adapter = MainScreenAdapter(list, activity as Context)
+        binding!!.tracks.adapter = tracksAdapter
     }
 
 }
