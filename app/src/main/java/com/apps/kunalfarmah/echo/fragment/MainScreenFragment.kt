@@ -156,6 +156,10 @@ class MainScreenFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {

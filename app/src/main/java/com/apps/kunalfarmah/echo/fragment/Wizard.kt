@@ -51,8 +51,11 @@ class Wizard : Fragment() {
 
         //removing the sorting adn searching options as they r not needed
 
-        val item = menu.findItem(R.id.action_sort)
-        item?.isVisible = false
+        var item = menu.findItem(R.id.action_sort_recent)
+        item?.isVisible=false
+
+        item = menu.findItem(R.id.acton_sort_ascending)
+        item?.isVisible=false
 
     }
 

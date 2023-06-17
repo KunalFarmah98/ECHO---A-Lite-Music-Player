@@ -109,6 +109,15 @@ class FavoriteFragment : Fragment() {
         binding.nowPlayingBottomBar)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.action_sort_recent)?.isVisible=false
+    }
+
     /*Here we perform the actions of sorting according to the menu item clicked*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId

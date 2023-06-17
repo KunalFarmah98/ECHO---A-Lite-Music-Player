@@ -6,6 +6,8 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="action_sort_asc">Sort by Name Ascending</string>
+    <string name="action_sort_recent">Sort by Recently Added</string>
     <string name="intro">This app uses a new feature of Android Oreo called push-notifications. As a result of which the song control panel of the notification bar pops up when any changes are made to the song
 playback. For eg. next song is played or the song is paused so that you can change
 the song, play/pause while working on other apps without the hassle of opening the Echo app again
