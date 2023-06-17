@@ -782,6 +782,7 @@ class SongPlayingFragment : Fragment() {
         var _songAlbum: Long? = null
         var _album: String? = null
         var fromBottomBar = false
+        var fromSearch = false
 
         //try {
         path = arguments?.getString("path")
@@ -795,10 +796,20 @@ class SongPlayingFragment : Fragment() {
         if (arguments?.getBoolean("fromBottomBar") != null)
             fromBottomBar = arguments?.getBoolean("fromBottomBar")!!
 
+        fromSearch = arguments?.getBoolean("fromSearch", false) == true
+        fetchSongs = MediaUtils.songsList
+
 
         /*Here we fetch the received bundle data for current position and the list of all songs*/
-        currentPosition = arguments!!.getInt("songPosition")
-        fetchSongs = MediaUtils.songsList
+        currentPosition = if(fromSearch){
+            // if playing song from search, we will get index form the existing list and play from the all songs list
+            fetchSongs!!.indexOfFirst {
+                it.songID == _songId
+            }
+        }
+        else {
+            arguments!!.getInt("songPosition")
+        }
 
         //  Now store the song details to the current song helper object so that they can be used later
         currentSongHelper.songpath = path

@@ -170,19 +170,4 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         }catch (e:Exception){}
     }
 
-
-    fun filter_data(newList : ArrayList<Songs>?){
-
-
-        if(newList!=null) {
-//            songDetails?.removeAll(ArrayList<Songs>())
-
-            songDetails = ArrayList<Songs>()
-            songDetails?.addAll(newList)
-
-            notifyDataSetChanged()
-        }
-
-    }
-
 }

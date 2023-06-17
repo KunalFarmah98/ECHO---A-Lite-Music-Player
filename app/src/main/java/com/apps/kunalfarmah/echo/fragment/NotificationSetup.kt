@@ -53,8 +53,6 @@ class NotificationSetup : Fragment(){
         val item = menu.findItem(R.id.action_sort)
         item?.isVisible=false
 
-        val item1 = menu.findItem(R.id.action_search)
-        item1?.isVisible=false
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

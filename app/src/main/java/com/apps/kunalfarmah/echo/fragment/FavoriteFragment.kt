@@ -103,54 +103,6 @@ class FavoriteFragment : Fragment() {
         binding.nowPlayingBottomBar)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.main, menu)
-
-        val searchItem = menu.findItem(R.id.action_search)
-        var searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Enter Song or Artist to Search"
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-            override fun onQueryTextChange(query: String): Boolean {
-                try {
-
-                    var name_to_saerch = query.toLowerCase()
-
-                    var newList: java.util.ArrayList<Songs>? = java.util.ArrayList<Songs>()
-
-                    for (songs in refreshList!!) {
-                        var name = songs.songTitle.toLowerCase()
-                        var artist = songs.artist.toLowerCase()
-                        if (name.contains(name_to_saerch, true))
-                            newList?.add(songs)
-                        else if (artist.contains(name_to_saerch, true))
-                            newList?.add(songs)
-
-                    }
-                    //Task HERE
-
-                    favouriteAdapter?.filter_data(newList)
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Aw Snap! Something Wrong Happened", Toast.LENGTH_SHORT).show()
-                }
-                return true
-
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-
-                return false
-            }
-
-
-        })
-
-        return
-    }
-
-
     /*Here we perform the actions of sorting according to the menu item clicked*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId

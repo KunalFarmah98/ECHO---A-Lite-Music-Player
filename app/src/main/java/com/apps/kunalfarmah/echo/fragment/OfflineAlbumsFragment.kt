@@ -88,44 +88,5 @@ class OfflineAlbumsFragment : Fragment() {
             binding!!.nowPlayingBottomBarMain)
 
     }
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.main, menu)
-
-        val searchItem = menu.findItem(R.id.action_search)
-        var searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Search Album"
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-            override fun onQueryTextChange(query: String): Boolean {
-
-                var name_to_saerch = query.toLowerCase()
-
-                var newList: ArrayList<SongAlbum>? = ArrayList<SongAlbum>()
-
-                for (albums in list!!) {
-                    var album = albums._name
-                    if (album.contains(name_to_saerch, true))
-                        newList?.add(albums)
-
-                }
-                if (null != mAdapter)
-                    mAdapter!!.filter_data(newList)
-                return true
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-
-                return false
-            }
-
-
-        })
-
-        menu.findItem(R.id.action_sort).setVisible(false)
-
-        return
-    }
 
 }

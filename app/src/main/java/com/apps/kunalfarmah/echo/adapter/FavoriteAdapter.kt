@@ -158,47 +158,13 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         try {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer.stop()
-                intent.putExtra(Constants.WAS_MEDIA_PLAYING,true)
+                intent.putExtra(Constants.WAS_MEDIA_PLAYING, true)
             }
             MainScreenAdapter.Statified.stopPlayingCalled = true
-        }catch (e:Exception){}
-
-
-    }
-    fun getAlbumart(album_id: Long): Bitmap? {
-        var bm: Bitmap? = null
-        if(album_id <= 0L) return bm
-        try {
-            val sArtworkUri: Uri = Uri
-                    .parse("content://media/external/audio/albumart")
-            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
-            val pfd: ParcelFileDescriptor? = mContext?.contentResolver
-                    ?.openFileDescriptor(uri, "r")
-            if (pfd != null) {
-                val fd: FileDescriptor = pfd.fileDescriptor
-                bm = BitmapFactory.decodeFileDescriptor(fd)
-            }
-        } catch (e: java.lang.Exception) {
-        }
-        return bm
-    }
-
-
-    fun filter_data(newList : ArrayList<Songs>?){
-
-
-        if(newList!=null) {
-//            songDetails?.removeAll(ArrayList<Songs>())
-
-            songDetails = ArrayList<Songs>()
-            songDetails?.addAll(newList)
-
-            notifyDataSetChanged()
+        } catch (e: Exception) {
         }
 
 
-
     }
-
 
 }

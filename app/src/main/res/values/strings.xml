@@ -60,5 +60,6 @@ or pulling down the notification panel to do the same.</string>
     <string name="no_app_share">No App found to share with</string>
     <string name="no_email_app">No email app installed</string>
     <string name="no_browser_app">No browser app installed</string>
+    <string name="search_hint">Search for song, album or artist</string>
 
 </resources>

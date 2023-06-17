@@ -156,50 +156,6 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.main, menu)
-
-        val searchItem = menu.findItem(R.id.action_search)
-        var searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Search Song, Artist, Album"
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-            override fun onQueryTextChange(query: String): Boolean {
-
-                var name_to_saerch = query.toLowerCase()
-
-                var newList: ArrayList<Songs>? = ArrayList<Songs>()
-
-                for (songs in getSongsList!!) {
-                    var name = songs.songTitle.toLowerCase()
-                    var artist = songs.artist.toLowerCase()
-                    var album = songs.album.toString()
-                    if (name.contains(name_to_saerch, true))
-                        newList?.add(songs)
-                    else if (artist.contains(name_to_saerch, true))
-                        newList?.add(songs)
-                    else if (album.contains(name_to_saerch, true))
-                        newList?.add(songs)
-
-                }
-                mainScreenAdapter?.filter_data(newList)
-                return true
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-
-                return false
-            }
-
-
-        })
-
-        return
-    }
-
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {

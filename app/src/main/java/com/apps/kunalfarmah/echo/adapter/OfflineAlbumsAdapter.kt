@@ -66,15 +66,4 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
     override fun getItemCount(): Int {
         return albums.size
     }
-
-    fun filter_data(newList : ArrayList<SongAlbum>?){
-
-
-        if(newList!=null) {
-            albums = ArrayList<SongAlbum>()
-            (albums as ArrayList<SongAlbum>).addAll(newList)
-            notifyDataSetChanged()
-        }
-
-    }
 }

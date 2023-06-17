@@ -56,6 +56,7 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         }.invokeOnCompletion {
             songsList.value = list?:ArrayList()
             MediaUtils.songsList = (list ?: ArrayList()) as ArrayList<Songs>
+            MediaUtils.setMediaItems()
         }
     }
 

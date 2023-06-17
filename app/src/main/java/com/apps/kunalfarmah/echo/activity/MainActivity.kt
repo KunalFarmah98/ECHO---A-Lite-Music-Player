@@ -15,6 +15,7 @@ import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
+import android.util.SparseArray
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.session.MediaController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -36,6 +38,7 @@ import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.activity.MainActivity.Statified.notify
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
+import com.apps.kunalfarmah.echo.fragment.SearchFragment
 
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
@@ -57,6 +60,8 @@ class MainActivity : AppCompatActivity() {
     var song: SongPlayingFragment? = null
     var bottomNav: BottomNavigationView? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+
+    private var fragments: SparseArray<Fragment> ?= null
 
     //setting up a broadcast receiver to close the activity when notification is closed
 
@@ -116,6 +121,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         song = SongPlayingFragment()
+        fragments = SparseArray(4)
+        fragments!![0] = MainScreenFragment()
+        fragments!![1] = OfflineAlbumsFragment()
+        fragments!![2] = FavoriteFragment()
+        fragments!![3] = SearchFragment()
 
         viewModel.init()
         /*This syntax is used to access the objects inside the class*/
@@ -163,38 +173,46 @@ class MainActivity : AppCompatActivity() {
                 mIntentFilter
         )
 
-        bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNav = findViewById(R.id.bottom_nav)
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
 
-        bottomNav!!.setOnNavigationItemSelectedListener {
+        bottomNav!!.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_main_screen -> {
                     supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.details_fragment, MainScreenFragment(), MainScreenFragment.TAG)
+                            .replace(R.id.details_fragment, fragments?.get(0) ?: MainScreenFragment(), MainScreenFragment.TAG)
                             .commit()
-                    return@setOnNavigationItemSelectedListener true
+                    return@setOnItemSelectedListener true
                 }
 
                 R.id.navigation_albums -> {
                     supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.details_fragment, OfflineAlbumsFragment(), OfflineAlbumsFragment.TAG)
+                            .replace(R.id.details_fragment, fragments?.get(1) ?: OfflineAlbumsFragment(), OfflineAlbumsFragment.TAG)
                             .commit()
-                    return@setOnNavigationItemSelectedListener true
+                    return@setOnItemSelectedListener true
 
                 }
 
                 R.id.navigation_favorites -> {
                     supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.details_fragment, FavoriteFragment(), FavoriteFragment.TAG)
+                            .replace(R.id.details_fragment, fragments?.get(2) ?: FavoriteFragment(), FavoriteFragment.TAG)
                             .commit()
-                    return@setOnNavigationItemSelectedListener true
+                    return@setOnItemSelectedListener true
 
                 }
+
+                R.id.navigation_search -> {
+                    supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.details_fragment, fragments?.get(3) ?:SearchFragment(), SearchFragment.TAG)
+                            .commit()
+                    return@setOnItemSelectedListener true
+                }
                 else -> {
-                    return@setOnNavigationItemSelectedListener false
+                    return@setOnItemSelectedListener false
                 }
             }
         }
@@ -256,6 +274,13 @@ class MainActivity : AppCompatActivity() {
             OfflineAlbumsFragment.postion=0
             return
         }
+
+        fragment = supportFragmentManager.findFragmentByTag(SearchFragment.TAG)
+        if (fragment != null && fragment.isVisible) {
+            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+            return
+        }
+
         super.onBackPressed()
     }
 
