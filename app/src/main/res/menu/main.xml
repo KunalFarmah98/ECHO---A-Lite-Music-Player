@@ -3,21 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_sort"
-        android:icon="@drawable/sort_icon"
-        android:title="@string/action_settings"
-        app:showAsAction="always">
+        android:id="@+id/acton_sort_ascending"
+        android:icon="@drawable/sort_alphabetical_ascending"
+        android:title="@string/sort_by_name"
+        app:showAsAction="always"/>
 
-        <menu>
-            <item
-                android:id="@+id/action_sort_recent"
+    <item
+        android:id="@+id/action_sort_recent"
+        android:icon="@drawable/sort_calendar_ascending"
+        android:title="@string/sort_by_recent"
+        app:showAsAction="always"/>
 
-                android:title="@string/by_recently_added" />
-
-            <item
-                android:id="@+id/acton_sort_ascending"
-                android:title="@string/by_name" />
-        </menu>
-    </item>
 
 </menu>
