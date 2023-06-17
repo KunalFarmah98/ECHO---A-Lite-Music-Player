@@ -17,6 +17,7 @@ import androidx.media3.session.SessionToken
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
+import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.PlaybackService
@@ -54,6 +55,11 @@ object MediaUtils {
                          Player.STATE_READY -> {
                               SongPlayingFragment.Staticated.processInformation()
                               mediaPlayer.play()
+                              if(currInd >= 0){
+                                   MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
+                              }
+                              currInd = mediaPlayer.currentMediaItemIndex
+                              MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                    val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
                                    SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), mediaMetadata?.artworkUri)
@@ -83,6 +89,11 @@ object MediaUtils {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                          SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                          SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                         if(currInd >= 0){
+                              MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
+                         }
+                         currInd = mediaPlayer.currentMediaItemIndex
+                         MainScreenFragment.mInstance?.mainScreenAdapter?.notifyItemChanged(currInd)
                          if(mediaMetadata.title == null && mediaMetadata.albumArtist == null && mediaMetadata.albumTitle == null){
                               val index = mediaPlayer.currentMediaItemIndex
                               val currSong = songsList[index]
@@ -132,6 +143,7 @@ object MediaUtils {
      }
 
      fun setMediaItems(){
+          mediaItemsList.clear()
           val artworkUri = Uri.parse("content://media/external/audio/albumart")
           songsList.forEach {
                val metadata = MediaMetadata.Builder()

@@ -31,6 +31,7 @@ class MainScreenFragment : Fragment() {
     companion object {
         val TAG = "MainScreenFragment"
         var noNext: Boolean = true
+        var mInstance: MainScreenFragment? = null
     }
 
     private val viewModel: SongsViewModel by viewModels()
@@ -46,6 +47,7 @@ class MainScreenFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mInstance = this
         viewModel.getAllSongs()
     }
 
