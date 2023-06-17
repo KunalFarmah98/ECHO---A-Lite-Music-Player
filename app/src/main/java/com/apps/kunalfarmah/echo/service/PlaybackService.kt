@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.Player
@@ -110,6 +109,17 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         customCommands.forEach { commandButton ->
             // Add custom command to available session commands.
             commandButton.sessionCommand?.let { availableSessionCommands.add(it) }
+        }
+        AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key.equals(Constants.SHUFFLE)) {
+                val state = sharedPreferences?.getBoolean(key, false)
+                customLayout = if (state == true) {
+                    listOf(customCommands[1], customCommands[2])
+                } else {
+                    listOf(customCommands[0], customCommands[2])
+                }
+                mediaSession?.setCustomLayout(customLayout)
+            }
         }
         return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(),
