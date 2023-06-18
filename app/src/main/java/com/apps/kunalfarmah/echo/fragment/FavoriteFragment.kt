@@ -2,11 +2,9 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.app.Activity
 import android.content.Context
-import android.database.Cursor
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
-import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -19,7 +17,6 @@ import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.databinding.FragmentFavoriteBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import androidx.appcompat.widget.SearchView
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
@@ -39,7 +36,6 @@ class FavoriteFragment : Fragment() {
     var favouriteAdapter: FavoriteAdapter? = null
     var main: MainActivity? = null
     var myActivity: Activity? = null
-    var trackPosition: Int = 0
 
     /*This variable will be used for database instance*/
     var favoriteContent: EchoDatabase? = null
@@ -54,9 +50,12 @@ class FavoriteFragment : Fragment() {
     val viewModel: SongsViewModel by viewModels()
     var songAlbum: Long? = null
 
+    var prefs: SharedPreferences ?= null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        prefs = activity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)
         mInstance = this
     }
 
@@ -86,8 +85,6 @@ class FavoriteFragment : Fragment() {
                     )
                 )
         }
-
-//        MainActivity.Statified.MainorFavOn=true
 
         return binding.root
     }
@@ -122,10 +119,8 @@ class FavoriteFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId
         if (switcher == R.id.acton_sort_ascending) {
-            /*Whichever action item is selected, we save the preferences and perform the operation of comparison*/
-            val editor = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
-            editor?.putString(getString(R.string.sort_by_name), "true")
-            editor?.putString(getString(R.string.sort_by_recent), "false")
+            val editor = prefs?.edit()
+            editor?.putString(Constants.SORTING, Constants.NAME_ASC)
             editor?.apply()
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.nameComparator)
@@ -133,10 +128,9 @@ class FavoriteFragment : Fragment() {
             favouriteAdapter?.notifyDataSetChanged()
             return false
         } else if (switcher == R.id.action_sort_recent) {
-            val editortwo = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
-            editortwo?.putString(getString(R.string.sort_by_recent), "true")
-            editortwo?.putString(getString(R.string.sort_by_name), "false")
-            editortwo?.apply()
+            val editor = prefs?.edit()
+            editor?.putString(Constants.SORTING, Constants.RECENTLY_ADDED)
+            editor?.apply()
             if (refreshList != null) {
                 Collections.sort(refreshList, Songs.Statified.dateComparator)
             }
@@ -146,20 +140,6 @@ class FavoriteFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getCoverArtPath(context: Context?, androidAlbumId: Long): String? {
-        var path: String? = null
-        val c: Cursor? = context?.contentResolver?.query(
-                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Albums.ALBUM_ART),
-                MediaStore.Audio.Albums._ID + "=?", arrayOf(java.lang.Long.toString(androidAlbumId)),
-                null)
-        if (c != null) {
-            if (c.moveToFirst()) {
-                path = c.getString(0)
-            }
-            c.close()
-        }
-        return path
-    }
     /*The below function is used to search the favorites and display*/
     fun getFavorites() {
 
@@ -183,7 +163,12 @@ class FavoriteFragment : Fragment() {
                 //  recyclerView?.visibility = View.INVISIBLE
                 binding.noFavorites?.visibility = View.VISIBLE
             } else {
-
+                val sortOrder = prefs?.getString(Constants.SORTING, "")
+                if (sortOrder.equals(Constants.NAME_ASC, ignoreCase = true)) {
+                    Collections.sort(refreshList, Songs.Statified.nameComparator)
+                } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
+                    Collections.sort(refreshList, Songs.Statified.dateComparator)
+                }
                 binding.noFavorites?.visibility = View.INVISIBLE
                 // recyclerView?.visibility = View.VISIBLE
 

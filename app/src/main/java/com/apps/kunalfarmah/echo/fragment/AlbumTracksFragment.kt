@@ -69,8 +69,6 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
     /* It is used to do the final initialization once the other things are in place*/
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
-
         BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
         binding!!.nowPlayingBottomBarMain)
     }

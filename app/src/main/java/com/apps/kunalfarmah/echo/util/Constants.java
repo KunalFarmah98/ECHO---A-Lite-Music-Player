@@ -28,6 +28,9 @@ public class Constants {
     public static final String SHUFFLE = "SHUFFLE";
     public static final String LOOP = "LOOP";
     public static final String SHAKE_TO_CHANGE = "SHAKE_TO_CHANGE";
+    public static final String SORTING = "SORTING";
+    public static final String NAME_ASC = "NAME_ASC";
+    public static final String RECENTLY_ADDED = "RECENTLY_ADDED";
 
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;

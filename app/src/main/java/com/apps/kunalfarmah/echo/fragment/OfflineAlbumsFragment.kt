@@ -14,8 +14,6 @@ import com.apps.kunalfarmah.echo.databinding.FragmentAlbumsBinding
 
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
-import androidx.appcompat.widget.SearchView
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -79,14 +77,11 @@ class OfflineAlbumsFragment : Fragment() {
         return binding!!.root
     }
 
-    /* It is used to do the final initialization once the other things are in place*/
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        /*The variable getSongsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
             binding!!.nowPlayingBottomBarMain)
-
     }
 
 }
