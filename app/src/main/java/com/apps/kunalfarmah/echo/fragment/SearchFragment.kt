@@ -34,6 +34,7 @@ class SearchFragment : Fragment() {
         binding = FragmentSearchBinding.inflate(inflater)
         activity?.title = "Search"
         binding.recyclerView.visibility = View.GONE
+        binding.emptyView.visibility = View.VISIBLE
         BottomBarUtils.bottomBarSetup(requireActivity(),MainActivity(),parentFragmentManager,
                 binding.nowPlayingBottomBarMain)
 
@@ -63,6 +64,7 @@ class SearchFragment : Fragment() {
             binding.searchEt.text = null
             searchAdapter?.setList(MediaUtils.allSongsList)
             binding.recyclerView.visibility = View.GONE
+            binding.emptyView.visibility = View.VISIBLE
             hideKeyboard(activity)
         }
 
@@ -86,10 +88,12 @@ class SearchFragment : Fragment() {
         binding.searchEt.text.let {
             if(it.isNullOrEmpty()){
                 binding.recyclerView.visibility = View.GONE
+                binding.emptyView.visibility = View.VISIBLE
             }
             else{
                 searchAdapter?.filter(binding.searchEt.text.toString())
                 binding.recyclerView.visibility = View.VISIBLE
+                binding.emptyView.visibility = View.GONE
             }
         }
     }

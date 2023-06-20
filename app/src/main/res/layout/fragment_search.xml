@@ -53,6 +53,16 @@
         android:layout_below="@id/search_bar"
         android:background="#FFFFFF"/>
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_fragment_empty_view_Tv"
+        android:textSize="20sp"
+        android:layout_centerInParent="true"
+        android:textColor="#FFFFFF"
+        android:textAlignment="textStart" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_below="@id/divider"
