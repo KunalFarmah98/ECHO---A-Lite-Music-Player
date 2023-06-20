@@ -121,11 +121,12 @@ class MainScreenFragment : Fragment() {
         if (songsList == null || songsList?.size == 0) {
             binding.noSongs.visibility = View.VISIBLE
         } else {
-            if (sortOrder.equals(Constants.NAME_ASC, ignoreCase = true)) {
-                Collections.sort(songsList, Songs.Statified.nameComparator)
-            } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
-                Collections.sort(songsList, Songs.Statified.dateComparator)
-            }
+//            if (sortOrder.equals(Constants.NAME_ASC, ignoreCase = true)) {
+//                Collections.sort(songsList, Songs.Statified.nameComparator)
+//            } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
+//                Collections.sort(songsList, Songs.Statified.dateComparator)
+//            }
+            Collections.sort(songsList, Songs.Statified.dateComparator)
             binding.visibleLayout.visibility = View.VISIBLE
             binding.noSongs.visibility = View.GONE
             mainScreenAdapter = MainScreenAdapter(songsList as ArrayList<Songs>, myActivity as Context)
@@ -144,9 +145,9 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.main, menu)
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val switcher = item.itemId

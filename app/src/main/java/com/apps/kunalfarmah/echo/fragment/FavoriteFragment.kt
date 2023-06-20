@@ -106,9 +106,9 @@ class FavoriteFragment : Fragment() {
         binding.nowPlayingBottomBar)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main, menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.main, menu)
+//    }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
@@ -163,12 +163,13 @@ class FavoriteFragment : Fragment() {
                 //  recyclerView?.visibility = View.INVISIBLE
                 binding.noFavorites?.visibility = View.VISIBLE
             } else {
-                val sortOrder = prefs?.getString(Constants.SORTING, "")
-                if (sortOrder.equals(Constants.NAME_ASC, ignoreCase = true)) {
-                    Collections.sort(refreshList, Songs.Statified.nameComparator)
-                } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
-                    Collections.sort(refreshList, Songs.Statified.dateComparator)
-                }
+//                val sortOrder = prefs?.getString(Constants.SORTING, "")
+//                if (sortOrder.equals(Constants.NAME_ASC, ignoreCase = true)) {
+//                    Collections.sort(refreshList, Songs.Statified.nameComparator)
+//                } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
+//                    Collections.sort(refreshList, Songs.Statified.dateComparator)
+//                }
+                Collections.sort(refreshList, Songs.Statified.dateComparator)
                 binding.noFavorites?.visibility = View.INVISIBLE
                 // recyclerView?.visibility = View.VISIBLE
 
