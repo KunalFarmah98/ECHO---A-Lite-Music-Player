@@ -63,5 +63,6 @@ or pulling down the notification panel to do the same.</string>
     <string name="no_email_app">No email app installed</string>
     <string name="no_browser_app">No browser app installed</string>
     <string name="search_hint">Search for song, album or artist</string>
+    <string name="search_fragment_empty_view_Tv">You can search for:\n\n1. Songs\n2. Albums\n3. Artists</string>
 
 </resources>
