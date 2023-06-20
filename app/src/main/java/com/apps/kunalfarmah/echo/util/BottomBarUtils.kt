@@ -56,6 +56,18 @@ object BottomBarUtils {
             bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
             bottomBarBinding.next.visibility = View.GONE
         }
+        if(MediaUtils.isAllSongsPLaying){
+            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+        }
+        else if(MediaUtils.isAlbumPlaying){
+            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_album_white_24dp))
+        }
+        else if(MediaUtils.isFavouritesPlaying){
+            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_favorite_white_24dp))
+        }
+        else{
+            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+        }
         bottomBarBinding.songTitle.text = currentSongHelper.songTitle
         var artist = currentSongHelper.songArtist
         if (artist.equals("<unknown>", ignoreCase = true))
@@ -241,6 +253,19 @@ object BottomBarUtils {
                 titleToShow = "Unknown"
             }
             bottomBarBinding?.songTitle?.text = titleToShow
+        }
+
+        if(MediaUtils.isAllSongsPLaying){
+            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+        }
+        else if(MediaUtils.isAlbumPlaying){
+            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_album_white_24dp))
+        }
+        else if(MediaUtils.isFavouritesPlaying){
+            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_favorite_white_24dp))
+        }
+        else{
+            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
         }
     }
 
