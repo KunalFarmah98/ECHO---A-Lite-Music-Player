@@ -2,6 +2,8 @@ package com.apps.kunalfarmah.echo.util
 
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
@@ -63,7 +65,7 @@ object MediaUtils {
                               mediaPlayer.play()
                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                    val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
-                                   SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), mediaMetadata?.artworkUri)
+                                   SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), getBitmap(mediaMetadata?.artworkData))
                                    setCurrentSong(mediaMetadata)
                               }
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
@@ -100,7 +102,7 @@ object MediaUtils {
                          }
                          else if(mediaMetadata.title != null) {
                               setCurrentSong(mediaMetadata)
-                              SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), mediaMetadata.artworkUri)
+                              SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), getBitmap(mediaMetadata.artworkData))
                          }
                     }
                }
@@ -150,6 +152,16 @@ object MediaUtils {
           }catch (e: Exception){
                false
           }
+     }
+
+     fun getBitmap(artworkData: ByteArray?): Bitmap?{
+          var bitmap: Bitmap ?= null
+          artworkData.let {
+               if(it!=null){
+                    bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+               }
+          }
+          return bitmap
      }
 
      fun setMediaItems(){
@@ -206,7 +218,7 @@ object MediaUtils {
                SongHelper.currentSongHelper.currentPosition = index
                SongHelper.currentSongHelper.songId = songsList[index].songID
                SongHelper.currentSongHelper.songpath = songsList[index].songData
-               SongHelper.currentSongHelper.albumArtUri = metadata.artworkUri
+               SongHelper.currentSongHelper.albumArt = getBitmap(metadata.artworkData)
           }
      }
 }

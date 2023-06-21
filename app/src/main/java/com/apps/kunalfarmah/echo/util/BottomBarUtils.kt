@@ -6,6 +6,7 @@ import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.view.View
@@ -78,9 +79,9 @@ object BottomBarUtils {
             setAlbumArt(currentSongHelper.songAlbum)
         }
         else{
-            currentSongHelper.albumArtUri.let {
+            currentSongHelper.albumArt.let {
                 if(it != null){
-                    loadAlbumArt(currentSongHelper.albumArtUri)
+                    loadAlbumArt(currentSongHelper.albumArt)
                 }
                 else{
                     setAlbumArt(currentSongHelper.songAlbum)
@@ -208,8 +209,8 @@ object BottomBarUtils {
         }
     }
 
-    private fun loadAlbumArt(artworkUri: Uri?) {
-        if (artworkUri == null) {
+    private fun loadAlbumArt(artwork: Bitmap?) {
+        if (artwork == null) {
             bottomBarBinding?.songImg?.setImageDrawable(
                     App.context.resources?.getDrawable(
                             R.drawable.echo_icon
@@ -218,7 +219,7 @@ object BottomBarUtils {
             return
         }
         try {
-            Glide.with(App.context).load(artworkUri).placeholder(R.drawable.echo_icon)
+            Glide.with(App.context).load(artwork).placeholder(R.drawable.echo_icon)
                     .into(bottomBarBinding?.songImg!!)
         } catch (e: Exception) {
         }
@@ -285,9 +286,9 @@ object BottomBarUtils {
         }
     }
 
-    fun setAlbumArt(artworkUri: Uri? = null) {
-        if(artworkUri != null){
-            bottomBarBinding?.songImg?.setImageURI(artworkUri)
+    fun setAlbumArt(artwork: Bitmap? = null) {
+        if(artwork != null){
+            bottomBarBinding?.songImg?.setImageBitmap(artwork)
             return
         }
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

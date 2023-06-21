@@ -443,7 +443,7 @@ class SongPlayingFragment : Fragment() {
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun updateViews(songtitle: String?, songartist: String?, artworkUri: Uri? = null) {
+        fun updateViews(songtitle: String?, songartist: String?, artwork: Bitmap? = null) {
 
             var songtitleupdted = songtitle
             var songartistupdted = songartist
@@ -485,8 +485,8 @@ class SongPlayingFragment : Fragment() {
             }
             else{
                 var img: Bitmap? = null
-                if(artworkUri != null){
-                    albumArt?.setImageURI(artworkUri)
+                if(artwork != null){
+                    albumArt?.setImageBitmap(artwork)
                 }
                 else {
                     if (currentSongHelper.songAlbum != null) {
@@ -510,7 +510,7 @@ class SongPlayingFragment : Fragment() {
 
             BottomBarUtils.setTitle(songtitle)
             BottomBarUtils.setArtist(songartist)
-            BottomBarUtils.setAlbumArt(artworkUri)
+            BottomBarUtils.setAlbumArt(artwork)
 
         }
 
@@ -840,7 +840,7 @@ class SongPlayingFragment : Fragment() {
 
         // updating the textViews as soon as the song is changed and loaded
 
-        updateViews(currentSongHelper.songTitle, currentSongHelper.songArtist, currentSongHelper.albumArtUri)
+        updateViews(currentSongHelper.songTitle, currentSongHelper.songArtist, currentSongHelper.albumArt)
 
 //    } catch (e: Exception) {
 //        e.printStackTrace()
