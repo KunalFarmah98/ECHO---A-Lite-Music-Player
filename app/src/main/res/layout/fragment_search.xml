@@ -69,12 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/song_item"
-            android:layout_above="@id/now_playing_bottom_bar_main"
             android:animateLayoutChanges="false"/>
-
-        <include
-            android:id="@id/now_playing_bottom_bar_main"
-            layout="@layout/bottom_bar"/>
 
     </RelativeLayout>
 

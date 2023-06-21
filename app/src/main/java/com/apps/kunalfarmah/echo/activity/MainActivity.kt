@@ -17,6 +17,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.util.SparseArray
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -27,28 +28,26 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.media3.session.MediaController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.util.Constants
 
 
 import com.apps.kunalfarmah.echo.activity.MainActivity.Statified.notify
+import com.apps.kunalfarmah.echo.databinding.ActivityMainBinding
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 import com.apps.kunalfarmah.echo.fragment.SearchFragment
 
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
+import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.MoreExecutors
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -62,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     var bottomNav: BottomNavigationView? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private var sharedPreferences:SharedPreferences ?= null
+    private lateinit var binding: ActivityMainBinding
 
     private var fragments: SparseArray<Fragment> ?= null
 
@@ -112,10 +112,22 @@ class MainActivity : AppCompatActivity() {
         return notify
     }
 
+    val songObserver = Observer<Boolean> {
+        if (it) {
+            binding.mainLayout.nowPlayingBottomBar.playPause.setImageDrawable(resources.getDrawable(R.drawable.pause_icon))
+            binding.mainLayout.nowPlayingBottomBar.next.visibility = View.VISIBLE
+        }
+        else {
+            binding.mainLayout.nowPlayingBottomBar.playPause.setImageDrawable(resources.getDrawable(R.drawable.play_icon))
+            binding.mainLayout.nowPlayingBottomBar.next.visibility = View.GONE
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sharedPreferences = getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE)
         // loop should be off on app launch
         sharedPreferences?.edit()?.putBoolean(Constants.LOOP,false)?.apply()
@@ -156,16 +168,16 @@ class MainActivity : AppCompatActivity() {
 
         _navigationAdapter.notifyDataSetChanged()
 
-        val navigation_recycler_view = findViewById<RecyclerView>(R.id.navRecyclerView)
+        val drawerRecycler = binding.navRecyclerView
 
-        navigation_recycler_view.layoutManager = LinearLayoutManager(this)
+        drawerRecycler.layoutManager = LinearLayoutManager(this)
 
-        navigation_recycler_view.itemAnimator = DefaultItemAnimator()
+        drawerRecycler.itemAnimator = DefaultItemAnimator()
 
 /*Now we set the adapter to our recycler view to the adapter we created*/
-        navigation_recycler_view.adapter = _navigationAdapter
+        drawerRecycler.adapter = _navigationAdapter
 
-        navigation_recycler_view.setHasFixedSize(true)
+        drawerRecycler.setHasFixedSize(true)
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this)
         val mIntentFilter = IntentFilter()
@@ -177,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                 mIntentFilter
         )
 
-        bottomNav = findViewById(R.id.bottom_nav)
+        bottomNav = binding.mainLayout.bottomNav
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
 
         bottomNav!!.setOnItemSelectedListener {
@@ -221,6 +233,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.mainLayout.nowPlayingBottomBar.songTitle.isSelected = true
+        binding.mainLayout.nowPlayingBottomBar.songArtist.isSelected = true
+        viewModel.isSongPlaying.observeForever(songObserver)
     }
 
     override fun onResume() {
@@ -233,6 +248,8 @@ class MainActivity : AppCompatActivity() {
             )
         }catch (e:Exception){
         }
+
+        BottomBarUtils.bottomBarSetup(this, binding.mainLayout.nowPlayingBottomBar)
     }
 
     override fun onDestroy() {
@@ -241,6 +258,7 @@ class MainActivity : AppCompatActivity() {
             mLocalBroadcastManager?.unregisterReceiver(mBroadcastReceiver)
             SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
             song!!.unregister()
+            viewModel.isSongPlaying.removeObserver(songObserver)
         } catch (e: Exception) {
         }
 

@@ -61,16 +61,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
             if (!it.isNullOrEmpty())
                 setView(it as ArrayList<Songs>)
         })
-        binding!!.nowPlayingBottomBarMain.songArtist.isSelected = true
-        binding!!.nowPlayingBottomBarMain.songTitle.isSelected = true
         return binding!!.root
-    }
-
-    /* It is used to do the final initialization once the other things are in place*/
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
-        binding!!.nowPlayingBottomBarMain)
     }
 
 

@@ -68,24 +68,7 @@ class FavoriteFragment : Fragment() {
         favoriteContent = EchoDatabase(myActivity)
         binding = FragmentFavoriteBinding.inflate(layoutInflater)
         MainActivity.Statified.settingsOn = true
-        binding.nowPlayingBottomBar.songTitle.isSelected = true
-        binding.nowPlayingBottomBar.songArtist.isSelected = true
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-        viewModel.isSongPlaying.observe(viewLifecycleOwner) {
-            if (it)
-                binding.nowPlayingBottomBar.playPause.setImageDrawable(
-                    requireContext().resources.getDrawable(
-                        R.drawable.pause_icon
-                    )
-                )
-            else
-                binding.nowPlayingBottomBar.playPause.setImageDrawable(
-                    requireContext().resources.getDrawable(
-                        R.drawable.play_icon
-                    )
-                )
-        }
-
         return binding.root
     }
 
@@ -102,8 +85,6 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getFavorites()
-        BottomBarUtils.bottomBarSetup(myActivity!!,main!!,requireFragmentManager(),
-        binding.nowPlayingBottomBar)
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

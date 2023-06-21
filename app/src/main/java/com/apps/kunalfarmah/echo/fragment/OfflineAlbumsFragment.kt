@@ -72,16 +72,11 @@ class OfflineAlbumsFragment : Fragment() {
             binding!!.Albums.adapter = mAdapter
             binding!!.Albums.scrollToPosition(postion!!)
         })
-        binding!!.nowPlayingBottomBarMain.songArtist.isSelected = true
-        binding!!.nowPlayingBottomBarMain.songTitle.isSelected = true
         return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        BottomBarUtils.bottomBarSetup(requireActivity(),main!!,requireFragmentManager(),
-            binding!!.nowPlayingBottomBarMain)
     }
 
 }

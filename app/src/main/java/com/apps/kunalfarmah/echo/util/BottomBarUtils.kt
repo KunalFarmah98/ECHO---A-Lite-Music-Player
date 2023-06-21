@@ -29,9 +29,8 @@ import java.lang.Exception
 object BottomBarUtils {
     var bottomBarBinding: BottomBarBinding  ?= null
 
-
-    fun bottomBarSetup(activity: Activity, main: MainActivity, fragmentManager: FragmentManager, bottomBarBinding: BottomBarBinding) {
-        bottomBarClickHandler(activity, main, fragmentManager, bottomBarBinding)
+    fun bottomBarSetup(activity: MainActivity, bottomBarBinding: BottomBarBinding) {
+        bottomBarClickHandler(activity, bottomBarBinding)
         this.bottomBarBinding = bottomBarBinding
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
@@ -92,9 +91,7 @@ object BottomBarUtils {
     }
 
     private fun bottomBarClickHandler(
-        myActivity: Activity,
-        main: MainActivity,
-        fragmentManager: FragmentManager,
+        myActivity: MainActivity,
         bottomBarBinding: BottomBarBinding
     ) {
 
@@ -132,7 +129,7 @@ object BottomBarUtils {
             } else {
                 MainScreenAdapter.Statified.stopPlayingCalled = true
                 bottomBarBinding.next.visibility = View.VISIBLE
-                if (!main.getnotify_val()) {
+                if (!myActivity.getnotify_val()) {
                     var trackPosition =
                         MediaUtils.getCurrentPosition()
                     try {
@@ -157,7 +154,7 @@ object BottomBarUtils {
                     }
                     SongPlayingFragment.Staticated.updateButton("play")
 
-                } else if (main.getnotify_val()) {
+                } else if (myActivity.getnotify_val()) {
 
 
                     /*If the music was already paused and we then click on the button

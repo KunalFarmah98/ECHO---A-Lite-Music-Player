@@ -9,16 +9,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/now_playing_bottom_bar"
         android:background="@color/colorPrimary"
-        android:clickable="true">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-
-    <include android:id="@+id/now_playing_bottom_bar"
-        layout="@layout/bottom_bar"/>
-
+        android:clickable="true"/>
 
 
     <TextView

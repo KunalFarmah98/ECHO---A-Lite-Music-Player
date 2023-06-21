@@ -59,8 +59,6 @@ class MainScreenFragment : Fragment() {
         binding = FragmentMainScreenBinding.inflate(layoutInflater)
         main = MainActivity()
         activity?.title = "All Songs"
-        binding.nowPlayingBottomBarMain.songTitle.isSelected = true
-        binding.nowPlayingBottomBarMain.songArtist.isSelected = true
         
         MainActivity.Statified.MainorFavOn = true
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
@@ -75,17 +73,6 @@ class MainScreenFragment : Fragment() {
             songsList = viewModel.songsList.value
             setView()
         })
-
-        viewModel.isSongPlaying.observeForever {
-            if (it) {
-                binding.nowPlayingBottomBarMain.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.pause_icon))
-                binding.nowPlayingBottomBarMain.next.visibility = View.VISIBLE
-            }
-            else {
-                binding.nowPlayingBottomBarMain.playPause.setImageDrawable(requireContext().resources.getDrawable(R.drawable.play_icon))
-                binding.nowPlayingBottomBarMain.next.visibility = View.GONE
-            }
-        }
 
         binding.help.text = (Html.fromHtml("<u>Need Help?</u>"))
         binding.help.setOnClickListener {
@@ -105,15 +92,6 @@ class MainScreenFragment : Fragment() {
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         myActivity = activity
-    }
-
-    /* It is used to do the final initialization once the other things are in place*/
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        /*The variable songsList() is used to get store the arrayList returned by the function getSongsFromPhone()*/
-
-        BottomBarUtils.bottomBarSetup(myActivity!!,main!!,requireFragmentManager(),binding.nowPlayingBottomBarMain)
-
     }
 
     fun setView() {

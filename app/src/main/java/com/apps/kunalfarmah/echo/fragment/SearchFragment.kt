@@ -35,8 +35,6 @@ class SearchFragment : Fragment() {
         activity?.title = "Search"
         binding.recyclerView.visibility = View.GONE
         binding.emptyView.visibility = View.VISIBLE
-        BottomBarUtils.bottomBarSetup(requireActivity(),MainActivity(),parentFragmentManager,
-                binding.nowPlayingBottomBarMain)
 
         searchAdapter = SearchAdapter(MediaUtils.allSongsList, context)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)

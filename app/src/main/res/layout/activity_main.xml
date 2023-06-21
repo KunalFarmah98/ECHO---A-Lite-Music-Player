@@ -29,6 +29,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <include
+            android:id="@+id/main_layout"
             layout="@layout/main_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -94,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/header"
-            android:background="@color/colorPrimary"></androidx.recyclerview.widget.RecyclerView>
+            android:background="@color/colorPrimary"/>
 
     </RelativeLayout>
 
