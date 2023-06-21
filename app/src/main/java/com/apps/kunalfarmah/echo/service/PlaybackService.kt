@@ -28,6 +28,10 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
+
+    companion object {
+        var mInstance: PlaybackService ?= null
+    }
     private var mediaSession: MediaSession? = null
     private var customLayout = listOf<CommandButton>()
 
@@ -65,6 +69,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     // Create your Player and MediaSession in the onCreate lifecycle event
     override fun onCreate() {
         Toast.makeText(this, "PlayBackService Running", Toast.LENGTH_SHORT).show()
+        mInstance = this
         this.setMediaNotificationProvider(EchoNotificationProvider(this))
         val openIntent = Intent(this, MainActivity::class.java)
         val pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, PendingIntent.FLAG_IMMUTABLE)
@@ -91,6 +96,16 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         return mediaSession
     }
 
+    fun setCustomLayoutForShuffle(isShuffle: Boolean?){
+        mediaPlayer.shuffleModeEnabled = (isShuffle == true)
+        customLayout = if (isShuffle == true) {
+            listOf(customCommands[1], customCommands[2])
+        } else {
+            listOf(customCommands[0], customCommands[2])
+        }
+        mediaSession?.setCustomLayout(customLayout)
+    }
+
     override fun onDestroy() {
         mediaSession?.run {
             player.release()
@@ -110,18 +125,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         customCommands.forEach { commandButton ->
             // Add custom command to available session commands.
             commandButton.sessionCommand?.let { availableSessionCommands.add(it) }
-        }
-        AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key.equals(Constants.SHUFFLE)) {
-                val state = sharedPreferences?.getBoolean(key, false)
-                session.player.shuffleModeEnabled = (state == true)
-                customLayout = if (state == true) {
-                    listOf(customCommands[1], customCommands[2])
-                } else {
-                    listOf(customCommands[0], customCommands[2])
-                }
-                mediaSession?.setCustomLayout(customLayout)
-            }
         }
         return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(),

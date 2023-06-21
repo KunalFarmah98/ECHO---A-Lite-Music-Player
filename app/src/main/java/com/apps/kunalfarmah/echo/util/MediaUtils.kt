@@ -39,7 +39,14 @@ object MediaUtils {
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
+
      init {
+          AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+               if (key.equals(Constants.SHUFFLE)) {
+                    val state = sharedPreferences?.getBoolean(key, false)
+                    PlaybackService.mInstance?.setCustomLayoutForShuffle(state)
+               }
+          }
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
