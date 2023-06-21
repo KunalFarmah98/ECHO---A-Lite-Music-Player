@@ -21,6 +21,7 @@ import com.apps.kunalfarmah.echo.provider.EchoNotificationProvider
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.EchoBitmapLoader
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.currSong
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.google.common.util.concurrent.Futures
@@ -74,7 +75,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
                 .setCallback(this)
                 .build()
 
-        customLayout = if(AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)){
+        customLayout = if(MediaUtils.isShuffle){
             listOf(customCommands[1],customCommands[2])
         }
         else{
@@ -113,6 +114,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key.equals(Constants.SHUFFLE)) {
                 val state = sharedPreferences?.getBoolean(key, false)
+                session.player.shuffleModeEnabled = (state == true)
                 customLayout = if (state == true) {
                     listOf(customCommands[1], customCommands[2])
                 } else {
@@ -135,14 +137,14 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     ): ListenableFuture<SessionResult> {
         if (ShuffleActions.CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_ON.name == customCommand.customAction) {
             // Enable shuffling.
-            session.player.shuffleModeEnabled = true
+//            session.player.shuffleModeEnabled = true
             SongPlayingFragment.Statified.shufflebutton.callOnClick()
             // Change the custom layout to contain the `Disable shuffling` command and send the updated custom layout to controllers.
             customLayout = listOf(customCommands[1], customCommands[2])
             session.setCustomLayout(customLayout)
         } else if (ShuffleActions.CUSTOM_COMMAND_TOGGLE_SHUFFLE_MODE_OFF.name == customCommand.customAction) {
             // Disable shuffling.
-            session.player.shuffleModeEnabled = false
+//            session.player.shuffleModeEnabled = false
             SongPlayingFragment.Statified.shufflebutton.callOnClick()
             // Change the custom layout to contain the `Enable shuffling` command and send the updated custom layout to controllers.
             customLayout = listOf(customCommands[0], customCommands[2])

@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     var song: SongPlayingFragment? = null
     var bottomNav: BottomNavigationView? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private var sharedPreferences:SharedPreferences ?= null
 
     private var fragments: SparseArray<Fragment> ?= null
 
@@ -114,8 +116,10 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        sharedPreferences = getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE)
         // loop should be off on app launch
-        getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE).edit().putBoolean(Constants.LOOP,false).apply()
+        sharedPreferences?.edit()?.putBoolean(Constants.LOOP,false)?.apply()
+        MediaUtils.isShuffle = sharedPreferences?.getBoolean(Constants.SHUFFLE, false)!!
         firebaseAnalytics = Firebase.analytics
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)

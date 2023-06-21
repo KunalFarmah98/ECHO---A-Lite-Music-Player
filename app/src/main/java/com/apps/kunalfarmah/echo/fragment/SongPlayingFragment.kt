@@ -27,7 +27,6 @@ import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.database.EchoDatabase
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.getAlbumart
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastShakeTime
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
@@ -413,7 +412,7 @@ class SongPlayingFragment : Fragment() {
             } else {
 
                 /*If loop was OFF then normally play the next song*/
-                playNext(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
+                playNext(MediaUtils.isShuffle)
             }
 
 
@@ -915,7 +914,7 @@ class SongPlayingFragment : Fragment() {
          *  getting the shared preferences for shuffle set by the song
          */
 
-        if (sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)) {
+        if (MediaUtils.isShuffle) {
             /*if shuffle was found activated, then we change the icon color and tun loop OFF*/
             shufflebutton.setBackgroundResource(R.drawable.shuffle_icon)
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
@@ -929,6 +928,7 @@ class SongPlayingFragment : Fragment() {
             /*If loop was activated we change the icon color and shuffle is turned OFF */
             loopbutton?.setBackgroundResource(R.drawable.loop_icon)
             sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+            MediaUtils.isShuffle = false
             shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
         } else {
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
@@ -1042,10 +1042,10 @@ class SongPlayingFragment : Fragment() {
 
         shufflebutton.setOnClickListener {
 
-            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             // turning off shuffle
-            if (isShuffle) {
+            if (MediaUtils.isShuffle) {
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+                MediaUtils.isShuffle = false
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
@@ -1053,13 +1053,14 @@ class SongPlayingFragment : Fragment() {
             // turning on shuffle, repeat must be disabled now
             else {
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
+                MediaUtils.isShuffle = true
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
             }
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                MediaUtils.mediaPlayer.shuffleModeEnabled = !isShuffle
+                mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
             }
 
         }
@@ -1069,16 +1070,14 @@ class SongPlayingFragment : Fragment() {
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             play = true
             stopPlayingCalled = true
-            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-            playNext(isShuffle)
+            playNext(MediaUtils.isShuffle)
         }
 
 
 
         previousbutton?.setOnClickListener {
-            var isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
             /*We set the player to be playing by setting isPlaying to be true*/
             playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             play = true
@@ -1086,7 +1085,7 @@ class SongPlayingFragment : Fragment() {
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
             /*After all of the above is done we then play the previous song using the playPrevious() function*/
-            playPrevious(isShuffle)
+            playPrevious(MediaUtils.isShuffle)
         }
 
 
@@ -1098,11 +1097,13 @@ class SongPlayingFragment : Fragment() {
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                 shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+                MediaUtils.isShuffle = false
             } else {
                 loopbutton?.setBackgroundResource(R.drawable.loop_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, true).apply()
                 shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
+                MediaUtils.isShuffle = false
             }
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                 MediaUtils.mediaPlayer.repeatMode = if(isRepeat) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
@@ -1185,7 +1186,6 @@ class SongPlayingFragment : Fragment() {
 
                     /*If the accel was greater than 12 we change the song, given the fact our shake to change was active*/
                     val isAllowed = sharedPreferences!!.getBoolean(Constants.SHAKE_TO_CHANGE, false)
-                    val isShuffle = sharedPreferences!!.getBoolean(Constants.SHUFFLE, false)
 
                     mLastShakeTime = curTime
 
@@ -1193,7 +1193,7 @@ class SongPlayingFragment : Fragment() {
                         return
 
                     if (isAllowed)
-                        playNext(isShuffle)
+                        playNext(MediaUtils.isShuffle)
                 }
             }
 
@@ -1202,12 +1202,12 @@ class SongPlayingFragment : Fragment() {
 
 
     fun previous() {
-        playPrevious(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
+        playPrevious(MediaUtils.isShuffle)
     }
 
 
     fun next() {
-        playNext(sharedPreferences!!.getBoolean(Constants.SHUFFLE, false))
+        playNext(MediaUtils.isShuffle)
     }
 
 

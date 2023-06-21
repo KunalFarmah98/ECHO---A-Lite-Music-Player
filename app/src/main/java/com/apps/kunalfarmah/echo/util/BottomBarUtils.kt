@@ -181,12 +181,8 @@ object BottomBarUtils {
                 }
             }
         }
-        val shuffle = myActivity.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)
-
-        val isshuffled = shuffle!!.getBoolean(Constants.SHUFFLE, false)
-
         bottomBarBinding.next.setOnClickListener {
-            SongPlayingFragment.playNext(isshuffled)
+            SongPlayingFragment.playNext(MediaUtils.isShuffle)
             bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
         }
     }

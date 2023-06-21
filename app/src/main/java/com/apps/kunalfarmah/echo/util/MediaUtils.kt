@@ -36,6 +36,7 @@ object MediaUtils {
      var isAlbumPlaying = false
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
+     var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
      init {
           var audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
@@ -123,7 +124,7 @@ object MediaUtils {
                     super.onPlayerError(error)
                }
           })
-          mediaPlayer.shuffleModeEnabled = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
+          mediaPlayer.shuffleModeEnabled = isShuffle
      }
 
      fun updateCurrentSongIndex() {
