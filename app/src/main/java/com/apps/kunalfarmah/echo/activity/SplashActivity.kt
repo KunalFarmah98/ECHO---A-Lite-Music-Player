@@ -24,7 +24,6 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getAllSongs()
         setContentView(R.layout.activity_splash)
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -124,6 +123,7 @@ class SplashActivity : AppCompatActivity() {
 
 
     fun DisplayActivity() {
+        viewModel.getAllSongs()
 
         // observe song list, if it has songs, go ahead
         viewModel.songsList.observe(this, {
