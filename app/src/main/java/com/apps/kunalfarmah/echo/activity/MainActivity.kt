@@ -1,21 +1,16 @@
 package com.apps.kunalfarmah.echo.activity
 
 import android.app.NotificationManager
-
-import android.os.Bundle
-import com.apps.kunalfarmah.echo.adapter.NavigationDrawerAdapter
-
-import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
-import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
+import android.os.Bundle
 import android.util.SparseArray
 import android.view.View
 import android.widget.Toast
@@ -32,19 +27,20 @@ import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.apps.kunalfarmah.echo.util.Constants
-
-
+import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity.Statified.notify
+import com.apps.kunalfarmah.echo.adapter.NavigationDrawerAdapter
 import com.apps.kunalfarmah.echo.databinding.ActivityMainBinding
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
+import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 import com.apps.kunalfarmah.echo.fragment.SearchFragment
-
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
+import com.apps.kunalfarmah.echo.util.MediaUtils.currInd
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -76,6 +72,9 @@ class MainActivity : AppCompatActivity() {
                     if (mediaPlayer != null) {
                         mediaPlayer.stop()
                         //mediaPlayer.release()
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU){
+                            currInd = -1
+                        }
                     }
                 }catch (e:Exception){}
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)

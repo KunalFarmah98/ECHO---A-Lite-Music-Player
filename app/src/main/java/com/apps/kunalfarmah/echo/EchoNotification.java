@@ -293,7 +293,7 @@ public class EchoNotification extends Service {
                     MediaUtils.INSTANCE.getMediaPlayer().stop();
                     MediaUtils.INSTANCE.getMediaPlayer().release();
                     MediaUtils.INSTANCE.setCurrSong(null);
-                    MediaUtils.INSTANCE.setSongsList(null);
+                    MediaUtils.INSTANCE.setCurrInd(-1);
                     main.setNotify_val(false);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if(act!=null)
@@ -685,7 +685,6 @@ public class EchoNotification extends Service {
 
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
-        BottomBarUtils.INSTANCE.updatePlayPause();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S)
             buildMediaNotification();
         else

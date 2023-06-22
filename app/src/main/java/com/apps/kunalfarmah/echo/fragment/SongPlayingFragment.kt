@@ -76,66 +76,14 @@ class SongPlayingFragment : Fragment() {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-            BottomBarUtils.updatePlayPause()
-
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                try{
-                    mediaPlayer.prepare()
-                }
-                catch (ignored: java.lang.Exception){}
-                MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                MediaUtils.mediaPlayer.seekToNextMediaItem()
-                return
-            }
-
-            /*Let this one sit for a while, We'll explain this after the next section where we will be teaching to add the next and previous functionality*/
-            if (!shuffle) {
-                currentPosition += 1
-
-            } else {
-                var randomObject =
-                    Random()                                                              // initialising a random object of the random class
-                var randomPosition =
-                    randomObject.nextInt(fetchSongs?.size?.plus(1) as Int)                // setting range of random to size+1
-                currentPosition = randomPosition
-            }
-            if (currentPosition == fetchSongs?.size) {    // if the currentposition exceeds the size, start over
-                currentPosition = 0
-            }
-            var nextSong = fetchSongs?.get(currentPosition)
-            currentSongHelper.songpath = nextSong?.songData
-            currentSongHelper.songTitle = nextSong?.songTitle
-            currentSongHelper.songArtist = nextSong?.artist
-            currentSongHelper.songAlbum = nextSong?.songAlbum
-            currentSongHelper.album = nextSong?.album
-            currentSongHelper.songId = nextSong?.songID as Long
-
-            updateViews(
-                currentSongHelper.songTitle as String,
-                currentSongHelper.songArtist as String
-            )
-
-//            mediaPlayer.release()   // resetting the media player once a song completes or next is clicked
+            //BottomBarUtils.updatePlayPause()
 
             try {
-            mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentSongHelper.songpath)),true)
-            mediaPlayer.prepare()
-//            mediaPlayer.play()
-//            processInformation()
-            } catch (e: Exception) {
-                Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+                mediaPlayer.prepare()
+            } catch (ignored: java.lang.Exception) {
             }
-
-            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
-            } else {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
-            }
-
-            BottomBarUtils.setTitle()
-            BottomBarUtils.setArtist()
-            BottomBarUtils.setAlbumArt()
+            MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
+            MediaUtils.mediaPlayer.seekToNextMediaItem()
 
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 var play = Intent(myActivity, EchoNotification::class.java)
@@ -152,75 +100,13 @@ class SongPlayingFragment : Fragment() {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
             loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-            BottomBarUtils.updatePlayPause()
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                try{
-                    mediaPlayer.prepare()
-                }
-                catch (ignored: java.lang.Exception){}
-                mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
-                mediaPlayer.seekToPreviousMediaItem()
-                return
-            }
-
-            /*Decreasing the current position by 1 to get the position of the previous song*/
-            if (!shuffle) {
-                currentPosition -= 1
-
-            } else {
-                var n = fetchSongs?.size?.minus(1) as Int
-                if (n == 0) {
-                    currentPosition = 0
-                } else {
-                    var randomObject =
-                        Random()                                                              // initialising a random object of the random class
-                    var randomPosition =
-                        randomObject.nextInt(fetchSongs?.size?.minus(1) as Int)                // setting range of random to size+1
-                    currentPosition = randomPosition
-                }
-            }
-
-            /*If the current position becomes less than 1, we make it 0 as there is no index as -1*/
-            if (currentPosition == -1) {
-                currentPosition = 0
-            }
-
-            sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-
-            /*Similar to the playNext() function defined above*/
-            var nextSong = fetchSongs?.get(currentPosition)
-            currentSongHelper.songpath = nextSong?.songData
-            currentSongHelper.songTitle = nextSong?.songTitle
-            currentSongHelper.songArtist = nextSong?.artist
-            currentSongHelper.songAlbum = nextSong?.songAlbum
-            currentSongHelper.album = nextSong?.album
-            currentSongHelper.songId = nextSong?.songID as Long
-
-            updateViews(
-                currentSongHelper.songTitle as String,
-                currentSongHelper.songArtist as String
-            )
-
-//            mediaPlayer.release()
+            //BottomBarUtils.updatePlayPause()
             try {
-            mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentSongHelper.songpath)),true)
-            mediaPlayer.prepare()
-//            mediaPlayer.play()
-//            processInformation()
-            } catch (e: Exception) {
-                Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
+                mediaPlayer.prepare()
+            } catch (ignored: java.lang.Exception) {
             }
-
-
-            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
-            } else {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
-            }
-
-            BottomBarUtils.setTitle()
-            BottomBarUtils.setArtist()
-            BottomBarUtils.setAlbumArt()
+            mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
+            mediaPlayer.seekToPreviousMediaItem()
 
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 var play = Intent(myActivity, EchoNotification::class.java)
@@ -375,73 +261,6 @@ class SongPlayingFragment : Fragment() {
             return bm
         }
 
-
-        /*Function to handle the event where the song completes playing*/
-        fun onSongComplete() {
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                return
-            }
-            /*If loop was ON, then play the same song again*/
-            if (sharedPreferences?.getBoolean(Constants.LOOP, false) == true) {
-                var nextSong = fetchSongs?.get(currentPosition)
-                currentSongHelper.currentPosition = currentPosition
-                currentSongHelper.songpath = nextSong?.songData
-                currentSongHelper.songTitle = nextSong?.songTitle
-                currentSongHelper.songArtist = nextSong?.artist
-                currentSongHelper.songAlbum = nextSong?.songAlbum
-                currentSongHelper.album = nextSong?.album
-                currentSongHelper.songId = nextSong?.songID as Long
-
-                updateViews(
-                    currentSongHelper.songTitle as String,
-                    currentSongHelper.songArtist as String
-                )
-
-
-//                mediaPlayer.release()
-
-                try {
-                    mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(currentSongHelper.songpath)))
-                    mediaPlayer.prepare()
-//                    mediaPlayer.play()
-//                    processInformation()
-                } catch (e: Exception) {
-                    Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
-                }
-            } else {
-
-                /*If loop was OFF then normally play the next song*/
-                playNext(MediaUtils.isShuffle)
-            }
-
-
-            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
-            } else {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
-            }
-
-            // preventing next song from playing if activity was destroyed
-
-//            if (!MainScreenFragment.noNext) {
-//                previousSong()
-//                MainScreenFragment.noNext = true
-//            } else if (FavoriteFragment.noNext == false) {
-//                previousSong()
-//                FavoriteFragment.noNext = true
-//            }
-
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                var play = Intent(myActivity, EchoNotification::class.java)
-                play.action = Constants.ACTION.NEXT_UPDATE
-                play.putExtra("title", currentSongHelper.songTitle)
-                play.putExtra("artist", currentSongHelper.songArtist)
-                play.putExtra("album", currentSongHelper.songAlbum)
-                myActivity?.startService(play)
-            }
-        }
-
         @SuppressLint("UseCompatLoadingForDrawables")
         fun updateViews(songtitle: String?, songartist: String?, artwork: Bitmap? = null) {
 
@@ -506,6 +325,12 @@ class SongPlayingFragment : Fragment() {
                         }
                     }
                 }
+            }
+
+            if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+            } else {
+                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
             }
 
             BottomBarUtils.setTitle(songtitle)
@@ -819,32 +644,11 @@ class SongPlayingFragment : Fragment() {
         currentSongHelper.album = _album
         currentSongHelper.currentPosition = currentPosition
 
-/*        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        currentSongHelper.songAlbum.let {
-            if (it != null)
-                albumArt?.setImageBitmap(getAlbumart(it))
-            else
-                albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-        }
-        } else {
-            currentSongHelper.albumArt.let {
-                if (it != null) {
-                    albumArt?.setImageBitmap(it)
-                } else {
-                    albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-                }
-            }
-        }*/
-
         albumArt?.visibility = View.GONE
 
         // updating the textViews as soon as the song is changed and loaded
 
         updateViews(currentSongHelper.songTitle, currentSongHelper.songArtist, currentSongHelper.albumArt)
-
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//    }
 
 
         if (fromBottomBar) {
@@ -857,20 +661,13 @@ class SongPlayingFragment : Fragment() {
             }
             processInformation()
         } else {
-
             // set up media player for default
             myActivity?.title = "Now Playing"
-            //stopPlaying()
 
         try {
             //setting the data source for the media player with the help of uri
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                mediaPlayer.setMediaItems(MediaUtils.mediaItemsList, currentPosition, 0L)
-            else
-                mediaPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(path)), true)
+            mediaPlayer.setMediaItems(MediaUtils.mediaItemsList, currentPosition, 0L)
             mediaPlayer.prepare()
-
-
         } catch (e: Exception) {
             Toast.makeText(App.context,App.context.resources.getString(R.string.media_playback_failure), Toast.LENGTH_SHORT).show()
             if(activity!=null)
@@ -878,18 +675,7 @@ class SongPlayingFragment : Fragment() {
             return
         }
 
-
-//            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            // other app had stopped playing song now , so u can do u stuff now .
-
-
-//            }
-
-
         }
-
-        // precess all the information at the start of the song
-//        processInformation()
 
         clickHandler()
 
@@ -1059,9 +845,7 @@ class SongPlayingFragment : Fragment() {
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
             }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
-            }
+            mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
 
         }
 
@@ -1105,9 +889,8 @@ class SongPlayingFragment : Fragment() {
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
                 MediaUtils.isShuffle = false
             }
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                MediaUtils.mediaPlayer.repeatMode = if(isRepeat) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
-            }
+            MediaUtils.mediaPlayer.repeatMode = if(isRepeat) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+
         }
 
         /*Here we handle the click event on the play/pause button*/
@@ -1213,7 +996,6 @@ class SongPlayingFragment : Fragment() {
 
     fun playorpause(): Boolean {
         var play = false
-        BottomBarUtils.updatePlayPause()
         if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
             mediaPlayer.pause()
             play = false

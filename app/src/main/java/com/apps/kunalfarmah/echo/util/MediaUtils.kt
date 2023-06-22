@@ -65,16 +65,13 @@ object MediaUtils {
           mediaPlayer.addListener(object : Player.Listener {
                override fun onPlaybackStateChanged(state: Int) {
                     when (state) {
-                         Player.STATE_ENDED -> SongPlayingFragment.Staticated.onSongComplete()
                          Player.STATE_READY -> {
                               SongPlayingFragment.Staticated.processInformation()
                               updateCurrentSongIndex()
                               mediaPlayer.play()
-                              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                   val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
-                                   SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), getBitmap(mediaMetadata?.artworkData))
-                                   setCurrentSong(mediaMetadata)
-                              }
+                              val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
+                              SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), getBitmap(mediaMetadata?.artworkData))
+                              setCurrentSong(mediaMetadata)
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                                    var serviceIntent = Intent(App.context, EchoNotification::class.java)
 
@@ -96,21 +93,20 @@ object MediaUtils {
 
                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                     super.onMediaMetadataChanged(mediaMetadata)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                         SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-                         SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
-                         updateCurrentSongIndex()
-                         if(mediaMetadata.title == null && mediaMetadata.albumArtist == null && mediaMetadata.albumTitle == null){
-                              val index = mediaPlayer.currentMediaItemIndex
-                              val currSong = songsList[index]
-                              val metaData = MediaMetadata.Builder().setAlbumArtist(currSong.artist ?: "").setAlbumTitle(currSong.album ?:"").setTitle(currSong.songTitle ?: "").build()
-                              setCurrentSong(metaData)
-                              SongPlayingFragment.Staticated.updateViews(metaData.title.toString(), metaData.artist.toString(), null)
-                         }
-                         else if(mediaMetadata.title != null) {
-                              setCurrentSong(mediaMetadata)
-                              SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), getBitmap(mediaMetadata.artworkData))
-                         }
+                    SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
+                    SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                    updateCurrentSongIndex()
+                    if (mediaMetadata.title == null && mediaMetadata.albumArtist == null && mediaMetadata.albumTitle == null) {
+                         val index = mediaPlayer.currentMediaItemIndex
+                         val currSong = songsList[index]
+                         val metaData = MediaMetadata.Builder().setAlbumArtist(currSong.artist
+                                 ?: "").setAlbumTitle(currSong.album
+                                 ?: "").setTitle(currSong.songTitle ?: "").build()
+                         setCurrentSong(metaData)
+                         SongPlayingFragment.Staticated.updateViews(metaData.title.toString(), metaData.artist.toString(), null)
+                    } else if (mediaMetadata.title != null) {
+                         setCurrentSong(mediaMetadata)
+                         SongPlayingFragment.Staticated.updateViews(mediaMetadata.title.toString(), mediaMetadata.artist.toString(), getBitmap(mediaMetadata.artworkData))
                     }
                }
 
