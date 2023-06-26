@@ -85,7 +85,7 @@ class SongPlayingFragment : Fragment() {
             MediaUtils.mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
             MediaUtils.mediaPlayer.seekToNextMediaItem()
 
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 var play = Intent(myActivity, EchoNotification::class.java)
                 play.action = Constants.ACTION.NEXT_UPDATE
                 play.putExtra("title", currentSongHelper.songTitle)
@@ -108,7 +108,7 @@ class SongPlayingFragment : Fragment() {
             mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
             mediaPlayer.seekToPreviousMediaItem()
 
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 var play = Intent(myActivity, EchoNotification::class.java)
                 play.action = Constants.ACTION.PREV_UPDATE
                 play.putExtra("title", currentSongHelper.songTitle)
@@ -276,7 +276,7 @@ class SongPlayingFragment : Fragment() {
             Statified.songTitle?.text = songtitleupdted
             Statified.songArtist?.text = songartistupdted
 
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 currentSongHelper.songAlbum.let {
                     if (it != null) {
                         var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
@@ -464,7 +464,7 @@ class SongPlayingFragment : Fragment() {
                 inform = true
                 BottomBarUtils.updatePlayPause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     var play = Intent(context, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PLAY
                     activity?.startService(play)
@@ -481,7 +481,7 @@ class SongPlayingFragment : Fragment() {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     var play = Intent(context, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PLAY
                     activity?.startService(play)
@@ -536,7 +536,7 @@ class SongPlayingFragment : Fragment() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
                 if (fromuser && mediaPlayer != null) {
                     mediaPlayer.seekTo(progress.toLong())
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.STARTFOREGROUND_ACTION
                         play.putExtra("title", currentSongHelper.songTitle)
@@ -902,7 +902,7 @@ class SongPlayingFragment : Fragment() {
                 mediaPlayer.pause()
                 play = false
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     var play = Intent(context, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PLAY
                     activity?.startService(play)
@@ -919,7 +919,7 @@ class SongPlayingFragment : Fragment() {
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
                     playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     var play = Intent(activity, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PAUSE
                     activity?.startService(play)

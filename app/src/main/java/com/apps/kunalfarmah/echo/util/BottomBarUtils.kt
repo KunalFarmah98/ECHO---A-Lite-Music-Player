@@ -32,7 +32,7 @@ object BottomBarUtils {
     fun bottomBarSetup(activity: MainActivity, bottomBarBinding: BottomBarBinding) {
         bottomBarClickHandler(activity, bottomBarBinding)
         this.bottomBarBinding = bottomBarBinding
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
                             EchoNotification::class.java,
                             App.context
@@ -74,7 +74,7 @@ object BottomBarUtils {
             bottomBarBinding.songArtist.visibility = View.GONE
         else
             bottomBarBinding.songArtist.text = artist
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             setAlbumArt(currentSongHelper.songAlbum)
         }
         else{
@@ -120,7 +120,7 @@ object BottomBarUtils {
                 mediaPlayer.pause()
                 bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.play_icon))
                 bottomBarBinding.next.visibility = View.GONE
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     var play = Intent(App.context, EchoNotification::class.java)
                     play.action = Constants.ACTION.CHANGE_TO_PLAY
                     myActivity.startService(play)
@@ -141,7 +141,7 @@ object BottomBarUtils {
 
                     bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
                     bottomBarBinding.next.visibility = View.VISIBLE
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         var serviceIntent = Intent(myActivity, EchoNotification::class.java)
                         serviceIntent.putExtra("title", bottomBarBinding.songTitle.text.toString())
                         serviceIntent.putExtra("artist", bottomBarBinding.songArtist.text.toString())
@@ -170,7 +170,7 @@ object BottomBarUtils {
                     mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
                     bottomBarBinding.next.visibility = View.VISIBLE
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.CHANGE_TO_PAUSE
                         myActivity.startService(play)
@@ -288,7 +288,7 @@ object BottomBarUtils {
             bottomBarBinding?.songImg?.setImageBitmap(artwork)
             return
         }
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (null != bottomBarBinding?.songImg && null != currentSongHelper) {
                 if(currentSongHelper.songAlbum == null){
                     bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)

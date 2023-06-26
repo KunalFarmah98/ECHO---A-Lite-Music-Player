@@ -51,7 +51,7 @@ object MediaUtils {
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                   .build()
-          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+          if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
                controllerFuture.addListener(
                        {
@@ -72,7 +72,7 @@ object MediaUtils {
                               val mediaMetadata = mediaPlayer.currentMediaItem?.mediaMetadata
                               SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), getBitmap(mediaMetadata?.artworkData))
                               setCurrentSong(mediaMetadata)
-                              if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                              if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                                    var serviceIntent = Intent(App.context, EchoNotification::class.java)
 
                                    serviceIntent.putExtra("title", SongHelper.currentSongHelper.songTitle)
@@ -201,7 +201,7 @@ object MediaUtils {
      }
 
      fun getSongIndex(): Int {
-          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                if (currSong == null)
                     return -1
                return songsList?.indexOf(currSong)!!

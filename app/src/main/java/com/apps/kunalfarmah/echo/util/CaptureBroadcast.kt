@@ -36,7 +36,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                     wasPlaying=true
                     mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.CHANGE_TO_PLAY
                         myActivity?.startService(play)
@@ -55,7 +55,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                     wasPlaying=true
                     mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         var play = Intent(myActivity, EchoNotification::class.java)
                         play.action = Constants.ACTION.CHANGE_TO_PLAY
                         myActivity?.startService(play)
@@ -85,7 +85,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                                 var play = Intent(myActivity, EchoNotification::class.java)
                                 play.action = Constants.ACTION.CHANGE_TO_PLAY
                                 myActivity?.startService(play)
@@ -103,7 +103,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                             mediaPlayer.play()
                             wasPlaying=false
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                                 var play = Intent(myActivity, EchoNotification::class.java)
                                 play.action = Constants.ACTION.CHANGE_TO_PAUSE
                                 myActivity?.startService(play)
@@ -125,7 +125,7 @@ class CaptureBroadcast : BroadcastReceiver() {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                                 var play = Intent(myActivity, EchoNotification::class.java)
                                 play.action = Constants.ACTION.CHANGE_TO_PLAY
                                 myActivity?.startService(play)
