@@ -132,8 +132,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences?.edit()?.putBoolean(Constants.LOOP,false)?.apply()
         MediaUtils.isShuffle = sharedPreferences?.getBoolean(Constants.SHUFFLE, false)!!
         firebaseAnalytics = Firebase.analytics
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         song = SongPlayingFragment()
         fragments = SparseArray(4)
@@ -157,7 +156,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val toggle = ActionBarDrawerToggle(this@MainActivity, Statified.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this@MainActivity, Statified.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         MainActivity.Statified.drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
 
