@@ -95,7 +95,6 @@ public class EchoNotification extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MediaUtils.INSTANCE.getMediaPlayer().release();
     }
 
     @Override
@@ -291,9 +290,8 @@ public class EchoNotification extends Service {
 
                 try {
                     MediaUtils.INSTANCE.getMediaPlayer().stop();
-                    MediaUtils.INSTANCE.getMediaPlayer().release();
+                    //MediaUtils.INSTANCE.getMediaPlayer().release();
                     MediaUtils.INSTANCE.setCurrSong(null);
-                    MediaUtils.INSTANCE.setCurrInd(-1);
                     main.setNotify_val(false);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if(act!=null)

@@ -32,21 +32,9 @@ object BottomBarUtils {
     fun bottomBarSetup(activity: MainActivity, bottomBarBinding: BottomBarBinding) {
         bottomBarClickHandler(activity, bottomBarBinding)
         this.bottomBarBinding = bottomBarBinding
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            if (!MediaUtils.isMediaPlayerPlaying() && !isMyServiceRunning(
-                            EchoNotification::class.java,
-                            App.context
-                    )
-            ) {
-                bottomBarBinding.bottomBar.visibility = View.GONE
-                return
-            }
-        }
-        else{
-            if(!mediaPlayer.isPlaying && mediaPlayer.mediaItemCount == 0){
-                bottomBarBinding.bottomBar.visibility = View.GONE
-                return
-            }
+        if(!mediaPlayer.isPlaying && mediaPlayer.mediaItemCount == 0) {
+            bottomBarBinding.bottomBar.visibility = View.GONE
+            return
         }
         bottomBarBinding.bottomBar.visibility = View.VISIBLE
         if (MediaUtils.isMediaPlayerPlaying()) {
