@@ -116,7 +116,7 @@ object MediaUtils {
                          return
                     BottomBarUtils.updatePlayPause()
                     if (mediaPlayer.isPlaying) {
-                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                               var play = Intent(App.context, EchoNotification::class.java)
                               play.action = Constants.ACTION.CHANGE_TO_PAUSE
                               App.context?.startService(play)
@@ -124,7 +124,7 @@ object MediaUtils {
                          SongPlayingFragment.Staticated.updateButton("play")
                          SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
                     } else {
-                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                               var play = Intent(App.context, EchoNotification::class.java)
                               play.action = Constants.ACTION.CHANGE_TO_PLAY
                               App.context?.startService(play)

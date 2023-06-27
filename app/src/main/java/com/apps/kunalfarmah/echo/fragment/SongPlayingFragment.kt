@@ -536,14 +536,6 @@ class SongPlayingFragment : Fragment() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromuser: Boolean) {
                 if (fromuser && mediaPlayer != null) {
                     mediaPlayer.seekTo(progress.toLong())
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                        var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.STARTFOREGROUND_ACTION
-                        play.putExtra("title", currentSongHelper.songTitle)
-                        play.putExtra("artist", currentSongHelper.songArtist)
-                        play.putExtra("album", currentSongHelper.songAlbum)
-                        myActivity?.startService(play)
-                    }
                 }
 
             }
