@@ -57,7 +57,7 @@ class SettingsFragment : Fragment() {
         separator=view?.findViewById(R.id.v2)
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             aditional?.visibility=View.VISIBLE
             separator?.visibility=View.VISIBLE
         }
