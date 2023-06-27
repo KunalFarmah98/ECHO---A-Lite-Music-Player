@@ -464,11 +464,11 @@ class SongPlayingFragment : Fragment() {
                 inform = true
                 BottomBarUtils.updatePlayPause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    var play = Intent(context, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PLAY
-                    activity?.startService(play)
-                }
+//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//                    var play = Intent(context, EchoNotification::class.java)
+//                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                    activity?.startService(play)
+//                }
 
                 Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
             }
@@ -481,11 +481,11 @@ class SongPlayingFragment : Fragment() {
             if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer?.pause()
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    var play = Intent(context, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PLAY
-                    activity?.startService(play)
-                }
+//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//                    var play = Intent(context, EchoNotification::class.java)
+//                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                    activity?.startService(play)
+//                }
             }
         }
     }
@@ -902,11 +902,11 @@ class SongPlayingFragment : Fragment() {
                 mediaPlayer.pause()
                 play = false
                 playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    var play = Intent(context, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PLAY
-                    activity?.startService(play)
-                }
+//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//                    var play = Intent(context, EchoNotification::class.java)
+//                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                    activity?.startService(play)
+//                }
 
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
@@ -919,11 +919,11 @@ class SongPlayingFragment : Fragment() {
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
                     playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    var play = Intent(activity, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                    activity?.startService(play)
-                }
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//                    var play = Intent(activity, EchoNotification::class.java)
+//                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
+//                    activity?.startService(play)
+//                }
             }
         }
     }
