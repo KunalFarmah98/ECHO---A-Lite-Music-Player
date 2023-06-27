@@ -100,7 +100,7 @@ class EchoNotificationProvider(context: Context): DefaultMediaNotificationProvid
                 .setDisplayName("close")
                 .build()
 
-        var mediaButtonsList = listOf(
+        val mediaButtonsList = listOf(
                 if(MediaUtils.isShuffle)
                     shuffleOffCommandButton
                 else
