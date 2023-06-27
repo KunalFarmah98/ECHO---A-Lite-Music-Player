@@ -110,9 +110,12 @@ object MediaUtils {
                     }
                }
 
-               override fun onIsPlayingChanged(isPlaying: Boolean) {
+               override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    super.onPlayWhenReadyChanged(playWhenReady, reason)
+                    if(reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM)
+                         return
                     BottomBarUtils.updatePlayPause()
-                    if (isPlaying) {
+                    if (mediaPlayer.isPlaying) {
                          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                               var play = Intent(App.context, EchoNotification::class.java)
                               play.action = Constants.ACTION.CHANGE_TO_PAUSE
@@ -129,7 +132,6 @@ object MediaUtils {
                          SongPlayingFragment.Staticated.updateButton("pause")
                          SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
                     }
-                    super.onIsPlayingChanged(isPlaying)
                }
 
                override fun onPlayerError(error: PlaybackException) {
