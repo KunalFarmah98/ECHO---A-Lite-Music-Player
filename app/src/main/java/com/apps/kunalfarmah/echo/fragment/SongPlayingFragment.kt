@@ -830,16 +830,16 @@ class SongPlayingFragment : Fragment() {
 
             // turning off shuffle
             if (MediaUtils.isShuffle) {
-                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
                 MediaUtils.isShuffle = false
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
             }
             // turning on shuffle, repeat must be disabled now
             else {
-                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
                 MediaUtils.isShuffle = true
+                sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
                 shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
                 loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
