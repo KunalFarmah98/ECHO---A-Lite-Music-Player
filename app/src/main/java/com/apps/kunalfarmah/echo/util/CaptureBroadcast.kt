@@ -36,11 +36,11 @@ class CaptureBroadcast : BroadcastReceiver() {
                     wasPlaying=true
                     mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.CHANGE_TO_PLAY
-                        myActivity?.startService(play)
-                    }
+//                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                        var play = Intent(myActivity, EchoNotification::class.java)
+//                        play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                        myActivity?.startService(play)
+//                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -55,11 +55,11 @@ class CaptureBroadcast : BroadcastReceiver() {
                     wasPlaying=true
                     mediaPlayer.pause()
                     SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.CHANGE_TO_PLAY
-                        myActivity?.startService(play)
-                    }
+//                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                        var play = Intent(myActivity, EchoNotification::class.java)
+//                        play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                        myActivity?.startService(play)
+//                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -85,11 +85,11 @@ class CaptureBroadcast : BroadcastReceiver() {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                                var play = Intent(myActivity, EchoNotification::class.java)
-                                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                                myActivity?.startService(play)
-                            }
+//                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                                var play = Intent(myActivity, EchoNotification::class.java)
+//                                play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                                myActivity?.startService(play)
+//                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -103,11 +103,11 @@ class CaptureBroadcast : BroadcastReceiver() {
                             mediaPlayer.play()
                             wasPlaying=false
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                                var play = Intent(myActivity, EchoNotification::class.java)
-                                play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                                myActivity?.startService(play)
-                            }
+//                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                                var play = Intent(myActivity, EchoNotification::class.java)
+//                                play.action = Constants.ACTION.CHANGE_TO_PAUSE
+//                                myActivity?.startService(play)
+//                            }
                         }
                         else if(SongPlayingFragment.Statified.inform){
                             SongPlayingFragment.Statified.inform=false
@@ -125,11 +125,11 @@ class CaptureBroadcast : BroadcastReceiver() {
                             wasPlaying=true
                             mediaPlayer.pause()
                             SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                                var play = Intent(myActivity, EchoNotification::class.java)
-                                play.action = Constants.ACTION.CHANGE_TO_PLAY
-                                myActivity?.startService(play)
-                            }
+//                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                                var play = Intent(myActivity, EchoNotification::class.java)
+//                                play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                                myActivity?.startService(play)
+//                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

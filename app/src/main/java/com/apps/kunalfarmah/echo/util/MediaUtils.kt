@@ -110,18 +110,26 @@ object MediaUtils {
                     }
                }
 
-               override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+               override fun onIsPlayingChanged(isPlaying: Boolean) {
                     BottomBarUtils.updatePlayPause()
-                    if(reason == Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST || reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY || reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS) {
-                         if (playWhenReady) {
-                              SongPlayingFragment.Staticated.updateButton("play")
-                              SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
-                         } else {
-                              SongPlayingFragment.Staticated.updateButton("pause")
-                              SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                    if (isPlaying) {
+                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                              var play = Intent(App.context, EchoNotification::class.java)
+                              play.action = Constants.ACTION.CHANGE_TO_PAUSE
+                              App.context?.startService(play)
                          }
+                         SongPlayingFragment.Staticated.updateButton("play")
+                         SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                    } else {
+                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                              var play = Intent(App.context, EchoNotification::class.java)
+                              play.action = Constants.ACTION.CHANGE_TO_PLAY
+                              App.context?.startService(play)
+                         }
+                         SongPlayingFragment.Staticated.updateButton("pause")
+                         SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
                     }
-                    super.onPlayWhenReadyChanged(playWhenReady, reason)
+                    super.onIsPlayingChanged(isPlaying)
                }
 
                override fun onPlayerError(error: PlaybackException) {

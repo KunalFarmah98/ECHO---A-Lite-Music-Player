@@ -120,11 +120,11 @@ object BottomBarUtils {
                 mediaPlayer.pause()
                 bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.play_icon))
                 bottomBarBinding.next.visibility = View.GONE
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                    var play = Intent(App.context, EchoNotification::class.java)
-                    play.action = Constants.ACTION.CHANGE_TO_PLAY
-                    myActivity.startService(play)
-                }
+//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                    var play = Intent(App.context, EchoNotification::class.java)
+//                    play.action = Constants.ACTION.CHANGE_TO_PLAY
+//                    myActivity.startService(play)
+//                }
                 SongPlayingFragment.Staticated.updateButton("pause")
             } else {
                 MainScreenAdapter.Statified.stopPlayingCalled = true
@@ -148,9 +148,9 @@ object BottomBarUtils {
                         serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
                         myActivity.startService(serviceIntent)
 
-                        var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                        myActivity.startService(play)
+//                        var play = Intent(myActivity, EchoNotification::class.java)
+//                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
+//                        myActivity.startService(play)
                     }
                     SongPlayingFragment.Staticated.updateButton("play")
 
@@ -170,12 +170,12 @@ object BottomBarUtils {
                     mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
                     bottomBarBinding.next.visibility = View.VISIBLE
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        var play = Intent(myActivity, EchoNotification::class.java)
-                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                        myActivity.startService(play)
-                        SongPlayingFragment.Staticated.updateButton("play")
-                    }
+//                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+//                        var play = Intent(myActivity, EchoNotification::class.java)
+//                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
+//                        myActivity.startService(play)
+//                        SongPlayingFragment.Staticated.updateButton("play")
+//                    }
                 }
             }
         }
