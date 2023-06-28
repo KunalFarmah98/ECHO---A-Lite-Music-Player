@@ -100,7 +100,7 @@ class EchoNotificationProvider(context: Context): DefaultMediaNotificationProvid
                 .setDisplayName("close")
                 .build()
 
-        val mediaButtonsList = listOf(
+        val mediaButtonsList = mutableListOf(
                 if(MediaUtils.isShuffle)
                     shuffleOffCommandButton
                 else
@@ -110,6 +110,13 @@ class EchoNotificationProvider(context: Context): DefaultMediaNotificationProvid
                 skipNextCommandButton,
                 closeCommandButton
         )
+
+        if(!mediaSession.player.hasNextMediaItem()){
+            mediaButtonsList.removeAt(3)
+        }
+        if(!mediaSession.player.hasPreviousMediaItem()){
+            mediaButtonsList.removeAt(1)
+        }
 
         return super.addNotificationActions(mediaSession, ImmutableList.copyOf(mediaButtonsList), builder, actionFactory)
     }
