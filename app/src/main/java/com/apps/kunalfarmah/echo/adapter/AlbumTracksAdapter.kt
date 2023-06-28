@@ -10,14 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.apps.kunalfarmah.echo.util.Constants
-import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
+import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter.Statified.stopPlayingCalled
 import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.util.AppUtil
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide

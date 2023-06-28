@@ -19,8 +19,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
-
-import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -29,15 +27,11 @@ import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.media3.ui.PlayerNotificationManager;
 
 import com.apps.kunalfarmah.echo.activity.MainActivity;
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
-import com.apps.kunalfarmah.echo.adapter.PlayerDescriptionAdapter;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
-import com.apps.kunalfarmah.echo.util.BottomBarUtils;
 import com.apps.kunalfarmah.echo.util.Constants;
 import com.apps.kunalfarmah.echo.util.MediaUtils;
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;

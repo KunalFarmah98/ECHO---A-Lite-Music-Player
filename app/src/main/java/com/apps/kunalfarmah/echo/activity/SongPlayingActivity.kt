@@ -1,9 +1,9 @@
 package com.apps.kunalfarmah.echo.activity
 
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.databinding.ActivitySongPlayingBinding
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment

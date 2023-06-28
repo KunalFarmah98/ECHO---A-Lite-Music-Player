@@ -3,13 +3,15 @@ package com.apps.kunalfarmah.echo.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class Wizard : Fragment() {
 

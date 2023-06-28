@@ -1,12 +1,11 @@
 package com.apps.kunalfarmah.echo.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.fragment.HelpFragment
 import com.apps.kunalfarmah.echo.fragment.SettingsFragment
 
 class SettingsActivity : AppCompatActivity() {

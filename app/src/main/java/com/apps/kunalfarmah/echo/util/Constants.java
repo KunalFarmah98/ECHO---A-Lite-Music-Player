@@ -1,7 +1,5 @@
 package com.apps.kunalfarmah.echo.util;
 
-import org.jetbrains.annotations.Nullable;
-
 public class Constants {
     public static final String WAS_MEDIA_PLAYING = "WAS_MEDIA_PLAYING";
 

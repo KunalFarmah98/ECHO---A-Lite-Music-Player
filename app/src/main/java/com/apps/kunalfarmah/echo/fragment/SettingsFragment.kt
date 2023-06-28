@@ -16,7 +16,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
-import com.apps.kunalfarmah.echo.activity.SettingsActivity
 import com.apps.kunalfarmah.echo.activity.WizardActivity
 import com.apps.kunalfarmah.echo.util.Constants
 

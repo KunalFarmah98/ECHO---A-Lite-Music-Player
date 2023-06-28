@@ -20,7 +20,6 @@ import android.view.*
 import android.widget.*
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.apps.kunalfarmah.echo.*
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity

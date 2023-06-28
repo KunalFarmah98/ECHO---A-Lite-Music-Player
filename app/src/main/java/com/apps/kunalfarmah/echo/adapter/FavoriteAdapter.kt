@@ -4,33 +4,20 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.apps.kunalfarmah.echo.util.Constants
-import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.databinding.RowCustomMainscreenAdapterBinding
 import com.apps.kunalfarmah.echo.model.Songs
-import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
-import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
-import java.io.FileDescriptor
-import java.lang.Exception
 import kotlin.math.max
 
 class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<FavoriteAdapter.MyViewHolder>() {

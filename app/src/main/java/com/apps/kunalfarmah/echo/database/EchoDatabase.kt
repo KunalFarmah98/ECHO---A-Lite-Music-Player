@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_ID
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM
+import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM_NAME
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_ARTIST
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_PATH
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_TITLE
 import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.TABLE_NAME
 import com.apps.kunalfarmah.echo.model.Songs
-import com.apps.kunalfarmah.echo.database.EchoDatabase.Staticated.COLUMN_SONG_ALBUM_NAME
 
 class EchoDatabase : SQLiteOpenHelper {
 

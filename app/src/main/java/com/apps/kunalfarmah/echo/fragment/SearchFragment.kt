@@ -10,10 +10,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.SearchAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentSearchBinding
-import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.MediaUtils
 
 

@@ -4,14 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
-import com.apps.kunalfarmah.echo.model.SongAlbum
-import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.database.CacheMapper
 import com.apps.kunalfarmah.echo.database.dao.EchoDao
+import com.apps.kunalfarmah.echo.model.SongAlbum
+import com.apps.kunalfarmah.echo.model.Songs
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlin.collections.ArrayList
 
 class SongsRepository
 constructor(

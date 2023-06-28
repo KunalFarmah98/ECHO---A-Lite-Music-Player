@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.databinding.GridItemBinding
 import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
+import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 

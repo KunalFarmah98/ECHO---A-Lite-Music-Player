@@ -19,7 +19,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -40,7 +39,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensor
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
-import com.apps.kunalfarmah.echo.util.MediaUtils.currInd
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView

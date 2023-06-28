@@ -2,9 +2,7 @@ package com.apps.kunalfarmah.echo
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.media.MediaPlayer
 import androidx.multidex.MultiDexApplication
-import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.HiltAndroidApp

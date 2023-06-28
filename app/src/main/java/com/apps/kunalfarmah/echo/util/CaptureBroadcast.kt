@@ -3,14 +3,11 @@ package com.apps.kunalfarmah.echo.util
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.telephony.TelephonyManager
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.wasPlaying
-import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 
 class CaptureBroadcast : BroadcastReceiver() {

@@ -5,24 +5,26 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Html
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.R
-import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentMainScreenBinding
-import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import java.util.Collections
 import kotlin.math.max
 
 

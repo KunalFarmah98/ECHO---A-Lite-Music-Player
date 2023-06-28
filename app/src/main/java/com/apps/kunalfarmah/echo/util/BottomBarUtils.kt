@@ -1,7 +1,6 @@
 package com.apps.kunalfarmah.echo.util
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.ContentUris
 import android.content.Context
@@ -11,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import androidx.annotation.Keep
-import androidx.fragment.app.FragmentManager
 import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.EchoNotification
 import com.apps.kunalfarmah.echo.R
@@ -23,7 +21,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.bumptech.glide.Glide
-import java.lang.Exception
 
 @Keep
 object BottomBarUtils {

@@ -3,20 +3,20 @@ package com.apps.kunalfarmah.echo.fragment
 import android.content.Context
 import android.os.Bundle
 import android.text.Html
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.apps.kunalfarmah.echo.*
+import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.OfflineAlbumsAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentAlbumsBinding
-
-import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
-import dagger.hilt.android.AndroidEntryPoint
 import com.apps.kunalfarmah.echo.model.SongAlbum
-import com.apps.kunalfarmah.echo.util.BottomBarUtils
+import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class OfflineAlbumsFragment : Fragment() {
