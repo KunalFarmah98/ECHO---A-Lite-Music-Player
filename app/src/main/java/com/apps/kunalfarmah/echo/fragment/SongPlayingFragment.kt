@@ -276,6 +276,8 @@ class SongPlayingFragment : Fragment() {
             Statified.songTitle?.text = songtitleupdted
             Statified.songArtist?.text = songartistupdted
 
+            setSeekButtonsControl()
+
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 currentSongHelper.songAlbum.let {
                     if (it != null) {
@@ -337,6 +339,28 @@ class SongPlayingFragment : Fragment() {
             BottomBarUtils.setArtist(songartist)
             BottomBarUtils.setAlbumArt(artwork)
 
+        }
+
+        fun setSeekButtonsControl(){
+            if(!mediaPlayer.hasNextMediaItem()){
+                nextbutton?.isEnabled = false
+                nextbutton?.alpha = 0.5f
+                BottomBarUtils.bottomBarBinding?.next?.visibility = View.GONE
+            }
+            else{
+                nextbutton?.isEnabled = true
+                nextbutton?.alpha = 1f
+                BottomBarUtils.bottomBarBinding?.next?.visibility = View.VISIBLE
+            }
+
+            if(!mediaPlayer.hasPreviousMediaItem()){
+                previousbutton?.isEnabled = false
+                previousbutton?.alpha = 0.5f
+            }
+            else{
+                previousbutton?.isEnabled = true
+                previousbutton?.alpha = 1f
+            }
         }
 
 

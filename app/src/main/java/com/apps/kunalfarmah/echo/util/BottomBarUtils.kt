@@ -76,6 +76,13 @@ object BottomBarUtils {
             }
         }
 
+        if(!mediaPlayer.hasNextMediaItem()){
+            BottomBarUtils.bottomBarBinding?.next?.visibility = View.GONE
+        }
+        else{
+            BottomBarUtils.bottomBarBinding?.next?.visibility = View.VISIBLE
+        }
+
     }
 
     private fun bottomBarClickHandler(
@@ -116,7 +123,8 @@ object BottomBarUtils {
                 SongPlayingFragment.Staticated.updateButton("pause")
             } else {
                 MainScreenAdapter.Statified.stopPlayingCalled = true
-                bottomBarBinding.next.visibility = View.VISIBLE
+                if(MediaUtils.mediaPlayer.hasNextMediaItem())
+                    bottomBarBinding.next.visibility = View.VISIBLE
                 if (!myActivity.getnotify_val()) {
                     var trackPosition =
                         MediaUtils.getCurrentPosition()
@@ -128,7 +136,8 @@ object BottomBarUtils {
                     mediaPlayer.play()
 
                     bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
-                    bottomBarBinding.next.visibility = View.VISIBLE
+                    if(MediaUtils.mediaPlayer.hasNextMediaItem())
+                        bottomBarBinding.next.visibility = View.VISIBLE
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         var serviceIntent = Intent(myActivity, EchoNotification::class.java)
                         serviceIntent.putExtra("title", bottomBarBinding.songTitle.text.toString())
@@ -157,7 +166,8 @@ object BottomBarUtils {
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
                     bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
-                    bottomBarBinding.next.visibility = View.VISIBLE
+                    if(MediaUtils.mediaPlayer.hasNextMediaItem())
+                        bottomBarBinding.next.visibility = View.VISIBLE
 //                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 //                        var play = Intent(myActivity, EchoNotification::class.java)
 //                        play.action = Constants.ACTION.CHANGE_TO_PAUSE
@@ -320,7 +330,8 @@ object BottomBarUtils {
 
     fun updatePlayPause(){
         if(MediaUtils.isMediaPlayerPlaying()){
-            bottomBarBinding?.next?.visibility = View.VISIBLE
+            if(MediaUtils.mediaPlayer.hasNextMediaItem())
+                bottomBarBinding?.next?.visibility = View.VISIBLE
             bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
         }
         else{

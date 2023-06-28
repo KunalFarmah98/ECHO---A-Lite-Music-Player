@@ -45,6 +45,7 @@ object MediaUtils {
                if (key.equals(Constants.SHUFFLE)) {
                     val state = sharedPreferences?.getBoolean(key, false)
                     PlaybackService.mInstance?.setCustomLayoutForShuffle(state)
+                    SongPlayingFragment.Staticated.setSeekButtonsControl()
                }
           }
           var audioAttributes = AudioAttributes.Builder()
