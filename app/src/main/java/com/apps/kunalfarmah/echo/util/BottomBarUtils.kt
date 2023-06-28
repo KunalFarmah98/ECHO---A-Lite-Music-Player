@@ -8,6 +8,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.annotation.Keep
 import com.apps.kunalfarmah.echo.App
@@ -34,13 +36,17 @@ object BottomBarUtils {
             return
         }
         bottomBarBinding.bottomBar.visibility = View.VISIBLE
-        if (MediaUtils.isMediaPlayerPlaying()) {
-            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
-            bottomBarBinding.next.visibility = View.VISIBLE
-        } else {
-            bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
-            bottomBarBinding.next.visibility = View.GONE
-        }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (MediaUtils.isMediaPlayerPlaying()) {
+                bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+                bottomBarBinding.next.visibility = View.VISIBLE
+            } else {
+                bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
+                bottomBarBinding.next.visibility = View.GONE
+            }
+        }, 150)
+
         if(MediaUtils.isAllSongsPLaying){
             bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
         }
