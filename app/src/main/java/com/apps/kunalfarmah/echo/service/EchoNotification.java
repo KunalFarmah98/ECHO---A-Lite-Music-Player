@@ -587,13 +587,13 @@ public class EchoNotification extends Service {
 
         Notification.Action mShuffleAction =
                 new Notification.Action(
-                        R.drawable.shuffle_white_icon,
+                        R.drawable.baseline_shuffle_24,
                         "shuffle",
                         pShuffleIntent);
 
         Notification.Action mPrevAction =
                 new Notification.Action(
-                        R.drawable.skip_previous_white,
+                        R.drawable.play_previous_icon,
                         "prev",
                         ppreviousIntent);
 
@@ -610,13 +610,13 @@ public class EchoNotification extends Service {
 
         Notification.Action mNextAction =
                 new Notification.Action(
-                        R.drawable.skip_next_white,
+                        R.drawable.play_next_icon,
                         "next",
                         pnextIntent);
 
         Notification.Action mCloseAction =
                 new Notification.Action(
-                        R.drawable.close_white,
+                        R.drawable.baseline_close_24,
                         "close",
                         pcloseIntent);
 
