@@ -69,9 +69,12 @@ class EchoNotificationProvider(context: Context): DefaultMediaNotificationProvid
 
         val skipPreviousCommandButton = CommandButton.Builder().setPlayerCommand(
                 COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
-                .setEnabled(true)
+                .setEnabled(mediaSession.player.hasPreviousMediaItem())
                 .setIconResId(androidx.media3.ui.R.drawable.exo_ic_skip_previous)
-                .setExtras(Bundle().apply { putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 0) })
+                .setExtras(Bundle().apply {
+                    if(mediaSession.player.hasPreviousMediaItem())
+                        putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 0)
+                })
                 .build()
 
         val playCommandButton = CommandButton.Builder().setPlayerCommand(
@@ -83,14 +86,22 @@ class EchoNotificationProvider(context: Context): DefaultMediaNotificationProvid
                         else
                             androidx.media3.ui.R.drawable.exo_icon_play
                 )
-                .setExtras(Bundle().apply { putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 1)})
+                .setExtras(Bundle().apply {
+                    if(mediaSession.player.hasPreviousMediaItem())
+                        putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 1)
+                    else
+                        putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 0)
+                })
                 .build()
 
         val skipNextCommandButton = CommandButton.Builder().setPlayerCommand(
                 COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
-                .setEnabled(true)
+                .setEnabled(mediaSession.player.hasPreviousMediaItem())
                 .setIconResId(androidx.media3.ui.R.drawable.exo_ic_skip_next)
-                .setExtras(Bundle().apply { putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 2)})
+                .setExtras(Bundle().apply {
+                    if(mediaSession.player.hasNextMediaItem())
+                            putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 2)
+                })
                 .build()
 
         val closeCommandButton = CommandButton.Builder().setSessionCommand(
