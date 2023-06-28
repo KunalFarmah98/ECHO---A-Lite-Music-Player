@@ -113,6 +113,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
             MediaUtils.isAllSongsPLaying = false
             MediaUtils.isAlbumPlaying = false
+            MediaUtils.currAlbum = -1
             MediaUtils.isFavouritesPlaying = true
 
             /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/

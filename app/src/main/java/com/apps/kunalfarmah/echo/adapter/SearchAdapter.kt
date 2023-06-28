@@ -85,6 +85,7 @@ class SearchAdapter(
 
                 MediaUtils.isAllSongsPLaying = true
                 MediaUtils.isAlbumPlaying = false
+                MediaUtils.currAlbum = -1
                 MediaUtils.isFavouritesPlaying = false
 
                 MediaUtils.songsList = MediaUtils.allSongsList

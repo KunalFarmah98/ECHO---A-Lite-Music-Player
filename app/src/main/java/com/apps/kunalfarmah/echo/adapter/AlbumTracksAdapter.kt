@@ -27,7 +27,7 @@ import kotlin.math.max
 
 /*This adapter class also serves the same function to act as a bridge between the single row view and its data. The implementation is quite similar to the one we did
 * for the navigation drawer adapter*/
-class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<AlbumTracksAdapter.MyViewHolder>() {
+class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context, val albumId: Long?) : RecyclerView.Adapter<AlbumTracksAdapter.MyViewHolder>() {
 
     /*Local variables used for storing the data sent from the fragment to be used in the adapter
     * These variables are initially null*/
@@ -51,7 +51,7 @@ class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Re
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
-        if(MediaUtils.isAlbumPlaying && position == MediaUtils.currInd){
+        if(MediaUtils.isAlbumPlaying && position == MediaUtils.currInd && albumId == MediaUtils.currAlbum){
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
         }
@@ -95,6 +95,7 @@ class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Re
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
             MediaUtils.isAlbumPlaying = true
+            MediaUtils.currAlbum = albumId
             MediaUtils.isAllSongsPLaying = false
             MediaUtils.isFavouritesPlaying = false
 

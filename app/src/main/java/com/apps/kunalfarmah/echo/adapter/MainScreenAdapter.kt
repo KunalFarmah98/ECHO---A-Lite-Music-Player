@@ -100,6 +100,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             MediaUtils.currSong = songObject
             MediaUtils.isAllSongsPLaying = true
             MediaUtils.isAlbumPlaying = false
+            MediaUtils.currAlbum = -1
             MediaUtils.isFavouritesPlaying = false
 
             intent.putExtra("songArtist", songObject.artist)
