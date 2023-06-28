@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.model.Songs
-import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.adapter.AlbumTracksAdapter
 import com.apps.kunalfarmah.echo.databinding.FragmentAlbumTracksBinding
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
@@ -22,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
+class AlbumTracksFragment(val id: Long?, val name: String) : Fragment() {
 
 
     companion object {
@@ -33,7 +32,6 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
     var albumId: Long = id!!
     val viewModel: SongsViewModel by viewModels()
     var binding: FragmentAlbumTracksBinding? = null
-    var main: MainActivity? = null
     var songAlbum: Long? = null
     var tracksAdapter: AlbumTracksAdapter ?= null
 
@@ -48,10 +46,9 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentAlbumTracksBinding.inflate(layoutInflater)
-        main = MainActivity()
         try {
-            activity?.actionBar?.title = currentSongHelper.album
-            activity?.title = currentSongHelper.album
+            activity?.actionBar?.title = name
+            activity?.title = name
         } catch (e: java.lang.Exception) {
 
         }
@@ -66,7 +63,7 @@ class AlbumTracksFragment(id: Long?, name: String) : Fragment() {
 
 
     private fun setView(list: ArrayList<Songs>) {
-        tracksAdapter = AlbumTracksAdapter(list, activity as Context)
+        tracksAdapter = AlbumTracksAdapter(list, activity as Context, albumId)
         binding!!.tracks.layoutManager = LinearLayoutManager(context)
         binding!!.tracks.itemAnimator = DefaultItemAnimator()
         binding!!.tracks.setHasFixedSize(true)
