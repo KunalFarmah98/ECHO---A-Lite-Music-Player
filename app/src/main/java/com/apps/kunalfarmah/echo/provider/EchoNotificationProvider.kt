@@ -100,7 +100,10 @@ class EchoNotificationProvider(context: Context): DefaultMediaNotificationProvid
                 .setIconResId(androidx.media3.ui.R.drawable.exo_ic_skip_next)
                 .setExtras(Bundle().apply {
                     if(mediaSession.player.hasNextMediaItem())
+                        if(mediaSession.player.hasPreviousMediaItem())
                             putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 2)
+                        else
+                            putInt(COMMAND_KEY_COMPACT_VIEW_INDEX, 1)
                 })
                 .build()
 
