@@ -69,7 +69,7 @@
         </activity>
 
         <service
-            android:name=".EchoNotification"
+            android:name=".service.EchoNotification"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback" />

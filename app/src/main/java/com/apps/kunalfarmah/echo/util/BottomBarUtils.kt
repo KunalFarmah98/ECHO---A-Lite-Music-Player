@@ -11,7 +11,7 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.Keep
 import com.apps.kunalfarmah.echo.App
-import com.apps.kunalfarmah.echo.EchoNotification
+import com.apps.kunalfarmah.echo.service.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity

@@ -50,6 +50,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.seekBar
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shufflebutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.model.Songs
+import com.apps.kunalfarmah.echo.service.EchoNotification
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper

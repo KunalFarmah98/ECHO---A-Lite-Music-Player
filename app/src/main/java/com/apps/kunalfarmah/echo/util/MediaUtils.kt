@@ -16,7 +16,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.apps.kunalfarmah.echo.App
-import com.apps.kunalfarmah.echo.EchoNotification
+import com.apps.kunalfarmah.echo.service.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment

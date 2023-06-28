@@ -1,4 +1,4 @@
-package com.apps.kunalfarmah.echo;
+package com.apps.kunalfarmah.echo.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.apps.kunalfarmah.echo.R;
 import com.apps.kunalfarmah.echo.activity.MainActivity;
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
