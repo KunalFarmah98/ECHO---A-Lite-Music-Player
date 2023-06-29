@@ -40,7 +40,10 @@ object BottomBarUtils {
         Handler(Looper.getMainLooper()).post {
             if (MediaUtils.isMediaPlayerPlaying() || mediaPlayer.playWhenReady) {
                 bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
-                bottomBarBinding.next.visibility = View.VISIBLE
+                if(mediaPlayer.hasNextMediaItem())
+                    bottomBarBinding.next.visibility = View.VISIBLE
+                else
+                    bottomBarBinding.next.visibility = View.GONE
             } else {
                 bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
                 bottomBarBinding.next.visibility = View.GONE

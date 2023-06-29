@@ -758,7 +758,8 @@ class SongPlayingFragment : Fragment() {
                         }.let{
                             if(it) {
                                 MediaUtils.setMediaItems()
-                                mediaPlayer.setMediaItems(MediaUtils.mediaItemsList,false)
+                                val hadNext = mediaPlayer.hasNextMediaItem()
+                                mediaPlayer.setMediaItems(MediaUtils.mediaItemsList, !hadNext)
                                 MediaUtils.currInd = mediaPlayer.currentMediaItemIndex
                                 FavoriteFragment.mInstance?.favouriteAdapter?.songDetails = MediaUtils.songsList
                                 FavoriteFragment.mInstance?.favouriteAdapter?.notifyDataSetChanged()
