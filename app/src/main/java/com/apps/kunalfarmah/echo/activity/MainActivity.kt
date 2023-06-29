@@ -231,11 +231,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.isSongPlaying.observeForever(songObserver)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        BottomBarUtils.bottomBarSetup(this, binding.mainLayout.nowPlayingBottomBar)
-    }
-
     override fun onResume() {
         super.onResume()
         try {
