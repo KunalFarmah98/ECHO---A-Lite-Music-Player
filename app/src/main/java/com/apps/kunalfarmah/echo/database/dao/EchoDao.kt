@@ -40,10 +40,10 @@ interface EchoDao {
     @Query("SELECT * FROM songs WHERE songAlbum = (:album)")
     suspend fun getSongsByAlbum(album:Long?):List<SongsEntity>
 
-    @Query("SELECT DISTINCT songAlbum as albumId, album as albumName from songs")
+    @Query("SELECT DISTINCT songAlbum as albumId, album as albumName from songs ORDER BY albumName")
     suspend fun getAllAlbums():List<SongAlbumEntity>
 
-    @Query("SELECT * FROM albums")
+    @Query("SELECT * FROM albums ORDER BY albumName")
     suspend fun getAlbums() : List<SongAlbumEntity>
 
     @Query("DELETE FROM songs")
