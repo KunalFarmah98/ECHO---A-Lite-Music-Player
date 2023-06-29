@@ -628,11 +628,11 @@ class SongPlayingFragment : Fragment() {
 
         if (fromBottomBar) {
             myActivity?.title = "Now Playing"
-            if(!mediaPlayer.isPlaying){
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+            if(mediaPlayer.playWhenReady || mediaPlayer.isPlaying){
+                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
             }
             else{
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
             }
             processInformation()
         } else {
