@@ -283,6 +283,7 @@ public class EchoNotification extends Service {
 
                 try {
                     MediaUtils.INSTANCE.getMediaPlayer().stop();
+                    MediaUtils.INSTANCE.getMediaPlayer().setPlayWhenReady(false);
                     //MediaUtils.INSTANCE.getMediaPlayer().release();
                     MediaUtils.INSTANCE.setCurrSong(null);
                     main.setNotify_val(false);

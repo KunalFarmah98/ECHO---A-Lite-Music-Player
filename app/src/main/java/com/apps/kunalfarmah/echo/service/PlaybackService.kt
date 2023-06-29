@@ -171,6 +171,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         val main=  MainActivity()
         try {
             mediaPlayer.stop()
+            mediaPlayer.playWhenReady = false
 //            mediaPlayer.release()
             currSong = null
             main.setNotify_val(false)

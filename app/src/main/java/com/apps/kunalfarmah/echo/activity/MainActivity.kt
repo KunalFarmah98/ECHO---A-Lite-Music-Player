@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     if (mediaPlayer != null) {
                         mediaPlayer.stop()
+                        mediaPlayer.playWhenReady = false
                         //mediaPlayer.release()
                     }
                 }catch (e:Exception){}
