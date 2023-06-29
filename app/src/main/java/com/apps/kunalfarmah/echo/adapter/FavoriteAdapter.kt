@@ -51,12 +51,16 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         * trackArtist for holding the name of the artist*/
         holder.binding.trackTitle?.text = songObject?.songTitle
         holder.binding.trackArtist?.text = songObject?.artist
+        holder.binding.trackAlbum?.text = songObject?.album
 
         if(holder.binding.trackTitle?.text?.equals("<unknown>") == true)
             holder.binding.trackTitle?.text="unknown"
 
         if(holder.binding.trackArtist?.text ?.equals("<unknown>") == true)
             holder.binding.trackArtist?.text ="unknown"
+
+        if(holder.binding.trackAlbum?.text ?.equals("<unknown>") == true)
+            holder.binding.trackAlbum?.text ="unknown"
 
         var albumId = songObject?.songAlbum as Long
 

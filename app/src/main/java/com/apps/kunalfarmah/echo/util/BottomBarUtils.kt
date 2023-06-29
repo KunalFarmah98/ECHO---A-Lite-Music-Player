@@ -97,6 +97,7 @@ object BottomBarUtils {
             var intent = Intent(App.context,SongPlayingActivity::class.java)
             intent.putExtra("songArtist", currentSongHelper.songArtist)
             intent.putExtra("songTitle", currentSongHelper.songTitle)
+            intent.putExtra("album", currentSongHelper.album)
             intent.putExtra("path", currentSongHelper.songpath)
             intent.putExtra("SongID", currentSongHelper.songId!!)
             intent.putExtra("songAlbum", currentSongHelper.songAlbum!!)
