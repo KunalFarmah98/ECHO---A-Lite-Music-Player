@@ -116,8 +116,7 @@ object MediaUtils {
                     super.onPlayWhenReadyChanged(playWhenReady, reason)
                     if(reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM)
                          return
-                    BottomBarUtils.updatePlayPause()
-                    if (mediaPlayer.isPlaying) {
+                    if (playWhenReady) {
                          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                               var play = Intent(App.context, EchoNotification::class.java)
                               play.action = Constants.ACTION.CHANGE_TO_PAUSE
@@ -134,6 +133,7 @@ object MediaUtils {
                          SongPlayingFragment.Staticated.updateButton("pause")
                          SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
                     }
+                    BottomBarUtils.updatePlayPause()
                }
 
                override fun onPlayerError(error: PlaybackException) {
