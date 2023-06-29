@@ -55,7 +55,7 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
             list = songsRepository.getSongsFromPhone()//songsRepository.getAllSongs()
         }.invokeOnCompletion {
             songsList.value = list?:ArrayList()
-            MediaUtils.songsList = (list ?: ArrayList()) as ArrayList<Songs>
+            //MediaUtils.songsList = (list ?: ArrayList()) as ArrayList<Songs>
             MediaUtils.allSongsList = (list ?: ArrayList()) as ArrayList<Songs>
             MediaUtils.setMediaItems()
         }

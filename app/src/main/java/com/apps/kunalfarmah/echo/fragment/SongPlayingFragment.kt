@@ -588,7 +588,6 @@ class SongPlayingFragment : Fragment() {
         _songArtist = arguments?.getString("songArtist")
         _songTitle = arguments?.getString("songTitle")
         _songAlbum = arguments?.getLong("songAlbum")
-//            var id = arguments?.getLong("SongID")
         _songId = arguments?.getLong("SongID")
         _album = arguments?.getString("album")
 
@@ -750,6 +749,26 @@ class SongPlayingFragment : Fragment() {
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
                 fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
                 favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
+                // if we currently playing the favorites, remove this song from the list and the player queue and play the next song
+                if(MediaUtils.isFavouritesPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                    try {
+                        // remove from player queue
+                        MediaUtils.songsList.removeIf {
+                            it.songID == currentSongHelper.songId
+                        }.let{
+                            if(it) {
+                                MediaUtils.setMediaItems()
+                                mediaPlayer.setMediaItems(MediaUtils.mediaItemsList,true)
+                                MediaUtils.currInd = mediaPlayer.currentMediaItemIndex
+                                FavoriteFragment.mInstance?.favouriteAdapter?.songDetails = MediaUtils.songsList
+                                FavoriteFragment.mInstance?.favouriteAdapter?.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                    catch (e: java.lang.Exception){
+                        MediaUtils.currInd = -1
+                    }
+                }
 
                 /*Toast is prompt message at the bottom of screen indicating that an action has been performed*/
                 Toast.makeText(myActivity, "Removed from Favorites", Toast.LENGTH_SHORT).show()
