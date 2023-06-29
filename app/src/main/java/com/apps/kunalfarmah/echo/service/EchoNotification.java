@@ -19,7 +19,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 

@@ -13,13 +13,13 @@ import android.os.Looper
 import android.view.View
 import androidx.annotation.Keep
 import com.apps.kunalfarmah.echo.App
-import com.apps.kunalfarmah.echo.service.EchoNotification
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
 import com.apps.kunalfarmah.echo.activity.SongPlayingActivity
 import com.apps.kunalfarmah.echo.adapter.MainScreenAdapter
 import com.apps.kunalfarmah.echo.databinding.BottomBarBinding
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
+import com.apps.kunalfarmah.echo.service.EchoNotification
 import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.bumptech.glide.Glide
