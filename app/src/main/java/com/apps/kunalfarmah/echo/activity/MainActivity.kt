@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseArray
@@ -76,6 +77,23 @@ class MainActivity : AppCompatActivity() {
                 song!!.unregister()
                 // SongPlayingFragment.Statified.mediaPlayer?.release()
                 finishAffinity()
+            }
+        }
+    }
+
+
+    /**
+     * creating a broadcast receiver to register earphones unplugging
+     *
+     */
+    private val mNoisyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
+                mediaPlayer.pause()
+                SongPlayingFragment.Statified.inform = true
+                BottomBarUtils.updatePlayPause()
+                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -229,6 +247,10 @@ class MainActivity : AppCompatActivity() {
         binding.mainLayout.nowPlayingBottomBar.songTitle.isSelected = true
         binding.mainLayout.nowPlayingBottomBar.songArtist.isSelected = true
         viewModel.isSongPlaying.observeForever(songObserver)
+
+        // register receiver for unplugging earphones
+        var filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+        registerReceiver(mNoisyReceiver, filter)
     }
 
     override fun onResume() {
@@ -248,10 +270,11 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         try {
             super.onDestroy()
+            viewModel.isSongPlaying.removeObserver(songObserver)
             mLocalBroadcastManager?.unregisterReceiver(mBroadcastReceiver)
+            unregisterReceiver(mNoisyReceiver)
             SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
             song!!.unregister()
-            viewModel.isSongPlaying.removeObserver(songObserver)
         } catch (e: Exception) {
         }
 

@@ -10,7 +10,6 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -40,7 +39,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fab
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.favoriteContent
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.fetchSongs
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.glView
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.inform
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.loopbutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.myActivity
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.nextbutton
@@ -474,45 +472,6 @@ class SongPlayingFragment : Fragment() {
     }
 
     var mAcceleration: Float = 0f
-
-
-    /**
-     * creating a broadcast receiver to register earphones unplugging
-     *
-     */
-
-    private val mNoisyReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
-                mediaPlayer?.pause()
-                inform = true
-                BottomBarUtils.updatePlayPause()
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-//                    var play = Intent(context, EchoNotification::class.java)
-//                    play.action = Constants.ACTION.CHANGE_TO_PLAY
-//                    activity?.startService(play)
-//                }
-
-                Toast.makeText(context, "Headphones Unplugged", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-
-    private val mCallingReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (mediaPlayer != null && MediaUtils.isMediaPlayerPlaying()) {
-                mediaPlayer?.pause()
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
-//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-//                    var play = Intent(context, EchoNotification::class.java)
-//                    play.action = Constants.ACTION.CHANGE_TO_PLAY
-//                    activity?.startService(play)
-//                }
-            }
-        }
-    }
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
 
@@ -745,15 +704,6 @@ class SongPlayingFragment : Fragment() {
             fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
         }
 
-
-        // register reciever for unplugging earphones
-
-        var filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-        myActivity?.registerReceiver(mNoisyReceiver, filter)
-
-//        var filter2 = IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL)
-//        myActivity?.registerReceiver(mCallingReceiver, filter2)
-
         if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
             activity?.onBackPressed()
         }
@@ -786,8 +736,6 @@ class SongPlayingFragment : Fragment() {
         try {
             if (audioVisualization != null)
                 audioVisualization?.release()
-            myActivity?.unregisterReceiver(mNoisyReceiver)
-            myActivity?.unregisterReceiver(mCallingReceiver)
             mSensorManager?.unregisterListener(mSensorListener)
         } catch (e: Exception) {
         }
