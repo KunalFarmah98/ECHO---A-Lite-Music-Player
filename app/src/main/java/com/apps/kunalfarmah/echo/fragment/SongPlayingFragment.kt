@@ -61,6 +61,7 @@ import com.cleveroad.audiovisualization.GLAudioVisualizationView
 import java.io.FileDescriptor
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class SongPlayingFragment : Fragment() {
 
@@ -751,6 +752,12 @@ class SongPlayingFragment : Fragment() {
                 favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
                 // if we currently playing the favorites, remove this song from the list and the player queue and play the next song
                 if(MediaUtils.isFavouritesPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                    if(mediaPlayer.mediaItemCount==1){
+                        MediaUtils.currInd = -1
+                        FavoriteFragment.mInstance?.favouriteAdapter?.songDetails = ArrayList()
+                        FavoriteFragment.mInstance?.favouriteAdapter?.notifyDataSetChanged()
+                        return@setOnClickListener
+                    }
                     try {
                         // remove from player queue
                         MediaUtils.songsList.removeIf {
