@@ -122,7 +122,6 @@ public class EchoNotification extends Service {
             if (null == intent || intent.getAction() == null) {
                 stopForeground(true);
                 stopSelf();
-                Log.e("ECHONotification", "intent is null");
                 super.onStartCommand(intent,flags,startId);
             }
 

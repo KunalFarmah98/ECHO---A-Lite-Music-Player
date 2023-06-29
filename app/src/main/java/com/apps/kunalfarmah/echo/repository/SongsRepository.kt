@@ -86,7 +86,6 @@ constructor(
                     arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
-//                    Toast.makeText(context,e.message.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }

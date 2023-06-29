@@ -66,7 +66,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     // Create your Player and MediaSession in the onCreate lifecycle event
     override fun onCreate() {
-        Toast.makeText(this, "PlayBackService Running", Toast.LENGTH_SHORT).show()
         mInstance = this
         this.setMediaNotificationProvider(EchoNotificationProvider(this))
         val openIntent = Intent(this, MainActivity::class.java)
@@ -110,7 +109,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             release()
             mediaSession = null
         }
-        Toast.makeText(this, "PlayBackService destroyed", Toast.LENGTH_SHORT).show()
         super.onDestroy()
     }
 

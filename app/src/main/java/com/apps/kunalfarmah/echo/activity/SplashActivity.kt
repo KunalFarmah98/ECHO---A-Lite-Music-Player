@@ -32,7 +32,6 @@ class SplashActivity : AppCompatActivity() {
             }
         }
         catch (e:Exception){
-            Log.e("ERROR","Couldn't change status bar color")
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
