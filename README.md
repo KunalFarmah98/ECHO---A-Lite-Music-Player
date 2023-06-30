@@ -6,6 +6,9 @@
  
 #
 
+### Available on the playstore: https://play.google.com/store/apps/details?id=com.apps.kunalfarmah.echo&hl=en-IN
+#
+
 ### Echo is a simple, light in size and easy to use offline Music Player designed using Open source Code with a lot of added functionalities.
 
 * ### It can sort the music files based on their Name or the Date Added.
@@ -17,11 +20,6 @@
 * ### It uses a special feature Shake to Change which changes your song with a simple shake to your device even when the app is in background.
 
 #### Note: This feature only works if your device has a working ACCELEROMETER Sensor.
-#
-
-## Watch the Promo Video here:
-   https://youtu.be/PMb3kgskhlk
-   
 #
 
 ## Features:
@@ -36,11 +34,11 @@
 
 <p vspace = "20" align="center" >
    <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play.jpeg" width =190 
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_v3.jpg" width =190 
   height = 320/>
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis.jpeg" width =190 
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis_v3.jpg" width =190 
   height = 320/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/list.jpeg" width =190 
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/list_v3.jpg" width =190 
   height = 320/>
 </p>
 
@@ -67,8 +65,13 @@
 #
 
 <p vspace = "20" align="center" >
-  <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/albums_new.jpeg">
-  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/fav.jpeg">
+  <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/albums_new_v3.jpg">
+  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/fav_v3.jpg">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/search_v3.jpg" width =190 
+  height = 320/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small_13.jpg" width =190 
+  height = 320/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =190 
   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti.jpeg" width =190 
   height = 320/>
   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.jpeg" width =190 
