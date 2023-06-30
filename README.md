@@ -1,7 +1,7 @@
 # ECHO - A Lite Offline music player for all the music lovers out there.
 
 <p align = "center">
-  <img width="320" height="220" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/feature.PNG">
+  <img width="330" height="220" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/feature.PNG">
   </p>
  
 #
@@ -33,13 +33,13 @@
 #
 
 <p vspace = "20" align="center" >
-   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_v3.jpg" width =190 
-  height = 320/>
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis_v3.jpg" width =190 
-  height = 320/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/list_v3.jpg" width =190 
-  height = 320/>
+   <img width="190" height="330" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_v3.jpg" width =175 
+  height = 330/>
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis_v3.jpg" width =175 
+  height = 330/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/list_v3.jpg" width =175 
+  height = 330/>
 </p>
 
 
@@ -65,18 +65,18 @@
 #
 
 <p vspace = "20" align="center" >
-  <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/albums_new_v3.jpg">
-  <img  hspace="10" width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/fav_v3.jpg">
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/search_v3.jpg" width =190 
-  height = 320/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small_13.jpg" width =190 
-  height = 320/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =190 
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti.jpeg" width =190 
-  height = 320/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.jpeg" width =190 
-  height = 320/> <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big.jpeg" width =190 
-  height = 320/>
+  <img width="190" height="330" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/albums_new_v3.jpg">
+  <img  hspace="10" width="190" height="330" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/fav_v3.jpg">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/search_v3.jpg" width =175 
+  height = 330/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small_13.jpg" width =175 
+  height = 330/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =175 
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti.jpeg" width =175 
+  height = 330/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.jpeg" width =175 
+  height = 330/> <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big.jpeg" width =175 
+  height = 330/>
 </p>
 
 #
