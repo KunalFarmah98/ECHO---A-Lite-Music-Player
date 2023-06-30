@@ -124,6 +124,18 @@ class FavoriteFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(favouriteAdapter?.songDetails.isNullOrEmpty()){
+            binding.recyclerView?.visibility = View.GONE
+            binding.noFavorites?.visibility = View.VISIBLE
+        }
+        else{
+            binding.recyclerView?.visibility = View.VISIBLE
+            binding.noFavorites?.visibility = View.GONE
+        }
+    }
+
     /*The below function is used to search the favorites and display*/
     fun getFavorites() {
 
@@ -154,7 +166,7 @@ class FavoriteFragment : Fragment() {
 //                    Collections.sort(refreshList, Songs.Statified.dateComparator)
 //                }
                 Collections.sort(refreshList, Songs.Statified.dateComparator)
-                binding.noFavorites?.visibility = View.INVISIBLE
+                binding.noFavorites?.visibility = View.GONE
                 // recyclerView?.visibility = View.VISIBLE
 
                 /*Else we setup our recycler view for displaying the favorite songs*/
@@ -175,7 +187,7 @@ class FavoriteFragment : Fragment() {
         } else {
 
             /*If initially the checkSize() function returned 0 then also we display the no favorites present message*/
-            binding.recyclerView?.visibility = View.INVISIBLE
+            binding.recyclerView?.visibility = View.GONE
             binding.noFavorites?.visibility = View.VISIBLE
         }
     }

@@ -20,7 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlin.math.max
 
 class SearchAdapter(
-        private var songs: List<Songs>, private val mContext: Context?)
+         var songs: List<Songs>, private val mContext: Context?)
     : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
