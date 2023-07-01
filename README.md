@@ -84,6 +84,6 @@
 
 
 ## ***** Running low on RAM and Memory? ******
-#### Echo takes less than 9 MB of space and can be used even on low-end devices running older versions of Android up till Android 4.2.
+#### Echo takes less than 10 MB of space and can be used even on low-end devices running older versions of Android up till Android 4.2.
 
 
