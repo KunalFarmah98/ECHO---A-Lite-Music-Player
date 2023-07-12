@@ -57,7 +57,7 @@ object BottomBarUtils {
             bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_album_white_24dp))
         }
         else if(MediaUtils.isFavouritesPlaying){
-            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_favorite_white_24dp))
+            bottomBarBinding.songType.setImageResource(R.drawable.baseline_favorite_white_24dp)
         }
         else{
             bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
@@ -261,7 +261,7 @@ object BottomBarUtils {
             bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_album_white_24dp))
         }
         else if(MediaUtils.isFavouritesPlaying){
-            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_favorite_white_24dp))
+            bottomBarBinding?.songType?.setImageResource(R.drawable.baseline_favorite_white_24dp)
         }
         else{
             bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))

@@ -75,15 +75,15 @@ class Wizard : Fragment() {
             when (pressed) {
                 2 -> {
                     instr?.setText(R.string.inst2)
-                    imagev?.setBackgroundResource(R.drawable.s2)
+                    imagev?.setImageDrawable(resources.getDrawable(R.drawable.s2))
                 }
                 3 -> {
                     instr?.setText(R.string.inst3)
-                    imagev?.setBackgroundResource(R.drawable.s3)
+                    imagev?.setImageDrawable(resources.getDrawable(R.drawable.s3))
                 }
                 4 -> {
                     instr?.setText(R.string.inst4)
-                    imagev?.setBackgroundResource(R.drawable.s4)
+                    imagev?.setImageDrawable(resources.getDrawable(R.drawable.s4))
                 }
 
             }
