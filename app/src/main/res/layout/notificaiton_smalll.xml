@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/NavigationPanel"
     android:layout_width="match_parent"
     android:layout_height="64dip"
@@ -17,7 +18,7 @@
         android:layout_centerVertical="true"
         android:foregroundGravity="center"
         android:background="@color/colorPrimary"
-        android:src="@drawable/now_playing_bar_eq_image" />
+        app:srcCompat="@drawable/now_playing_bar_eq_image" />
 
     <TextView
         android:id="@+id/logo"
@@ -103,7 +104,7 @@
         android:layout_marginBottom="@dimen/_3sdp"
         android:layout_alignParentBottom="true"
         android:background="#ffffff"
-        android:src="@drawable/down"/>
+        app:srcCompat="@drawable/down"/>
 
     <LinearLayout
         android:id="@+id/controls"
