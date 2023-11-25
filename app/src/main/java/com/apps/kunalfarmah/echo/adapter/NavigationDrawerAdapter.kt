@@ -3,13 +3,8 @@ package com.apps.kunalfarmah.echo.adapter
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.os.StrictMode
-import android.os.StrictMode.VmPolicy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,42 +52,22 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 (mContext as MainActivity).moveToHome()
             } else if (position == 1) {
                 mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
-            } else if (position == 2) {
-                var intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://kunalfarmah.com")
-                try {
-                    mContext?.startActivity(intent)
-                }
-                catch (e: ActivityNotFoundException){
-                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_browser_app), Toast.LENGTH_SHORT).show()
-                }
-            } else if (position == 3) {
+            }  else if (position == 2) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
-            } else if (position == 4) {
+            } else if (position == 3) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        "Hey check out an awesome offline music player app, ECHO - A LITE MUSIC PLAYER at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
-                var uri:Uri? = null
-                try {
-                    uri = getImageUri()
-                }catch(e:Exception){
-                    uri = null
-                }
-                if(null!=uri) {
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, getImageUri())
-                    sendIntent.type = "image/*"
-                }
-                else
-                    sendIntent.type = "text/*"
+                        "Hey check out an awesome offline music player app, ECHO - A LITE MUSIC PLAYER.\nhttps://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
+                sendIntent.type = "text/*"
                 try {
                     mContext?.startActivity(Intent.createChooser(sendIntent, "Share With"))
                 }
                 catch (e: ActivityNotFoundException){
                     Toast.makeText(mContext, mContext?.resources?.getString(R.string.no_app_share), Toast.LENGTH_SHORT).show()
                 }
-            } else if (position == 5) {
+            } else if (position == 4) {
                 val uri = Uri.parse("market://details?id=" + mContext?.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
                 // To count with Play market backstack, After pressing back button,
@@ -104,22 +79,13 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 try {
                     mContext?.startActivity(goToMarket)
                 } catch (e: ActivityNotFoundException) {
-                    mContext?.startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext?.getPackageName())))
+                    mContext?.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext?.getPackageName())
+                        )
+                    )
                 }
-            } else if (position == 6) {
-                var feedback = Intent(Intent.ACTION_SENDTO)
-                var to = Array(1) { "kunalfarmah98@gmail.com" }
-                feedback.data = Uri.parse("mailto:")
-                feedback.putExtra(Intent.EXTRA_EMAIL, to)
-                feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
-                try {
-                    mContext?.startActivity(feedback)
-                }
-                catch (e :ActivityNotFoundException){
-                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_email_app),Toast.LENGTH_SHORT).show();
-                }
-
             }
             MainActivity.Statified.drawerLayout?.closeDrawers()
         }
@@ -150,30 +116,5 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
             text_GET = itemView.findViewById(R.id.text_navDrawer)
             contentHolder = itemView.findViewById(R.id.navdrawer_item_skeleton)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getImageUri(): Uri {
-        val builder = VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
-        val bm = BitmapFactory.decodeResource(mContext?.resources, R.drawable.echo_icon)
-        val extStorageDirectory = Environment.getExternalStorageDirectory().toString()
-        val file = File(extStorageDirectory, "ECHO.png")
-        if (!file.exists()) {
-            var outStream: OutputStream? = null
-            try {
-                outStream = FileOutputStream(file)
-                bm.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            }
-            try {
-                outStream?.flush()
-                outStream?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return Uri.parse(file.absolutePath)
     }
 }
