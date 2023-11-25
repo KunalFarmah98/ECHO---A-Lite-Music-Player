@@ -3,13 +3,8 @@ package com.apps.kunalfarmah.echo.adapter
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.os.StrictMode
-import android.os.StrictMode.VmPolicy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,19 +59,8 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        "Hey check out an awesome offline music player app, ECHO - A LITE MUSIC PLAYER at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
-                var uri:Uri? = null
-                try {
-                    uri = getImageUri()
-                }catch(e:Exception){
-                    uri = null
-                }
-                if(null!=uri) {
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, getImageUri())
-                    sendIntent.type = "image/*"
-                }
-                else
-                    sendIntent.type = "text/*"
+                        "Hey check out an awesome offline music player app, ECHO - A LITE MUSIC PLAYER.\nhttps://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)
+                sendIntent.type = "text/*"
                 try {
                     mContext?.startActivity(Intent.createChooser(sendIntent, "Share With"))
                 }
@@ -132,30 +116,5 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
             text_GET = itemView.findViewById(R.id.text_navDrawer)
             contentHolder = itemView.findViewById(R.id.navdrawer_item_skeleton)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getImageUri(): Uri {
-        val builder = VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
-        val bm = BitmapFactory.decodeResource(mContext?.resources, R.drawable.echo_icon)
-        val extStorageDirectory = Environment.getExternalStorageDirectory().toString()
-        val file = File(extStorageDirectory, "ECHO.png")
-        if (!file.exists()) {
-            var outStream: OutputStream? = null
-            try {
-                outStream = FileOutputStream(file)
-                bm.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            }
-            try {
-                outStream?.flush()
-                outStream?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return Uri.parse(file.absolutePath)
     }
 }
