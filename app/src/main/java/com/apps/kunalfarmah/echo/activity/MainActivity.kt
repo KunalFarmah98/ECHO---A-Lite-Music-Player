@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     var navigationDrawerIconsList: ArrayList<String> = arrayListOf()
 
     /*Images which will be used inside navigation drawer*/
-    var images_for_navdrawer = arrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.navigation_aboutus, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp, R.drawable.baseline_feedback_white_36dp, R.drawable.baseline_album_white_24dp)
+    var images_for_navdrawer = arrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp)
 
     object Statified {
         var drawerLayout: DrawerLayout? = null
@@ -161,11 +161,9 @@ class MainActivity : AppCompatActivity() {
         /*Adding names of the titles using the add() function of ArrayList*/
         navigationDrawerIconsList.add("All Songs")
         navigationDrawerIconsList.add("Settings")
-        navigationDrawerIconsList.add("About Developer")
         navigationDrawerIconsList.add("Help")
         navigationDrawerIconsList.add("Share")
         navigationDrawerIconsList.add("Rate App")
-        navigationDrawerIconsList.add("Report and Feedback")
 
 
 

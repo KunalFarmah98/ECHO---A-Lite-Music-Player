@@ -57,18 +57,9 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 (mContext as MainActivity).moveToHome()
             } else if (position == 1) {
                 mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
-            } else if (position == 2) {
-                var intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://kunalfarmah.com")
-                try {
-                    mContext?.startActivity(intent)
-                }
-                catch (e: ActivityNotFoundException){
-                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_browser_app), Toast.LENGTH_SHORT).show()
-                }
-            } else if (position == 3) {
+            }  else if (position == 2) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
-            } else if (position == 4) {
+            } else if (position == 3) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -92,7 +83,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 catch (e: ActivityNotFoundException){
                     Toast.makeText(mContext, mContext?.resources?.getString(R.string.no_app_share), Toast.LENGTH_SHORT).show()
                 }
-            } else if (position == 5) {
+            } else if (position == 4) {
                 val uri = Uri.parse("market://details?id=" + mContext?.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
                 // To count with Play market backstack, After pressing back button,
@@ -104,22 +95,13 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 try {
                     mContext?.startActivity(goToMarket)
                 } catch (e: ActivityNotFoundException) {
-                    mContext?.startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext?.getPackageName())))
+                    mContext?.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + mContext?.getPackageName())
+                        )
+                    )
                 }
-            } else if (position == 6) {
-                var feedback = Intent(Intent.ACTION_SENDTO)
-                var to = Array(1) { "kunalfarmah98@gmail.com" }
-                feedback.data = Uri.parse("mailto:")
-                feedback.putExtra(Intent.EXTRA_EMAIL, to)
-                feedback.putExtra(Intent.EXTRA_SUBJECT, "Feedback for ECHO - A Lite Music Player")
-                try {
-                    mContext?.startActivity(feedback)
-                }
-                catch (e :ActivityNotFoundException){
-                    Toast.makeText(mContext,mContext?.resources?.getString(R.string.no_email_app),Toast.LENGTH_SHORT).show();
-                }
-
             }
             MainActivity.Statified.drawerLayout?.closeDrawers()
         }
