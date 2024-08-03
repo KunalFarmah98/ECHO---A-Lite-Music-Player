@@ -9,6 +9,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.media3.common.Player
 import androidx.recyclerview.widget.RecyclerView
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity
@@ -111,6 +112,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             MediaUtils.setMediaItems()
 
             stopPlaying(intent)
+            mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
 
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
