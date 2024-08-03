@@ -4,8 +4,10 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.OptIn
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -24,6 +26,7 @@ import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 
+@OptIn(UnstableApi::class)
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     companion object {
@@ -67,7 +70,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     override fun onCreate() {
         mInstance = this
         this.setMediaNotificationProvider(EchoNotificationProvider(this))
-        val openIntent = Intent(this, MainActivity::class.java)
+        val openIntent = Intent(this, MainActivity::class.java).apply {
+            `package` = this.`package`
+        }
         val pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, PendingIntent.FLAG_IMMUTABLE)
 
         mediaSession = MediaSession.Builder(this, mediaPlayer)

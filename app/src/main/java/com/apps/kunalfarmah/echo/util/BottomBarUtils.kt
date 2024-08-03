@@ -97,7 +97,7 @@ object BottomBarUtils {
     ) {
 
         bottomBarBinding.bottomBar.setOnClickListener {
-            var intent = Intent(App.context,SongPlayingActivity::class.java)
+            val intent = Intent(App.context,SongPlayingActivity::class.java)
             intent.putExtra("songArtist", currentSongHelper.songArtist)
             intent.putExtra("songTitle", currentSongHelper.songTitle)
             intent.putExtra("album", currentSongHelper.album)
@@ -106,6 +106,7 @@ object BottomBarUtils {
             intent.putExtra("songAlbum", currentSongHelper.songAlbum!!)
             intent.putExtra("songPosition", currentSongHelper.currentPosition?.toInt() as Int)
             intent.putExtra("fromBottomBar",true)
+            intent.`package` = App.context.packageName
             SongPlayingFragment.Statified.fetchSongs.let {
                 if(it!=null){
                     MediaUtils.songsList = it
@@ -146,10 +147,11 @@ object BottomBarUtils {
                     if(mediaPlayer.hasNextMediaItem())
                         bottomBarBinding.next.visibility = View.VISIBLE
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                        var serviceIntent = Intent(myActivity, EchoNotification::class.java)
+                        val serviceIntent = Intent(myActivity, EchoNotification::class.java)
                         serviceIntent.putExtra("title", bottomBarBinding.songTitle.text.toString())
                         serviceIntent.putExtra("artist", bottomBarBinding.songArtist.text.toString())
                         serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+                        serviceIntent.`package` = myActivity.packageName
                         myActivity.startService(serviceIntent)
 
 //                        var play = Intent(myActivity, EchoNotification::class.java)

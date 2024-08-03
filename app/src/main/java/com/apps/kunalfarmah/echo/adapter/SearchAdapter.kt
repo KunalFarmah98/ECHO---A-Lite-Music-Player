@@ -32,7 +32,7 @@ class SearchAdapter(
     }
     
     fun filter(text: String) {
-        songs = songs.filter { 
+        songs = songs.filter {
             it.songTitle.contains(text, true) || it.album.contains(text,true) || it.artist.contains(text,true)
         }
         notifyDataSetChanged()
@@ -82,6 +82,7 @@ class SearchAdapter(
                 intent.putExtra("songAlbum", songObject.songAlbum ?: -1)
                 intent.putExtra("album", songObject.album)
                 intent.putExtra("fromSearch", true)
+                intent.`package` = mContext?.packageName
 
                 MediaUtils.isAllSongsPLaying = true
                 MediaUtils.isAlbumPlaying = false

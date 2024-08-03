@@ -51,9 +51,9 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
             if (position == 0) {
                 (mContext as MainActivity).moveToHome()
             } else if (position == 1) {
-                mContext?.startActivity(Intent(mContext,SettingsActivity::class.java))
+                mContext?.startActivity(Intent(mContext,SettingsActivity::class.java).apply { `package` = mContext?.packageName })
             }  else if (position == 2) {
-                mContext?.startActivity(Intent(mContext,HelpActivity::class.java))
+                mContext?.startActivity(Intent(mContext,HelpActivity::class.java).apply { `package` = mContext?.packageName })
             } else if (position == 3) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND

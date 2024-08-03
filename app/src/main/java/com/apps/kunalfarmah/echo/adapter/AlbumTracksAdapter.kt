@@ -91,7 +91,7 @@ class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context, val 
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
-            var intent = Intent(mContext,SongPlayingActivity::class.java)
+            val intent = Intent(mContext,SongPlayingActivity::class.java)
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
             MediaUtils.isAlbumPlaying = true
@@ -106,6 +106,7 @@ class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context, val 
             intent.putExtra("songAlbum", songObject.songAlbum?:-1)
             intent.putExtra("album", songObject.album)
             intent.putExtra("songPosition", position)
+            intent.`package` = mContext?.packageName
             MediaUtils.songsList = songDetails?: ArrayList()
             MediaUtils.setMediaItems()
 

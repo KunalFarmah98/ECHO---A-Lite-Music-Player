@@ -91,7 +91,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
         /*Handling the click event i.e. the action which happens when we click on any song*/
         holder.binding?.contentRow?.setOnClickListener {
-            var intent = Intent(mContext,SongPlayingActivity::class.java)
+            val intent = Intent(mContext,SongPlayingActivity::class.java)
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
             MediaUtils.isAllSongsPLaying = true
@@ -106,6 +106,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
             intent.putExtra("songAlbum", songObject.songAlbum?:-1)
             intent.putExtra("album", songObject.album)
             intent.putExtra("songPosition", position)
+            intent.`package` = mContext?.packageName
             MediaUtils.songsList = songDetails?: ArrayList()
             MediaUtils.setMediaItems()
 
@@ -113,16 +114,6 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
 
             holder.binding?.contentRow?.strokeWidth = 2
             holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
-
-//            var serviceIntent = Intent(mContext, EchoNotification::class.java)
-//
-//            serviceIntent.putExtra("title", songObject.songTitle)
-//            serviceIntent.putExtra("artist", songObject.artist)
-//            serviceIntent.putExtra("album", songObject.songAlbum?)
-//
-//            serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
-//
-//            mContext?.startService(serviceIntent)
 
             (mContext as MainActivity).startActivity(intent)
         }

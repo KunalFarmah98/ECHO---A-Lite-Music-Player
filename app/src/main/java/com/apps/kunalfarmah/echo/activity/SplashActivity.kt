@@ -126,9 +126,11 @@ class SplashActivity : AppCompatActivity() {
         viewModel.getAllSongs()
 
         // observe song list, if it has songs, go ahead
-        viewModel.songsList.observe(this, {
-            if(viewModel.isDataReady.value==true) {
-                val startAct = Intent(this@SplashActivity, MainActivity::class.java)
+        viewModel.songsList.observe(this) {
+            if (viewModel.isDataReady.value == true) {
+                val startAct = Intent(this@SplashActivity, MainActivity::class.java).apply {
+                    `package` = this@SplashActivity.packageName
+                }
                 startActivity(startAct)
                 this.finish()
                 viewModel.isDataReady.value = false
@@ -136,9 +138,10 @@ class SplashActivity : AppCompatActivity() {
             }
             if (!viewModel.songsList.value.isNullOrEmpty()) {
                 Handler().postDelayed({
-                    val startAct = Intent(this@SplashActivity, MainActivity::class.java)
+                    val startAct = Intent(this@SplashActivity, MainActivity::class.java).apply { `package` = this@SplashActivity.packageName }
                     startActivity(startAct)
-                    this.finish()},1500)
+                    this.finish()
+                }, 1500)
                 // if it doesn't have songs, fetch them, listen fro completion and then observe list again
             } else {
                 viewModel.init()
@@ -148,7 +151,7 @@ class SplashActivity : AppCompatActivity() {
                     }
                 })
             }
-        })
+        }
 
 
     }

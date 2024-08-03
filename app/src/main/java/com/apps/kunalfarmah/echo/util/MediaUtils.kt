@@ -75,13 +75,14 @@ object MediaUtils {
                               SongPlayingFragment.Staticated.updateViews(mediaMetadata?.title.toString(), mediaMetadata?.artist.toString(), getBitmap(mediaMetadata?.artworkData))
                               setCurrentSong(mediaMetadata)
                               if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                                   var serviceIntent = Intent(App.context, EchoNotification::class.java)
+                                   val serviceIntent = Intent(App.context, EchoNotification::class.java)
 
                                    serviceIntent.putExtra("title", SongHelper.currentSongHelper.songTitle)
                                    serviceIntent.putExtra("artist", SongHelper.currentSongHelper.songArtist)
                                    serviceIntent.putExtra("album", SongHelper.currentSongHelper.songAlbum)
 
                                    serviceIntent.action = Constants.ACTION.STARTFOREGROUND_ACTION
+                                   serviceIntent.`package` = App.context.packageName
 
                                    // need to start it twice or media controls don't work
                                    App.context.startService(serviceIntent)
@@ -118,17 +119,19 @@ object MediaUtils {
                          return
                     if (playWhenReady) {
                          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                              var play = Intent(App.context, EchoNotification::class.java)
+                              val play = Intent(App.context, EchoNotification::class.java)
                               play.action = Constants.ACTION.CHANGE_TO_PAUSE
-                              App.context?.startService(play)
+                              play.`package` = App.context.packageName
+                              App.context.startService(play)
                          }
                          SongPlayingFragment.Staticated.updateButton("play")
                          SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
                     } else {
                          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                              var play = Intent(App.context, EchoNotification::class.java)
+                              val play = Intent(App.context, EchoNotification::class.java)
                               play.action = Constants.ACTION.CHANGE_TO_PLAY
-                              App.context?.startService(play)
+                              play.`package` = App.context.packageName
+                              App.context.startService(play)
                          }
                          SongPlayingFragment.Staticated.updateButton("pause")
                          SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
