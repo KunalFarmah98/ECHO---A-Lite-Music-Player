@@ -35,13 +35,11 @@ class SplashActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                    android.Manifest.permission.RECORD_AUDIO)
+                    android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             permission_String = arrayOf(
                     android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                    android.Manifest.permission.RECORD_AUDIO,
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.ACCESS_MEDIA_LOCATION,
             )
@@ -49,7 +47,6 @@ class SplashActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permission_String = arrayOf(
                     android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                    android.Manifest.permission.RECORD_AUDIO,
                     android.Manifest.permission.ACCESS_MEDIA_LOCATION,
                     android.Manifest.permission.READ_MEDIA_AUDIO,
                     android.Manifest.permission.POST_NOTIFICATIONS

@@ -2,8 +2,10 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.content.Context.MODE_PRIVATE
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.Sensor
@@ -15,9 +17,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.ParcelFileDescriptor
+import android.provider.Settings
 import android.view.*
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Nullable
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.media3.common.Player
 import com.apps.kunalfarmah.echo.*
@@ -58,6 +63,7 @@ import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
+import com.cleveroad.audiovisualization.VisualizerDbmHandler
 import java.io.FileDescriptor
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -477,6 +483,69 @@ class SongPlayingFragment : Fragment() {
     var mAcceleration: Float = 0f
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
+    var visualizationHandler: VisualizerDbmHandler? = null
+
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                setUpVisualizer()
+            } else {
+                AlertDialog.Builder(myActivity).apply {
+                    setTitle("Permission required to show Visualizer")
+                    setMessage(
+                        "The App requires Record Audio permission in order to show the dynamic visualizer.\n\nThe microphone detects the volume level and then adjusts based on the intensity." +
+                                "\n\nPlease grant the permission in the settings.\n\nIts fine it you do not want to grant this permission. The app will still work normally even without this permission but will not show the visualizer"
+                    )
+                    setPositiveButton("Open Settings") { dialog, _ ->
+                        // open permissions page for this app in settings
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        val uri: Uri = Uri.fromParts("package", context.packageName, null)
+                        intent.data = uri
+                        dialog.cancel()
+                        context.startActivity(intent)
+                    }
+                    setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                }.create().show()
+            }
+        }
+
+
+    private fun setUpVisualizer() {
+        try {
+            //if(visualizationHandler == null) {
+                visualizationHandler =
+                    DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
+                audioVisualization?.linkTo(visualizationHandler!!)
+            //}
+            glView?.visibility = View.VISIBLE
+            albumArt?.visibility = View.GONE
+            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
+        } catch (e: java.lang.Exception) {
+            art?.visibility = View.GONE
+            glView?.visibility = View.GONE
+            albumArt?.visibility = View.VISIBLE
+            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+            Toast.makeText(App.context, "Something went wrong setting up the visualizer.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun prepareVisualizer() {
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.RECORD_AUDIO
+            ) -> {
+                setUpVisualizer()
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -564,14 +633,11 @@ class SongPlayingFragment : Fragment() {
         myActivity = activity
     }
 
-
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // you can extract AudioVisualization interface for simplifying things
         audioVisualization = glView as AudioVisualization
-
         /*Initialising the params of the current song helper object*/
         favoriteContent = EchoDatabase(myActivity)
         currentSongHelper = CurrentSongHelper()
@@ -656,22 +722,6 @@ class SongPlayingFragment : Fragment() {
 
         clickHandler()
 
-        /**
-         *  set visualiser helper
-         *  */
-
-        try {
-            var visualizationHandler =
-                DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
-            audioVisualization?.linkTo(visualizationHandler)
-        }
-        catch (e:java.lang.Exception){
-            art?.visibility =  View.GONE
-            glView?.visibility = View.GONE
-            albumArt?.visibility = View.VISIBLE
-            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
-        }
-
 
         /**
          *  getting the shared preferences for shuffle set by the song
@@ -709,7 +759,6 @@ class SongPlayingFragment : Fragment() {
         if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
             activity?.onBackPressed()
         }
-
     }
 
     override fun onResume() {
@@ -732,15 +781,18 @@ class SongPlayingFragment : Fragment() {
 
     // if user leaves the screen destroy it
     override fun onDestroyView() {
-
         super.onDestroyView()
 
         try {
-            if (audioVisualization != null)
-                audioVisualization?.release()
             mSensorManager?.unregisterListener(mSensorListener)
         } catch (e: Exception) {
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (audioVisualization != null)
+            audioVisualization?.release()
     }
 
     /*A new click handler function is created to handle all the click functions in the song playing fragment*/
@@ -812,9 +864,7 @@ class SongPlayingFragment : Fragment() {
                 albumArt?.visibility = View.VISIBLE
                 controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
             } else {
-                glView?.visibility = View.VISIBLE
-                albumArt?.visibility = View.GONE
-                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
+                prepareVisualizer()
             }
         }
 
