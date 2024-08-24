@@ -26,6 +26,7 @@ public class Constants {
     public static final String NAME_ASC = "NAME_ASC";
     public static final String RECENTLY_ADDED = "RECENTLY_ADDED";
     public static final String VISUALIZER = "VISUALIZER";
+    public static final String DIALOG_SHOWN_COUNT = "DIALOG_SHOWN_COUNT";
 
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;

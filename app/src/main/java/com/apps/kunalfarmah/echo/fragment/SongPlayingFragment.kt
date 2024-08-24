@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.Context.MODE_PRIVATE
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.Sensor
@@ -16,13 +15,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.ParcelFileDescriptor
-import android.provider.Settings
 import android.view.*
 import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Nullable
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.media3.common.Player
 import com.apps.kunalfarmah.echo.*
@@ -64,16 +59,13 @@ import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
-import com.cleveroad.audiovisualization.VisualizerDbmHandler
 import java.io.FileDescriptor
-import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
+
 
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
-    var showVisualizer = true
 
     companion object {
         var sharedPreferences: SharedPreferences? = null
@@ -243,22 +235,25 @@ class SongPlayingFragment : Fragment() {
         /*Sensor Variables*/
         var mSensorManager: SensorManager? = null
         var mSensorListener: SensorEventListener? = null
-        var MY_PREFS_NAME = "ShakeFeature"
         var mLastShakeTime: Long? = 0
 
         fun getAlbumart(album_id: Long): Bitmap? {
             var bm: Bitmap? = null
+            var pfd : ParcelFileDescriptor? = null
             try {
                 val sArtworkUri: Uri = Uri
                     .parse("content://media/external/audio/albumart")
                 val uri: Uri = ContentUris.withAppendedId(sArtworkUri, album_id)
-                val pfd: ParcelFileDescriptor? = myActivity!!.contentResolver
+                pfd = myActivity!!.contentResolver
                     .openFileDescriptor(uri, "r")
                 if (pfd != null) {
                     val fd: FileDescriptor = pfd.fileDescriptor
                     bm = BitmapFactory.decodeFileDescriptor(fd)
                 }
-            } catch (e: java.lang.Exception) {
+            } catch (_: java.lang.Exception) {
+            }
+            finally {
+                pfd?.close()
             }
             return bm
         }
@@ -287,9 +282,11 @@ class SongPlayingFragment : Fragment() {
                         if (img == null) {
                             albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                             glView?.visibility = View.VISIBLE
+                            art?.visibility = View.GONE
                             albumArt?.visibility = View.GONE
                             controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
                         } else {
+                            art?.visibility = View.VISIBLE
                             albumArt?.setImageBitmap(img)
                             if (myActivity != null) {
                                 MediaUtils.visualizerVisibilty.let{ visibility ->
@@ -308,6 +305,7 @@ class SongPlayingFragment : Fragment() {
                             else{}
                         }
                     } else {
+                        art?.visibility = View.GONE
                         albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                         glView?.visibility = View.VISIBLE
                         albumArt?.visibility = View.GONE
@@ -325,11 +323,13 @@ class SongPlayingFragment : Fragment() {
                         img = getAlbumart(currentSongHelper.songAlbum!!)
                     }
                     if (img == null) {
+                        art?.visibility = View.GONE
                         albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                         glView?.visibility = View.VISIBLE
                         albumArt?.visibility = View.GONE
                         controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
                     } else {
+                        art?.visibility = View.VISIBLE
                         albumArt?.setImageBitmap(img)
                         if (myActivity != null) {
                             MediaUtils.visualizerVisibilty.let{
@@ -496,70 +496,6 @@ class SongPlayingFragment : Fragment() {
     var mAcceleration: Float = 0f
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
-    /*var visualizationHandler: VisualizerDbmHandler? = null
-
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                setUpVisualizer()
-            } else {
-                AlertDialog.Builder(myActivity ?: context ?: App.context).apply {
-                    setTitle("Permission required to show Visualizer")
-                    setMessage(
-                        "The App requires Record Audio permission in order to show the dynamic visualizer.\n\nThe microphone detects the volume level and then adjusts based on the intensity." +
-                                "\n\nPlease grant the permission in the settings.\n\nIts fine it you do not want to grant this permission. The app will still work normally even without this permission but will not show the visualizer"
-                    )
-                    setPositiveButton("Open Settings") { dialog, _ ->
-                        // open permissions page for this app in settings
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        val uri: Uri = Uri.fromParts("package", context.packageName, null)
-                        intent.data = uri
-                        dialog.cancel()
-                        context.startActivity(intent)
-                    }
-                    setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-                }.create().show()
-            }
-        }
-
-
-    private fun setUpVisualizer() {
-        try {
-            //if(visualizationHandler == null) {
-                visualizationHandler =
-                    DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
-                audioVisualization?.linkTo(visualizationHandler!!)
-            //}
-            glView?.visibility = View.VISIBLE
-            albumArt?.visibility = View.GONE
-            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
-        } catch (e: java.lang.Exception) {
-            art?.visibility = View.GONE
-            glView?.visibility = View.GONE
-            albumArt?.visibility = View.VISIBLE
-            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
-            Toast.makeText(App.context, "Something went wrong setting up the visualizer.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun prepareVisualizer() {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.RECORD_AUDIO
-            ) -> {
-                setUpVisualizer()
-            }
-
-            else -> {
-                requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-            }
-        }
-    }
-*/
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -652,10 +588,6 @@ class SongPlayingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         audioVisualization = glView as AudioVisualization
-
-        /**
-         *  set visualiser helper
-         *  */
 
         try {
             val visualizationHandler =

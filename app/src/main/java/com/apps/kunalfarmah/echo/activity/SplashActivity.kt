@@ -36,6 +36,10 @@ class SplashActivity : AppCompatActivity() {
             permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
+            // request RECORD_AUDIO at runtime following rationale
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                permission_String.plus(android.Manifest.permission.RECORD_AUDIO)
+            }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             permission_String = arrayOf(
