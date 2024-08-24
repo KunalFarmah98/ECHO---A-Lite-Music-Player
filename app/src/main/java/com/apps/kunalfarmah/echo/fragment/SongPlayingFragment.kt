@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.Context.MODE_PRIVATE
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.hardware.Sensor
@@ -18,6 +19,7 @@ import android.os.ParcelFileDescriptor
 import android.view.*
 import android.widget.*
 import androidx.annotation.Nullable
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.media3.common.Player
 import com.apps.kunalfarmah.echo.*
@@ -286,7 +288,14 @@ class SongPlayingFragment : Fragment() {
                             albumArt?.visibility = View.GONE
                             controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
                         } else {
-                            art?.visibility = View.VISIBLE
+                            art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
+                                if(enabled){
+                                    View.VISIBLE
+                                }
+                                else{
+                                    View.GONE
+                                }
+                            }
                             albumArt?.setImageBitmap(img)
                             if (myActivity != null) {
                                 MediaUtils.visualizerVisibilty.let{ visibility ->
@@ -329,7 +338,14 @@ class SongPlayingFragment : Fragment() {
                         albumArt?.visibility = View.GONE
                         controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
                     } else {
-                        art?.visibility = View.VISIBLE
+                        art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
+                            if(enabled){
+                                View.VISIBLE
+                            }
+                            else{
+                                View.GONE
+                            }
+                        }
                         albumArt?.setImageBitmap(img)
                         if (myActivity != null) {
                             MediaUtils.visualizerVisibilty.let{
@@ -531,7 +547,14 @@ class SongPlayingFragment : Fragment() {
         /*Linking it with the view*/
         fab = view?.findViewById(R.id.favouriteButton)
         art = view?.findViewById(R.id.showArtButton)
-        art?.visibility = View.VISIBLE
+        art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
+            if(enabled){
+                View.VISIBLE
+            }
+            else{
+                View.GONE
+            }
+        }
 
         glView = view?.findViewById(R.id.visualizer_view)
 
@@ -568,6 +591,13 @@ class SongPlayingFragment : Fragment() {
         mAccelerationLast = SensorManager.GRAVITY_EARTH
         sharedPreferences = context?.getSharedPreferences(Constants.APP_PREFS, MODE_PRIVATE)
         bindShakeListener()
+        MediaUtils.visualizerEnabled =
+            ContextCompat.checkSelfPermission(context ?: App.context, android.Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED
+        MediaUtils.visualizerEnabled.let { enabled ->
+            if(!enabled){
+                AppUtil.getAppPreferences(context).edit().putInt(Constants.VISUALIZER, View.GONE).apply()
+            }
+        }
     }
 
 
@@ -583,24 +613,32 @@ class SongPlayingFragment : Fragment() {
         myActivity = activity
     }
 
+    private fun disableVisualizer(){
+        art?.visibility = View.GONE
+        MediaUtils.visualizerVisibilty = View.GONE
+        MediaUtils.visualizerEnabled = false
+        glView?.visibility = View.GONE
+        albumArt?.visibility = View.VISIBLE
+        controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+    }
+
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         audioVisualization = glView as AudioVisualization
-
-        try {
-            val visualizationHandler =
-                DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
-            audioVisualization?.linkTo(visualizationHandler)
-            glView?.visibility = MediaUtils.visualizerVisibilty
+        if(MediaUtils.visualizerEnabled) {
+            try {
+                val visualizationHandler =
+                    DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
+                audioVisualization?.linkTo(visualizationHandler)
+                glView?.visibility = MediaUtils.visualizerVisibilty
+            } catch (e: java.lang.Exception) {
+                disableVisualizer()
+            }
         }
-        catch (e:java.lang.Exception){
-            art?.visibility =  View.GONE
-            MediaUtils.visualizerVisibilty = View.GONE
-            glView?.visibility = View.GONE
-            albumArt?.visibility = View.VISIBLE
-            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+        else{
+            disableVisualizer()
         }
 
 
@@ -736,6 +774,14 @@ class SongPlayingFragment : Fragment() {
         )
         if (audioVisualization != null)
             audioVisualization!!.onResume()
+        MediaUtils.visualizerEnabled =
+            ContextCompat.checkSelfPermission(context ?: App.context, android.Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED
+        MediaUtils.visualizerEnabled.let { enabled ->
+            if(!enabled){
+                disableVisualizer()
+                AppUtil.getAppPreferences(context).edit().putInt(Constants.VISUALIZER, View.GONE).apply()
+            }
+        }
     }
 
     override fun onPause() {

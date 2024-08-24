@@ -40,6 +40,7 @@ object MediaUtils {
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
      var visualizerVisibilty = View.GONE
+     var visualizerEnabled = true
      var currAlbum = -1L
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
 

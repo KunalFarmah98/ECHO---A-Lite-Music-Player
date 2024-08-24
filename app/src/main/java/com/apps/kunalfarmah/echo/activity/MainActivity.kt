@@ -175,7 +175,6 @@ class MainActivity : AppCompatActivity() {
             val dialogShownCount = AppUtil.getAppPreferences(this).getInt(Constants.DIALOG_SHOWN_COUNT,0)
             // display dialog till shouldShowRequestPermissionRationale is true (this only happens when user denies the first time) or it is the first launch
             if (shouldShowRequestPermissionRationale(android.Manifest.permission.RECORD_AUDIO)) {
-                AppUtil.getAppPreferences(this).edit().putInt(Constants.DIALOG_SHOWN_COUNT,dialogShownCount+1).apply()
                 displayDialog()
             }
             else{
