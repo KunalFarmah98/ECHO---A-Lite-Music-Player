@@ -85,11 +85,12 @@ class SongPlayingFragment : Fragment() {
             MediaUtils.mediaPlayer.seekToNextMediaItem()
 
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                var play = Intent(myActivity, EchoNotification::class.java)
+                val play = Intent(myActivity, EchoNotification::class.java)
                 play.action = Constants.ACTION.NEXT_UPDATE
                 play.putExtra("title", currentSongHelper.songTitle)
                 play.putExtra("artist", currentSongHelper.songArtist)
                 play.putExtra("album", currentSongHelper.songAlbum)
+                play.`package` = myActivity?.packageName
                 myActivity?.startService(play)
             }
         }
@@ -108,11 +109,12 @@ class SongPlayingFragment : Fragment() {
             mediaPlayer.seekToPreviousMediaItem()
 
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                var play = Intent(myActivity, EchoNotification::class.java)
+                val play = Intent(myActivity, EchoNotification::class.java)
                 play.action = Constants.ACTION.PREV_UPDATE
                 play.putExtra("title", currentSongHelper.songTitle)
                 play.putExtra("artist", currentSongHelper.songArtist)
                 play.putExtra("album", currentSongHelper.songAlbum)
+                play.`package` = myActivity?.packageName
                 myActivity?.startService(play)
             }
         }

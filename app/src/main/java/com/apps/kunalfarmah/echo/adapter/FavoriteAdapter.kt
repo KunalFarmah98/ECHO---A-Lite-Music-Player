@@ -79,7 +79,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
 
             /*Let's discuss this peice of code*/
             /*Firstly we define an object of the SongPlayingFragment*/
-            var intent = Intent(mContext,SongPlayingActivity::class.java)
+            val intent = Intent(mContext,SongPlayingActivity::class.java)
             notifyItemChanged(max(MediaUtils.getSongIndex(),0))
             MediaUtils.currSong = songObject
 
@@ -94,6 +94,7 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
             intent.putExtra("SongID", songObject.songID)
             intent.putExtra("songPosition", position)
             intent.putExtra("songAlbum", songObject.songAlbum as Long)
+            intent.`package` = mContext?.packageName
 
             MediaUtils.songsList = songDetails?: ArrayList()
             MediaUtils.setMediaItems()

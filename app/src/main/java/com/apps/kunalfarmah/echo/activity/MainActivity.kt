@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -68,12 +69,10 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Constants.ACTION.CLOSE) {
                 try {
-                    if (mediaPlayer != null) {
-                        mediaPlayer.stop()
-                        mediaPlayer.playWhenReady = false
-                        //mediaPlayer.release()
-                    }
-                }catch (e:Exception){}
+                    mediaPlayer.stop()
+                    mediaPlayer.playWhenReady = false
+                    //mediaPlayer.release()
+                }catch (_:Exception){}
                 SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
                 song!!.unregister()
                 // SongPlayingFragment.Statified.mediaPlayer?.release()
@@ -188,15 +187,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerRecycler.setHasFixedSize(true)
 
-        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this)
-        val mIntentFilter = IntentFilter()
-        mIntentFilter.addAction(Constants.ACTION.CLOSE)
-
-
-        mLocalBroadcastManager?.registerReceiver(
-                mBroadcastReceiver,
-                mIntentFilter
-        )
+        ContextCompat.registerReceiver(this, mBroadcastReceiver,  IntentFilter(Constants.ACTION.CLOSE), ContextCompat.RECEIVER_NOT_EXPORTED)
 
         bottomNav = binding.mainLayout.bottomNav
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
@@ -247,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.isSongPlaying.observeForever(songObserver)
 
         // register receiver for unplugging earphones
-        var filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+        val filter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
         registerReceiver(mNoisyReceiver, filter)
     }
 
@@ -269,7 +260,7 @@ class MainActivity : AppCompatActivity() {
         try {
             super.onDestroy()
             viewModel.isSongPlaying.removeObserver(songObserver)
-            mLocalBroadcastManager?.unregisterReceiver(mBroadcastReceiver)
+            unregisterReceiver(mBroadcastReceiver)
             unregisterReceiver(mNoisyReceiver)
             SongPlayingFragment.Staticated.mSensorManager?.unregisterListener(mSensorListener)
             song!!.unregister()

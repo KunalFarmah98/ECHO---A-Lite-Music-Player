@@ -110,7 +110,7 @@ class SettingsFragment : Fragment() {
         aditional?.setOnClickListener {
 
 
-            startActivity(Intent(context, WizardActivity::class.java))
+            startActivity(Intent(context, WizardActivity::class.java).apply { `package` = context?.packageName })
 
 
         }

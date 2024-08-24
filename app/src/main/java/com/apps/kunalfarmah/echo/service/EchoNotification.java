@@ -322,6 +322,7 @@ public class EchoNotification extends Service {
 
 
         Intent openIntent = new Intent(this, EchoNotification.class);
+        openIntent.setPackage(this.getPackageName());
         PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0, openIntent, pendingIntentFlag);
 
 
@@ -331,23 +332,27 @@ public class EchoNotification extends Service {
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, pendingIntentFlag);
-
+        notificationIntent.setPackage(this.getPackageName());
         Intent previousIntent = new Intent(this, EchoNotification.class);
+        previousIntent.setPackage(this.getPackageName());
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
         PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
                 previousIntent, pendingIntentFlag);
 
         Intent playIntent = new Intent(this, EchoNotification.class);
+        playIntent.setPackage(this.getPackageName());
         playIntent.setAction(Constants.ACTION.PLAY_ACTION);
         PendingIntent pplayIntent = PendingIntent.getService(this, 0,
                 playIntent, pendingIntentFlag);
 
         Intent nextIntent = new Intent(this, EchoNotification.class);
+        nextIntent.setPackage(this.getPackageName());
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
         PendingIntent pnextIntent = PendingIntent.getService(this, 0,
                 nextIntent, pendingIntentFlag);
 
         Intent closeIntent = new Intent(this, EchoNotification.class);
+        closeIntent.setPackage(this.getPackageName());
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
                 closeIntent, pendingIntentFlag);
@@ -493,11 +498,13 @@ public class EchoNotification extends Service {
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notificationIntent.setPackage(this.getPackageName());
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, pendingIntentFlag);
 
         Intent closeIntent = new Intent(this, EchoNotification.class);
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+        closeIntent.setPackage(this.getPackageName());
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
                 closeIntent, pendingIntentFlag);
 
@@ -561,26 +568,31 @@ public class EchoNotification extends Service {
 
         Intent previousIntent = new Intent(this, EchoNotification.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
+        previousIntent.setPackage(this.getPackageName());
         PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
                 previousIntent, pendingIntentFlag);
 
         Intent playIntent = new Intent(this, EchoNotification.class);
         playIntent.setAction(Constants.ACTION.PLAY_ACTION);
+        playIntent.setPackage(this.getPackageName());
         PendingIntent pplayIntent = PendingIntent.getService(this, 0,
                 playIntent, pendingIntentFlag);
 
         Intent nextIntent = new Intent(this, EchoNotification.class);
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
+        nextIntent.setPackage(this.getPackageName());
         PendingIntent pnextIntent = PendingIntent.getService(this, 0,
                 nextIntent, pendingIntentFlag);
 
         Intent closeIntent = new Intent(this, EchoNotification.class);
         closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+        closeIntent.setPackage(this.getPackageName());
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
                 closeIntent, pendingIntentFlag);
 
         Intent shuffleIntent = new Intent(this, EchoNotification.class);
         shuffleIntent.setAction(Constants.ACTION.SHUFFLE_ACTION);
+        shuffleIntent.setPackage(this.getPackageName());
         PendingIntent pShuffleIntent = PendingIntent.getService(this, 0,
                 shuffleIntent, pendingIntentFlag);
 
