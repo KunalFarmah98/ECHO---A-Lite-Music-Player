@@ -34,8 +34,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
      private val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
-     lateinit var controllerFuture: ListenableFuture<MediaController>
-     lateinit var controller: MediaController
+     private lateinit var controllerFuture: ListenableFuture<MediaController>
+     private lateinit var controller: MediaController
      var isAlbumPlaying = false
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
@@ -59,16 +59,15 @@ object MediaUtils {
                     visualizerVisibilty = state ?: View.GONE
                }
           }
-          var audioAttributes = AudioAttributes.Builder()
+          val audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                   .build()
           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-               controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
+               controllerFuture = MediaController.Builder(App.context, sessionToken).buildAsync()
                controllerFuture.addListener(
                        {
                             controller = controllerFuture.get()
-                            // call playback command methods on the controller like `controller.play()`
                        },
                        MoreExecutors.directExecutor()
                )
@@ -229,7 +228,7 @@ object MediaUtils {
           if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                if (currSong == null)
                     return -1
-               return songsList?.indexOf(currSong)!!
+               return songsList.indexOf(currSong)
           }
           else{
                return mediaPlayer.currentMediaItemIndex
@@ -239,9 +238,9 @@ object MediaUtils {
      fun setCurrentSong(metadata: MediaMetadata?) {
           if(metadata != null && metadata.title != null) {
                val index = mediaPlayer.currentMediaItemIndex
-               SongHelper.currentSongHelper.songTitle = metadata?.title.toString()
-               SongHelper.currentSongHelper.songArtist = metadata?.artist.toString()
-               SongHelper.currentSongHelper.album = metadata?.albumTitle.toString()
+               SongHelper.currentSongHelper.songTitle = metadata.title.toString()
+               SongHelper.currentSongHelper.songArtist = metadata.artist.toString()
+               SongHelper.currentSongHelper.album = metadata.albumTitle.toString()
                SongHelper.currentSongHelper.songAlbum = songsList[index].songAlbum
                SongHelper.currentSongHelper.currentPosition = index
                SongHelper.currentSongHelper.songId = songsList[index].songID

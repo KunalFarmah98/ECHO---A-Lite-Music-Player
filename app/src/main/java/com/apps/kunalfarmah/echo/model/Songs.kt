@@ -17,13 +17,13 @@ data class Songs(var songID :Long, var songTitle:String, var artist:String, var 
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest?.writeLong(songID)
-        dest?.writeString(songTitle)
-        dest?.writeString(artist)
-        dest?.writeString(album)
-        dest?.writeString(songData)
-        dest?.writeLong(dateAdded)
-        dest?.writeValue(songAlbum)
+        dest.writeLong(songID)
+        dest.writeString(songTitle)
+        dest.writeString(artist)
+        dest.writeString(album)
+        dest.writeString(songData)
+        dest.writeLong(dateAdded)
+        dest.writeValue(songAlbum)
     }
 
     override fun describeContents(): Int {
