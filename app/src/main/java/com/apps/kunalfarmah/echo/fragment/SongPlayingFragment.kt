@@ -2,7 +2,6 @@ package com.apps.kunalfarmah.echo.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.*
 import android.content.Context.MODE_PRIVATE
 import android.content.pm.PackageManager
@@ -22,6 +21,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.media3.common.Player
@@ -54,6 +54,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shuffleb
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.EchoNotification
+import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.CurrentSongHelper
@@ -128,12 +129,6 @@ class SongPlayingFragment : Fragment() {
 
 
     @SuppressLint("StaticFieldLeak")
-/*Here you may wonder that why did we create two objects namely Statified and Staticated respectively
-    * These objects are created as the variables and functions will be used from another class
-    * Now, the question is why did we make two different objects and not one single object
-    * This is because we created the Statified object which contains all the variables and
-    * the Staticated object which contain all the functions*/
-
 
 
     object Statified {
@@ -288,7 +283,7 @@ class SongPlayingFragment : Fragment() {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 currentSongHelper.songAlbum.let {
                     if (it != null) {
-                        var img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
+                        val img = getAlbumart(currentSongHelper.songAlbum!!.toLong())
                         if (img == null) {
                             albumArt?.setImageDrawable(myActivity!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
                             glView?.visibility = View.VISIBLE
@@ -297,9 +292,18 @@ class SongPlayingFragment : Fragment() {
                         } else {
                             albumArt?.setImageBitmap(img)
                             if (myActivity != null) {
-                                glView?.visibility = View.GONE
-                                albumArt?.visibility = View.VISIBLE
-                                controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                                MediaUtils.visualizerVisibilty.let{ visibility ->
+                                    if(visibility == View.VISIBLE){
+                                        glView?.visibility = View.VISIBLE
+                                        albumArt?.visibility = View.GONE
+                                        controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                                    }
+                                    else{
+                                        glView?.visibility = View.GONE
+                                        albumArt?.visibility = View.VISIBLE
+                                        controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                                    }
+                                }
                             }
                             else{}
                         }
@@ -328,9 +332,18 @@ class SongPlayingFragment : Fragment() {
                     } else {
                         albumArt?.setImageBitmap(img)
                         if (myActivity != null) {
-                            glView?.visibility = View.GONE
-                            albumArt?.visibility = View.VISIBLE
-                            controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                            MediaUtils.visualizerVisibilty.let{
+                                if(it == View.VISIBLE){
+                                    glView?.visibility = View.VISIBLE
+                                    albumArt?.visibility = View.GONE
+                                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                                }
+                                else{
+                                    glView?.visibility = View.GONE
+                                    albumArt?.visibility = View.VISIBLE
+                                    controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                                }
+                            }
                         }
                     }
                 }
@@ -483,7 +496,7 @@ class SongPlayingFragment : Fragment() {
     var mAcceleration: Float = 0f
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
-    var visualizationHandler: VisualizerDbmHandler? = null
+    /*var visualizationHandler: VisualizerDbmHandler? = null
 
 
     private val requestPermissionLauncher =
@@ -493,7 +506,7 @@ class SongPlayingFragment : Fragment() {
             if (isGranted) {
                 setUpVisualizer()
             } else {
-                AlertDialog.Builder(myActivity).apply {
+                AlertDialog.Builder(myActivity ?: context ?: App.context).apply {
                     setTitle("Permission required to show Visualizer")
                     setMessage(
                         "The App requires Record Audio permission in order to show the dynamic visualizer.\n\nThe microphone detects the volume level and then adjusts based on the intensity." +
@@ -546,6 +559,7 @@ class SongPlayingFragment : Fragment() {
             }
         }
     }
+*/
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -638,6 +652,26 @@ class SongPlayingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         audioVisualization = glView as AudioVisualization
+
+        /**
+         *  set visualiser helper
+         *  */
+
+        try {
+            val visualizationHandler =
+                DbmHandler.Factory.newVisualizerHandler(myActivity as Context, 0)
+            audioVisualization?.linkTo(visualizationHandler)
+            glView?.visibility = MediaUtils.visualizerVisibilty
+        }
+        catch (e:java.lang.Exception){
+            art?.visibility =  View.GONE
+            MediaUtils.visualizerVisibilty = View.GONE
+            glView?.visibility = View.GONE
+            albumArt?.visibility = View.VISIBLE
+            controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+        }
+
+
         /*Initialising the params of the current song helper object*/
         favoriteContent = EchoDatabase(myActivity)
         currentSongHelper = CurrentSongHelper()
@@ -784,15 +818,11 @@ class SongPlayingFragment : Fragment() {
         super.onDestroyView()
 
         try {
+            if (audioVisualization != null)
+                audioVisualization?.release()
             mSensorManager?.unregisterListener(mSensorListener)
         } catch (e: Exception) {
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (audioVisualization != null)
-            audioVisualization?.release()
     }
 
     /*A new click handler function is created to handle all the click functions in the song playing fragment*/
@@ -861,10 +891,14 @@ class SongPlayingFragment : Fragment() {
         art?.setOnClickListener {
             if (glView?.visibility == View.VISIBLE) {
                 glView?.visibility = View.GONE
+                AppUtil.getAppPreferences(context).edit().putInt(Constants.VISUALIZER, View.GONE).apply()
                 albumArt?.visibility = View.VISIBLE
                 controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
             } else {
-                prepareVisualizer()
+                AppUtil.getAppPreferences(context).edit().putInt(Constants.VISUALIZER, View.VISIBLE).apply()
+                glView?.visibility = View.VISIBLE
+                albumArt?.visibility = View.GONE
+                controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
             }
         }
 
