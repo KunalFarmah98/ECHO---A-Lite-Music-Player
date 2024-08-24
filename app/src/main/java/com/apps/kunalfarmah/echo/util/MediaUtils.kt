@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.view.View
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -38,15 +39,24 @@ object MediaUtils {
      var isAlbumPlaying = false
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
+     var visualizerVisibilty = View.GONE
      var currAlbum = -1L
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
 
      init {
+          AppUtil.getAppPreferences(App.context).getInt(Constants.VISUALIZER, View.GONE).let{
+               visualizerVisibilty = it
+          }
           AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
                if (key.equals(Constants.SHUFFLE)) {
                     val state = sharedPreferences?.getBoolean(key, false)
                     PlaybackService.mInstance?.setCustomLayoutForShuffle(state)
                     SongPlayingFragment.Staticated.setSeekButtonsControl()
+               }
+
+               if (key.equals(Constants.VISUALIZER)) {
+                    val state = sharedPreferences?.getInt(key, View.GONE)
+                    visualizerVisibilty = state ?: View.GONE
                }
           }
           var audioAttributes = AudioAttributes.Builder()

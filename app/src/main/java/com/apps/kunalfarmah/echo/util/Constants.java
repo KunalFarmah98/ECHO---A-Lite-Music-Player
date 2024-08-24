@@ -25,6 +25,7 @@ public class Constants {
     public static final String SORTING = "SORTING";
     public static final String NAME_ASC = "NAME_ASC";
     public static final String RECENTLY_ADDED = "RECENTLY_ADDED";
+    public static final String VISUALIZER = "VISUALIZER";
 
     public interface NOTIFICATION_ID {
         int FOREGROUND_SERVICE = 101;
