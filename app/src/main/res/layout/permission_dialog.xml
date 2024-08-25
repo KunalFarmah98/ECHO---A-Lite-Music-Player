@@ -6,14 +6,16 @@
     android:background="@android:color/transparent">
 
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        app:cardBackgroundColor="@color/colorPrimary"
         app:cardCornerRadius="30dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:strokeColor="@android:color/white"
+        app:strokeWidth="1dp"
         app:cardElevation="5dp"
         app:contentPadding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,5 +75,5 @@
             </LinearLayout>
         </ScrollView>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
