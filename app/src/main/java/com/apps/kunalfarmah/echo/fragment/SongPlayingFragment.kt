@@ -243,7 +243,7 @@ class SongPlayingFragment : Fragment() {
         var mSensorManager: SensorManager? = null
         var mSensorListener: SensorEventListener? = null
         var mLastShakeTime: Long? = 0
-        private var tooptipShown = false
+        private var tooltipShown = false
         private val hideToolTipRunnable = Runnable { toolTip?.visibility = View.GONE }
         private val showToolTipRunnable = Runnable { toolTip?.visibility = View.VISIBLE }
         private val toolTipHandler = Handler(Looper.getMainLooper())
@@ -282,8 +282,8 @@ class SongPlayingFragment : Fragment() {
             )
             val tooltipShownCount =
                 AppUtil.getAppPreferences(App.context).getInt(Constants.TOOLTIP_SHOWN_COUNT, 0)
-            if (tooltipShownCount < 2 && !tooptipShown) {
-                tooptipShown = true
+            if (tooltipShownCount < 2 && !tooltipShown) {
+                tooltipShown = true
                 toolTipHandler.postDelayed(showToolTipRunnable, 500)
                 toolTipHandler.postDelayed(hideToolTipRunnable, 4500)
                 AppUtil.getAppPreferences(App.context).edit()
