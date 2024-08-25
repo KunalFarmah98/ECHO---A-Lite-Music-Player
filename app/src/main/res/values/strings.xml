@@ -33,10 +33,10 @@ or pulling down the notification panel to do the same.</string>
         Music, Audio and Downloads folders that usually host stored or downloaded audio files. In order to have a seamless experience make sure that all the song files are located in one of these
     folders.</string>
     <string name="help_1_1">As this is an offline music player, it only works with songs stored offline on your device in the Music, Downloads or Audio Folder.</string>
-    <string name="help1_q1">(i) Do you have audio files (.mp3,.wav,.wma) stored offline on your device?</string>
+    <string name="help1_q1">(i) Do you have audio files (.mp3,.wav) stored offline on your device?</string>
     <string name="help1_q2">(ii) Still not seeing any song file in the list?</string>
-    <string name="help_2"> In order to have a seamless experience, it is recommended that all your music files are in the Music, Downloads or Audio folders of your device.</string>
-    <string name="help_3"> Some custom OS / OEM manufacturers use a different name for the folders storing music files
+    <string name="help_2"> In order to have a seamless experience, it is recommended that all your music files are in the Music, Downloads or Audio folders of your device. The app filters out any recordings, alarms, ringtones and duplicate songs automatically.</string>
+    <string name="help_3"> Some custom OS / OEM manufacturers use a different name for the folders storing music files.
     In that case the app should still be able to find the song files for you. If in case, you still get a blank list of songs, you can manually create a \"Music\"  folder without quotes in your internal storage\'s root
     directory and copy your music files there.</string>
     <string name="help_3_1">You can go to your file manager, navigate to internal storage, press the 3 vertical dots on the top right corner of the screen and select new folder.
