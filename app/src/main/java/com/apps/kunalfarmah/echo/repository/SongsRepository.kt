@@ -10,8 +10,7 @@ import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
 import dagger.hilt.android.qualifiers.ApplicationContext
 
-class SongsRepository
-constructor(
+class SongsRepository(
         @ApplicationContext private val context: Context,
         private val echoDao: EchoDao,
         private val cacheMapper: CacheMapper
@@ -46,7 +45,7 @@ constructor(
     @SuppressLint("Recycle")
     fun getSongsFromPhone(): ArrayList<Songs> {
 
-        var arralist = ArrayList<Songs>()
+        val arraylist = ArrayList<Songs>()
         var contentResolver = context.contentResolver
 
         val songURI =
@@ -57,9 +56,10 @@ constructor(
                 } else {
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 }
-        var selection = "${MediaStore.Audio.Media.DURATION} > 30000 AND ${MediaStore.Audio.Media.TITLE} NOT LIKE 'AUD%' AND ${MediaStore.Audio.Media.TITLE} NOT LIKE 'PTT%'"
+        // all music files larger than 30 seconds and are not recordings
+        val selection = "${MediaStore.Audio.Media.IS_MUSIC} <> 0 AND ${MediaStore.Audio.Media.DURATION} > 30000 AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'AUD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE '%RECORD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'PTT%'"
 
-        var songCursor = contentResolver?.query(songURI, null, selection, null, null)
+        val songCursor = contentResolver?.query(songURI, null, selection, null, null)
 
         if (songCursor != null && songCursor.moveToFirst()) {
             // getting column indices to query
@@ -83,7 +83,7 @@ constructor(
 
 
                 try {
-                    arralist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
+                    arraylist.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
                 }
                 catch (e:Exception){
                 }
@@ -91,19 +91,19 @@ constructor(
         }
 
         try {
-            removeduplicates(arralist)
+            removeduplicates(arraylist)
         }catch (e:Exception){}
 
         try {
             songCursor!!.close()
         }catch (e:Exception){}
 
-        return arralist
+        return arraylist
 
 
     }
 
-    fun removeduplicates(list:ArrayList<Songs>) {
+    private fun removeduplicates(list:ArrayList<Songs>) {
 
         // preventing index out of bounds
         try {
