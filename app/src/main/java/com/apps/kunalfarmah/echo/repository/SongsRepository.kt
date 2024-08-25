@@ -92,6 +92,6 @@ class SongsRepository(
             songCursor!!.close()
         }catch (_:Exception){}
 
-        return ArrayList(songs)
+        return ArrayList(songs.distinctBy { it.songTitle+it.artist+it.album+(it.songAlbum?:0L) })
     }
 }

@@ -27,12 +27,6 @@ class HelpFragment : Fragment() {
         activity?.title = "Help"
         MainActivity.Statified.settingsOn=true
 
-
-        (v.findViewById<TextView>(R.id.link)).setOnClickListener {
-            var intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(v.findViewById<TextView>(R.id.link).text.toString())
-            startActivity(intent)
-        }
         return  v
     }
 

@@ -111,25 +111,6 @@
             android:textColor="#FFFFFF"
             android:textSize="17sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:text="@string/link_help"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_10sdp"
-            android:text="http://bit.ly/AndroidFileSystem"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp" />
-
     </LinearLayout>
 
 
