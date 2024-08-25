@@ -560,27 +560,25 @@ class SongPlayingFragment : Fragment() {
         toolTip = view?.findViewById(R.id.tooltip)
 
         art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
-            if(enabled){
+            if (enabled) {
                 // show tooptip in Lolipop and above once per session for 3 launches post install
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && toolTip != null) {
-                    toolTip!!.setShapeAppearanceModel(
-                        toolTip!!.shapeAppearanceModel
-                            .toBuilder()
-                            .setTopLeftCorner(CornerFamily.ROUNDED, 35f)
-                            .setBottomRightCorner(CornerFamily.ROUNDED, 35f)
-                            .setBottomLeftCorner(CornerFamily.ROUNDED, 35f)
-                            .setTopRightCornerSize(0f)
-                            .build()
-                    )
-                    val tooltipShownCount =
-                        AppUtil.getAppPreferences(context).getInt(Constants.TOOLTIP_SHOWN_COUNT, 0)
-                    if (tooltipShownCount < 2 && !tooptipShown) {
-                        tooptipShown = true
-                        toolTipHandler.postDelayed(showToolTipRunnable,500)
-                        toolTipHandler.postDelayed(hideToolTipRunnable,3000)
-                        AppUtil.getAppPreferences(context).edit()
-                            .putInt(Constants.TOOLTIP_SHOWN_COUNT, tooltipShownCount + 1).apply()
-                    }
+                toolTip!!.setShapeAppearanceModel(
+                    toolTip!!.shapeAppearanceModel
+                        .toBuilder()
+                        .setTopLeftCorner(CornerFamily.ROUNDED, 35f)
+                        .setBottomRightCorner(CornerFamily.ROUNDED, 35f)
+                        .setBottomLeftCorner(CornerFamily.ROUNDED, 35f)
+                        .setTopRightCornerSize(0f)
+                        .build()
+                )
+                val tooltipShownCount =
+                    AppUtil.getAppPreferences(context).getInt(Constants.TOOLTIP_SHOWN_COUNT, 0)
+                if (tooltipShownCount < 2 && !tooptipShown) {
+                    tooptipShown = true
+                    toolTipHandler.postDelayed(showToolTipRunnable, 500)
+                    toolTipHandler.postDelayed(hideToolTipRunnable, 3000)
+                    AppUtil.getAppPreferences(context).edit()
+                        .putInt(Constants.TOOLTIP_SHOWN_COUNT, tooltipShownCount + 1).apply()
                 }
                 View.VISIBLE
             }
