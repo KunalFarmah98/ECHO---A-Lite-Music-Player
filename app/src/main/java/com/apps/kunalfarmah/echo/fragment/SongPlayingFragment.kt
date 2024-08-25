@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.ParcelFileDescriptor
 import android.view.*
 import android.widget.*
@@ -48,6 +49,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.playpaus
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.previousbutton
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.seekBar
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.shufflebutton
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.toolTip
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.EchoNotification
@@ -61,6 +63,8 @@ import com.apps.kunalfarmah.echo.util.SongHelper.currentSongHelper
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.shape.CornerFamily
 import java.io.FileDescriptor
 import java.util.concurrent.TimeUnit
 
@@ -68,6 +72,7 @@ import java.util.concurrent.TimeUnit
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
+    private var tooptipShown = false
 
     companion object {
         var sharedPreferences: SharedPreferences? = null
@@ -151,6 +156,7 @@ class SongPlayingFragment : Fragment() {
         var albumArt: ImageView? = null
         var fab: ImageView? = null
         var art: ImageView? = null
+        var toolTip: MaterialCardView?= null
 
         var currentPosition: Int = 0
 
@@ -513,6 +519,10 @@ class SongPlayingFragment : Fragment() {
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
 
+    private val hideToolTipRunnable = Runnable { toolTip?.visibility = View.GONE }
+    private val showToolTipRunnable = Runnable { toolTip?.visibility = View.VISIBLE }
+    private val toolTipHandler = Handler(Looper.getMainLooper())
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -547,8 +557,31 @@ class SongPlayingFragment : Fragment() {
         /*Linking it with the view*/
         fab = view?.findViewById(R.id.favouriteButton)
         art = view?.findViewById(R.id.showArtButton)
+        toolTip = view?.findViewById(R.id.tooltip)
+
         art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
             if(enabled){
+                // show tooptip in Lolipop and above once per session for 3 launches post install
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && toolTip != null) {
+                    toolTip!!.setShapeAppearanceModel(
+                        toolTip!!.shapeAppearanceModel
+                            .toBuilder()
+                            .setTopLeftCorner(CornerFamily.ROUNDED, 35f)
+                            .setBottomRightCorner(CornerFamily.ROUNDED, 35f)
+                            .setBottomLeftCorner(CornerFamily.ROUNDED, 35f)
+                            .setTopRightCornerSize(0f)
+                            .build()
+                    )
+                    val tooltipShownCount =
+                        AppUtil.getAppPreferences(context).getInt(Constants.TOOLTIP_SHOWN_COUNT, 0)
+                    if (tooltipShownCount < 2 && !tooptipShown) {
+                        tooptipShown = true
+                        toolTipHandler.postDelayed(showToolTipRunnable,500)
+                        toolTipHandler.postDelayed(hideToolTipRunnable,3000)
+                        AppUtil.getAppPreferences(context).edit()
+                            .putInt(Constants.TOOLTIP_SHOWN_COUNT, tooltipShownCount + 1).apply()
+                    }
+                }
                 View.VISIBLE
             }
             else{
@@ -794,7 +827,7 @@ class SongPlayingFragment : Fragment() {
     // if user leaves the screen destroy it
     override fun onDestroyView() {
         super.onDestroyView()
-
+        toolTipHandler.removeCallbacksAndMessages(null)
         try {
             if (audioVisualization != null)
                 audioVisualization?.release()

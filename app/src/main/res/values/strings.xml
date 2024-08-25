@@ -73,5 +73,7 @@ or pulling down the notification panel to do the same.</string>
     <string name="grant_permission">Grant Permission</string>
     <string name="x">X</string>
     <string name="visualizer_gif">visualizer gif</string>
+    <string name="switch_between_albumart_and_visualizer">Switch between Album Art and Visualizer</string>
+    <string name="album_art">album art</string>
 
 </resources>
