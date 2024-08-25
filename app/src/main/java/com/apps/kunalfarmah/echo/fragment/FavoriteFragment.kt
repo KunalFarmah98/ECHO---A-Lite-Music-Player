@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -24,7 +22,6 @@ import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Collections
 import kotlin.math.max
 
 @AndroidEntryPoint
@@ -90,40 +87,6 @@ class FavoriteFragment : Fragment() {
         getFavorites()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.main, menu)
-//    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.action_sort_recent)?.isVisible=false
-    }
-
-    /*Here we perform the actions of sorting according to the menu item clicked*/
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val switcher = item.itemId
-        if (switcher == R.id.acton_sort_ascending) {
-            val editor = prefs?.edit()
-            editor?.putString(Constants.SORTING, Constants.NAME_ASC)
-            editor?.apply()
-            if (refreshList != null) {
-                Collections.sort(refreshList, Songs.Statified.nameComparator)
-            }
-            favouriteAdapter?.notifyDataSetChanged()
-            return false
-        } else if (switcher == R.id.action_sort_recent) {
-            val editor = prefs?.edit()
-            editor?.putString(Constants.SORTING, Constants.RECENTLY_ADDED)
-            editor?.apply()
-            if (refreshList != null) {
-                Collections.sort(refreshList, Songs.Statified.dateComparator)
-            }
-            favouriteAdapter?.notifyDataSetChanged()
-            return false
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onResume() {
         super.onResume()
         if(favouriteAdapter?.songDetails.isNullOrEmpty()){
@@ -165,7 +128,6 @@ class FavoriteFragment : Fragment() {
 //                } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
 //                    Collections.sort(refreshList, Songs.Statified.dateComparator)
 //                }
-                Collections.sort(refreshList, Songs.Statified.dateComparator)
                 binding.noFavorites?.visibility = View.GONE
                 // recyclerView?.visibility = View.VISIBLE
 

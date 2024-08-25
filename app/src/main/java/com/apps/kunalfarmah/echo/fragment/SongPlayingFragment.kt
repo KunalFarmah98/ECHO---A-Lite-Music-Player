@@ -72,7 +72,6 @@ import java.util.concurrent.TimeUnit
 class SongPlayingFragment : Fragment() {
 
     var play: Boolean = false
-    private var tooptipShown = false
 
     companion object {
         var sharedPreferences: SharedPreferences? = null
@@ -244,6 +243,10 @@ class SongPlayingFragment : Fragment() {
         var mSensorManager: SensorManager? = null
         var mSensorListener: SensorEventListener? = null
         var mLastShakeTime: Long? = 0
+        private var tooptipShown = false
+        private val hideToolTipRunnable = Runnable { toolTip?.visibility = View.GONE }
+        private val showToolTipRunnable = Runnable { toolTip?.visibility = View.VISIBLE }
+        private val toolTipHandler = Handler(Looper.getMainLooper())
 
         fun getAlbumart(album_id: Long): Bitmap? {
             var bm: Bitmap? = null
@@ -264,6 +267,32 @@ class SongPlayingFragment : Fragment() {
                 pfd?.close()
             }
             return bm
+        }
+
+        private fun handleToolTip(){
+            // show tooptip in Lolipop and above once per session for 3 launches post install
+            toolTip!!.setShapeAppearanceModel(
+                toolTip!!.shapeAppearanceModel
+                    .toBuilder()
+                    .setTopLeftCorner(CornerFamily.ROUNDED, 35f)
+                    .setBottomRightCorner(CornerFamily.ROUNDED, 35f)
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, 35f)
+                    .setTopRightCornerSize(0f)
+                    .build()
+            )
+            val tooltipShownCount =
+                AppUtil.getAppPreferences(App.context).getInt(Constants.TOOLTIP_SHOWN_COUNT, 0)
+            if (tooltipShownCount < 2 && !tooptipShown) {
+                tooptipShown = true
+                toolTipHandler.postDelayed(showToolTipRunnable, 500)
+                toolTipHandler.postDelayed(hideToolTipRunnable, 3000)
+                AppUtil.getAppPreferences(App.context).edit()
+                    .putInt(Constants.TOOLTIP_SHOWN_COUNT, tooltipShownCount + 1).apply()
+            }
+        }
+
+        fun cancelHandler(){
+            toolTipHandler.removeCallbacksAndMessages(null)
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
@@ -296,6 +325,7 @@ class SongPlayingFragment : Fragment() {
                         } else {
                             art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
                                 if(enabled){
+                                    handleToolTip()
                                     View.VISIBLE
                                 }
                                 else{
@@ -346,6 +376,7 @@ class SongPlayingFragment : Fragment() {
                     } else {
                         art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
                             if(enabled){
+                                handleToolTip()
                                 View.VISIBLE
                             }
                             else{
@@ -519,10 +550,6 @@ class SongPlayingFragment : Fragment() {
     var mAccelerationCurrent: Float = 0f
     var mAccelerationLast: Float = 0f
 
-    private val hideToolTipRunnable = Runnable { toolTip?.visibility = View.GONE }
-    private val showToolTipRunnable = Runnable { toolTip?.visibility = View.VISIBLE }
-    private val toolTipHandler = Handler(Looper.getMainLooper())
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -561,25 +588,6 @@ class SongPlayingFragment : Fragment() {
 
         art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
             if (enabled) {
-                // show tooptip in Lolipop and above once per session for 3 launches post install
-                toolTip!!.setShapeAppearanceModel(
-                    toolTip!!.shapeAppearanceModel
-                        .toBuilder()
-                        .setTopLeftCorner(CornerFamily.ROUNDED, 35f)
-                        .setBottomRightCorner(CornerFamily.ROUNDED, 35f)
-                        .setBottomLeftCorner(CornerFamily.ROUNDED, 35f)
-                        .setTopRightCornerSize(0f)
-                        .build()
-                )
-                val tooltipShownCount =
-                    AppUtil.getAppPreferences(context).getInt(Constants.TOOLTIP_SHOWN_COUNT, 0)
-                if (tooltipShownCount < 2 && !tooptipShown) {
-                    tooptipShown = true
-                    toolTipHandler.postDelayed(showToolTipRunnable, 500)
-                    toolTipHandler.postDelayed(hideToolTipRunnable, 3000)
-                    AppUtil.getAppPreferences(context).edit()
-                        .putInt(Constants.TOOLTIP_SHOWN_COUNT, tooltipShownCount + 1).apply()
-                }
                 View.VISIBLE
             }
             else{
@@ -825,7 +833,7 @@ class SongPlayingFragment : Fragment() {
     // if user leaves the screen destroy it
     override fun onDestroyView() {
         super.onDestroyView()
-        toolTipHandler.removeCallbacksAndMessages(null)
+        Staticated.cancelHandler()
         try {
             if (audioVisualization != null)
                 audioVisualization?.release()

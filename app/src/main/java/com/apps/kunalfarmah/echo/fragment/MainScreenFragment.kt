@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -24,7 +23,6 @@ import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.apps.kunalfarmah.echo.viewModel.SongsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Collections
 import kotlin.math.max
 
 
@@ -101,12 +99,6 @@ class MainScreenFragment : Fragment() {
         if (songsList == null || songsList?.size == 0) {
             binding.noSongs.visibility = View.VISIBLE
         } else {
-//            if (sortOrder.equals(Constants.NAME_ASC, ignoreCase = true)) {
-//                Collections.sort(songsList, Songs.Statified.nameComparator)
-//            } else if (sortOrder.equals(Constants.RECENTLY_ADDED, ignoreCase = true)) {
-//                Collections.sort(songsList, Songs.Statified.dateComparator)
-//            }
-            Collections.sort(songsList, Songs.Statified.dateComparator)
             binding.visibleLayout.visibility = View.VISIBLE
             binding.noSongs.visibility = View.GONE
             mainScreenAdapter = MainScreenAdapter(songsList as ArrayList<Songs>, myActivity as Context)
@@ -124,34 +116,5 @@ class MainScreenFragment : Fragment() {
             catch (e:java.lang.Exception){}
         }
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.main, menu)
-//    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val switcher = item.itemId
-        if (switcher == R.id.acton_sort_ascending) {
-            val editor = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
-            editor?.putString(Constants.SORTING,Constants.NAME_ASC)
-            editor?.apply()
-            if (songsList != null) {
-                Collections.sort(songsList, Songs.Statified.nameComparator)
-            }
-            mainScreenAdapter?.notifyDataSetChanged()
-            return false
-        } else if (switcher == R.id.action_sort_recent) {
-            val editor = myActivity?.getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE)?.edit()
-            editor?.putString(Constants.SORTING,Constants.RECENTLY_ADDED)
-            editor?.apply()
-            if (songsList != null) {
-                Collections.sort(songsList, Songs.Statified.dateComparator)
-            }
-            mainScreenAdapter?.notifyDataSetChanged()
-            return false
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
 
 }
