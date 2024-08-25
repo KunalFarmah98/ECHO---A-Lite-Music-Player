@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.view.View
 import androidx.annotation.Keep
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -33,32 +34,41 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 object MediaUtils {
      var mediaPlayer = ExoPlayer.Builder(App.context).build()
      private val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
-     lateinit var controllerFuture: ListenableFuture<MediaController>
-     lateinit var controller: MediaController
+     private lateinit var controllerFuture: ListenableFuture<MediaController>
+     private lateinit var controller: MediaController
      var isAlbumPlaying = false
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
+     var visualizerVisibilty = View.GONE
+     var visualizerEnabled = true
      var currAlbum = -1L
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
 
      init {
+          AppUtil.getAppPreferences(App.context).getInt(Constants.VISUALIZER, View.GONE).let{
+               visualizerVisibilty = it
+          }
           AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
                if (key.equals(Constants.SHUFFLE)) {
                     val state = sharedPreferences?.getBoolean(key, false)
                     PlaybackService.mInstance?.setCustomLayoutForShuffle(state)
                     SongPlayingFragment.Staticated.setSeekButtonsControl()
                }
+
+               if (key.equals(Constants.VISUALIZER)) {
+                    val state = sharedPreferences?.getInt(key, View.GONE)
+                    visualizerVisibilty = state ?: View.GONE
+               }
           }
-          var audioAttributes = AudioAttributes.Builder()
+          val audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                   .build()
           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-               controllerFuture = MediaController.Builder(App.context, MediaUtils.sessionToken).buildAsync()
+               controllerFuture = MediaController.Builder(App.context, sessionToken).buildAsync()
                controllerFuture.addListener(
                        {
                             controller = controllerFuture.get()
-                            // call playback command methods on the controller like `controller.play()`
                        },
                        MoreExecutors.directExecutor()
                )
@@ -219,7 +229,7 @@ object MediaUtils {
           if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                if (currSong == null)
                     return -1
-               return songsList?.indexOf(currSong)!!
+               return songsList.indexOf(currSong)
           }
           else{
                return mediaPlayer.currentMediaItemIndex
@@ -229,9 +239,9 @@ object MediaUtils {
      fun setCurrentSong(metadata: MediaMetadata?) {
           if(metadata != null && metadata.title != null) {
                val index = mediaPlayer.currentMediaItemIndex
-               SongHelper.currentSongHelper.songTitle = metadata?.title.toString()
-               SongHelper.currentSongHelper.songArtist = metadata?.artist.toString()
-               SongHelper.currentSongHelper.album = metadata?.albumTitle.toString()
+               SongHelper.currentSongHelper.songTitle = metadata.title.toString()
+               SongHelper.currentSongHelper.songArtist = metadata.artist.toString()
+               SongHelper.currentSongHelper.album = metadata.albumTitle.toString()
                SongHelper.currentSongHelper.songAlbum = songsList[index].songAlbum
                SongHelper.currentSongHelper.currentPosition = index
                SongHelper.currentSongHelper.songId = songsList[index].songID

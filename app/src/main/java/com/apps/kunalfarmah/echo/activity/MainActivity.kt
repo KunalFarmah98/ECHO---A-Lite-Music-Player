@@ -1,5 +1,6 @@
 package com.apps.kunalfarmah.echo.activity
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,16 +8,23 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -25,19 +33,26 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.Player.STATE_READY
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.apps.kunalfarmah.echo.App
 import com.apps.kunalfarmah.echo.R
 import com.apps.kunalfarmah.echo.activity.MainActivity.Statified.notify
 import com.apps.kunalfarmah.echo.adapter.NavigationDrawerAdapter
 import com.apps.kunalfarmah.echo.databinding.ActivityMainBinding
+import com.apps.kunalfarmah.echo.databinding.PermissionDialogBinding
 import com.apps.kunalfarmah.echo.fragment.FavoriteFragment
 import com.apps.kunalfarmah.echo.fragment.MainScreenFragment
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 import com.apps.kunalfarmah.echo.fragment.SearchFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
+import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
 import com.apps.kunalfarmah.echo.util.MediaUtils
@@ -49,6 +64,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -58,12 +74,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private var sharedPreferences:SharedPreferences ?= null
     private lateinit var binding: ActivityMainBinding
+    private lateinit var dialogBinding: PermissionDialogBinding
 
     private var fragments: SparseArray<Fragment> ?= null
 
     //setting up a broadcast receiver to close the activity when notification is closed
 
-    var mLocalBroadcastManager: LocalBroadcastManager? = null
     var mBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -134,11 +150,86 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if(!isGranted) {
+                AlertDialog.Builder(this).apply {
+                    setTitle(context.getString(R.string.permission_required_to_show_visualizer))
+                    setMessage(context.getString(R.string.permission_rationale))
+                    setPositiveButton("OK") { dialog, _ -> dialog.cancel() }
+                }.create().show()
+            }
+        }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun handleRecordAudioPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val dialogShownCount = AppUtil.getAppPreferences(this).getInt(Constants.DIALOG_SHOWN_COUNT,0)
+            // display dialog till shouldShowRequestPermissionRationale is true (this only happens when user denies the first time) or it is the first launch
+            if (shouldShowRequestPermissionRationale(android.Manifest.permission.RECORD_AUDIO)) {
+                displayDialog()
+            }
+            else{
+                if(dialogShownCount < 1){
+                    AppUtil.getAppPreferences(this).edit().putInt(Constants.DIALOG_SHOWN_COUNT,dialogShownCount+1).apply()
+                    displayDialog()
+                }
+            }
+        }
+    }
+
+    private fun  displayDialog() {
+        val playerView = dialogBinding.visualizer
+        val videoUri = Uri.parse("asset:///visualizer_compressed.mp4")
+        val exoPlayer = ExoPlayer.Builder(App.context).build()
+        playerView.player = exoPlayer
+        exoPlayer.repeatMode = ExoPlayer.REPEAT_MODE_ALL
+        exoPlayer.setMediaItem(MediaItem.fromUri(videoUri))
+        exoPlayer.playWhenReady = false
+        exoPlayer.prepare()
+        val dialog = AlertDialog.Builder(this).apply {
+            setView(dialogBinding.root)
+            setOnDismissListener {
+                exoPlayer.stop()
+                exoPlayer.release()
+            }
+        }.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        exoPlayer.addListener(object: Player.Listener{
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                super.onPlaybackStateChanged(playbackState)
+                if(playbackState == STATE_READY){
+                    exoPlayer.play()
+                    Handler(mainLooper).postDelayed({dialog.show()},1000)
+                }
+            }
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+                Log.e("EXOPLAYER", error.message, error)
+            }
+        })
+        dialogBinding.grantPermission.setOnClickListener{
+            dialog.dismiss()
+            requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        dialogBinding = PermissionDialogBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            handleRecordAudioPermission()
+        }
         sharedPreferences = getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE)
         // loop should be off on app launch
         sharedPreferences?.edit()?.putBoolean(Constants.LOOP,false)?.apply()
@@ -309,11 +400,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         super.onBackPressed()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && grantResults[0] == PackageManager.PERMISSION_DENIED)
-            Toast.makeText(this, "Please Provide Storage Permission to Continue", Toast.LENGTH_SHORT).show()
     }
 }

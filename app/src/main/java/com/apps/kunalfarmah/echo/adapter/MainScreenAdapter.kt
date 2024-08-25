@@ -34,7 +34,7 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
     * These variables are initially null*/
     var songDetails: ArrayList<Songs>? = null
     var mContext: Context? = null
-    lateinit var sharedPreferences: SharedPreferences
+    var sharedPreferences: SharedPreferences
     var binding: RowCustomMainscreenAdapterBinding?=null
 
     public get() = binding

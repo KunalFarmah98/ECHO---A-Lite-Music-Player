@@ -64,5 +64,16 @@ or pulling down the notification panel to do the same.</string>
     <string name="no_browser_app">No browser app installed</string>
     <string name="search_hint">Search for song, album or artist</string>
     <string name="search_fragment_empty_view_Tv">You can search for:\n\n1. Songs\n2. Albums\n3. Artists</string>
+    <string name="something_went_wrong_setting_up_the_visualizer">Something went wrong setting up the visualizer.</string>
+    <string name="permission_required_to_show_visualizer">Permission required to show Visualizer</string>
+    <string name="permission_dialog">The App requires Record Audio permission in order to show the dynamic visualizer.\n\nThe microphone detects the volume level and then adjusts the waves based on the intensity.\n\nPlease select  \"allow while using the app\"  in the permission dialog after pressing Grant Permission. This dialog will appear again only once if you deny or choose  \"only this time\"  and you would need to manually allow the permission in settings in order to use the visualizer.\n\nIt is fine if you do not want to grant this permission. The app will still work normally even without this permission but will not show the visualizer.</string>
+    <string name="permission_rationale">The App requires Record Audio permission in order to show the dynamic visualizer.\n\nPlease grant the permission in the settings.\n\nIt is fine it you do not want to grant this permission. The app will still work normally even without this permission but will not show the visualizer unless you manually allow the permission in settings.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="x">X</string>
+    <string name="visualizer_gif">visualizer gif</string>
+    <string name="switch_between_albumart_and_visualizer">Switch between Album Art and Visualizer</string>
+    <string name="album_art">album art</string>
 
 </resources>
