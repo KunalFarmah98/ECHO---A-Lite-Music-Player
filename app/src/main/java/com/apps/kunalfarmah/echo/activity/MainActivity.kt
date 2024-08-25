@@ -154,9 +154,7 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
-            if (isGranted) {
-                // do nothing
-            } else {
+            if(!isGranted) {
                 AlertDialog.Builder(this).apply {
                     setTitle(context.getString(R.string.permission_required_to_show_visualizer))
                     setMessage(context.getString(R.string.permission_rationale))
@@ -178,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                 displayDialog()
             }
             else{
-                if(dialogShownCount < 2){
+                if(dialogShownCount < 1){
                     AppUtil.getAppPreferences(this).edit().putInt(Constants.DIALOG_SHOWN_COUNT,dialogShownCount+1).apply()
                     displayDialog()
                 }
@@ -219,9 +217,6 @@ class MainActivity : AppCompatActivity() {
         dialogBinding.grantPermission.setOnClickListener{
             dialog.dismiss()
             requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-        }
-        dialogBinding.close.setOnClickListener{
-            dialog.dismiss()
         }
     }
 
