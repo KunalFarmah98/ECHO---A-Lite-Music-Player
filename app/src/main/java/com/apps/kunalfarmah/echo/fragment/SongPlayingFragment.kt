@@ -285,7 +285,7 @@ class SongPlayingFragment : Fragment() {
             if (tooltipShownCount < 2 && !tooptipShown) {
                 tooptipShown = true
                 toolTipHandler.postDelayed(showToolTipRunnable, 500)
-                toolTipHandler.postDelayed(hideToolTipRunnable, 3000)
+                toolTipHandler.postDelayed(hideToolTipRunnable, 4500)
                 AppUtil.getAppPreferences(App.context).edit()
                     .putInt(Constants.TOOLTIP_SHOWN_COUNT, tooltipShownCount + 1).apply()
             }
