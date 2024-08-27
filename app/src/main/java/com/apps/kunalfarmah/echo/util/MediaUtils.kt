@@ -183,13 +183,18 @@ object MediaUtils {
      }
 
      fun getBitmap(artworkData: ByteArray?): Bitmap?{
-          var bitmap: Bitmap ?= null
-          artworkData.let {
-               if(it!=null){
-                    bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+          try {
+               var bitmap: Bitmap? = null
+               artworkData.let {
+                    if (it != null) {
+                         bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+                    }
                }
+               return bitmap
           }
-          return bitmap
+          catch (e: Exception){
+               return  null
+          }
      }
 
      fun setMediaItems(){

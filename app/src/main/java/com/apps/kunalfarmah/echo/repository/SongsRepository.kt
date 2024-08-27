@@ -1,6 +1,7 @@
 package com.apps.kunalfarmah.echo.repository
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.apps.kunalfarmah.echo.database.CacheMapper
@@ -45,16 +46,21 @@ class SongsRepository(
     fun getSongsFromPhone(): ArrayList<Songs> {
 
         val songs = LinkedHashSet<Songs>()
-        var contentResolver = context.contentResolver
-
-        val songURI =
+        val contentResolver = context.contentResolver
+        val songURI: Uri
+        try {
+            songURI =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     MediaStore.Audio.Media.getContentUri(
-                            MediaStore.VOLUME_EXTERNAL
+                        MediaStore.VOLUME_EXTERNAL
                     )
                 } else {
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 }
+        }
+        catch (e: Exception){
+            return ArrayList(songs)
+        }
         // all music files larger than 30 seconds and are not recordings
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} <> 0 AND ${MediaStore.Audio.Media.DURATION} > 30000 AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'AUD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE '%RECORD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'PTT%'"
         val order = "${MediaStore.Audio.Media.DATE_MODIFIED} DESC"
