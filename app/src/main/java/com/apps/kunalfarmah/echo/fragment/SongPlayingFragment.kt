@@ -403,9 +403,9 @@ class SongPlayingFragment : Fragment() {
             }
 
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+                fab?.setImageResource(R.drawable.favorite_on)
             } else {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+                fab?.setImageResource(R.drawable.favorite_off)
             }
 
             BottomBarUtils.setTitle(songtitle)
@@ -794,9 +794,9 @@ class SongPlayingFragment : Fragment() {
         /*Here we check that if the song playing is a favorite, then we show a red colored heart indicating favorite else only the heart boundary
        * This action is performed whenever a new song is played, hence this will done in the playNext(), playPrevious() and onSongComplete() methods*/
         if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-            fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+            fab?.setImageResource(R.drawable.favorite_on)
         } else {
-            fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+            fab?.setImageResource(R.drawable.favorite_off)
         }
 
         if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
@@ -849,7 +849,7 @@ class SongPlayingFragment : Fragment() {
        * When the icon was clicked, if it was red in color i.e. a favorite song then we remove the song from favorites*/
         fab?.setOnClickListener {
             if (favoriteContent?.checkifIdExists(currentSongHelper.songId?.toInt() as Int) as Boolean) {
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_off))
+                fab?.setImageResource(R.drawable.favorite_off)
                 favoriteContent?.deleteFavourite(currentSongHelper.songId?.toInt() as Int)
                 // if we currently playing the favorites, remove this song from the list and the player queue and play the next song
                 if(MediaUtils.isFavouritesPlaying && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
@@ -884,7 +884,7 @@ class SongPlayingFragment : Fragment() {
             } else {
 
                 /*If the song was not a favorite, we then add it to the favorites using the method we made in our database*/
-                fab?.setImageDrawable(myActivity?.resources?.getDrawable(R.drawable.favorite_on))
+                fab?.setImageResource(R.drawable.favorite_on)
                 var album = currentSongHelper.album
                 if (null == album) {
                     album = ""

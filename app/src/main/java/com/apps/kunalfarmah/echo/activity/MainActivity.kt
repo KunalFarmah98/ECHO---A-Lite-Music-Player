@@ -141,11 +141,11 @@ class MainActivity : AppCompatActivity() {
 
     val songObserver = Observer<Boolean> {
         if (it) {
-            binding.mainLayout.nowPlayingBottomBar.playPause.setImageDrawable(resources.getDrawable(R.drawable.pause_icon))
+            binding.mainLayout.nowPlayingBottomBar.playPause.setImageResource(R.drawable.pause_icon)
             binding.mainLayout.nowPlayingBottomBar.next.visibility = View.VISIBLE
         }
         else {
-            binding.mainLayout.nowPlayingBottomBar.playPause.setImageDrawable(resources.getDrawable(R.drawable.play_icon))
+            binding.mainLayout.nowPlayingBottomBar.playPause.setImageResource(R.drawable.play_icon)
             binding.mainLayout.nowPlayingBottomBar.next.visibility = View.GONE
         }
     }
