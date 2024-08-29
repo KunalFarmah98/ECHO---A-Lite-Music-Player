@@ -188,57 +188,57 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_55sdp">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/playpausebutton"
                     android:layout_width="@dimen/_47sdp"
                     android:layout_height="@dimen/_47sdp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/pause_icon"
+                    app:srcCompat="@drawable/pause_icon"
                     android:minWidth="0dp"
                     android:minHeight="0dp" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/previousbutton"
                     android:layout_width="@dimen/_47sdp"
                     android:layout_height="@dimen/_47sdp"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="19dp"
-                    android:layout_toLeftOf="@+id/playpausebutton"
-                    android:background="@drawable/play_previous_icon"
+                    android:layout_marginEnd="19dp"
+                    android:layout_toStartOf="@+id/playpausebutton"
+                    app:srcCompat="@drawable/play_previous_icon"
                     android:minWidth="0dp"
                     android:minHeight="0dp" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/nextbutton"
                     android:layout_width="@dimen/_47sdp"
                     android:layout_height="@dimen/_47sdp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="19dp"
-                    android:layout_toRightOf="@+id/playpausebutton"
-                    android:background="@drawable/play_next_icon"
+                    android:layout_marginStart="19dp"
+                    android:layout_toEndOf="@+id/playpausebutton"
+                    app:srcCompat="@drawable/play_next_icon"
                     android:minWidth="0dp"
                     android:minHeight="0dp" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/loopButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@+id/nextbutton"
-                    android:background="@drawable/loop_white_icon"
+                    android:layout_marginStart="20dp"
+                    android:layout_toEndOf="@+id/nextbutton"
+                    app:srcCompat="@drawable/loop_white_icon"
                     android:minWidth="0dp"
                     android:minHeight="0dp" />
 
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/shuffleButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_toLeftOf="@+id/previousbutton"
-                    android:background="@drawable/shuffle_white_icon"
+                    android:layout_marginEnd="20dp"
+                    android:layout_toStartOf="@+id/previousbutton"
+                    app:srcCompat="@drawable/shuffle_white_icon"
                     android:minWidth="0dp"
                     android:minHeight="0dp" />
 

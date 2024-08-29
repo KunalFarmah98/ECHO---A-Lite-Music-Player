@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                 mediaPlayer.pause()
                 SongPlayingFragment.Statified.inform = true
                 BottomBarUtils.updatePlayPause()
-                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                SongPlayingFragment.Statified.playpausebutton?.setImageResource(R.drawable.play_icon)
             }
         }
     }

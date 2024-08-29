@@ -79,7 +79,7 @@ class SongPlayingFragment : Fragment() {
         fun playNext(shuffle: Boolean) {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopbutton?.setImageResource(R.drawable.loop_white_icon)
             //BottomBarUtils.updatePlayPause()
 
             try {
@@ -104,7 +104,7 @@ class SongPlayingFragment : Fragment() {
         fun playPrevious(shuffle: Boolean) {
 
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopbutton?.setImageResource(R.drawable.loop_white_icon)
             //BottomBarUtils.updatePlayPause()
             try {
                 mediaPlayer.prepare()
@@ -146,11 +146,11 @@ class SongPlayingFragment : Fragment() {
 
         var seekBar: SeekBar? = null
 
-        var playpausebutton: ImageButton? = null
-        var previousbutton: ImageButton? = null
-        var nextbutton: ImageButton? = null
-        var loopbutton: ImageButton? = null
-        lateinit var shufflebutton: ImageButton
+        var playpausebutton: ImageView? = null
+        var previousbutton: ImageView? = null
+        var nextbutton: ImageView? = null
+        var loopbutton: ImageView? = null
+        lateinit var shufflebutton: ImageView
 
         var albumArt: ImageView? = null
         var fab: ImageView? = null
@@ -537,10 +537,10 @@ class SongPlayingFragment : Fragment() {
         fun updateButton(Mode: String) {
 
             if (Mode.equals("pause", true)) {
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                playpausebutton?.setImageResource(R.drawable.play_icon)
 
             } else if (Mode.equals("play", true)) {
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                playpausebutton?.setImageResource(R.drawable.pause_icon)
 
             }
         }
@@ -718,7 +718,7 @@ class SongPlayingFragment : Fragment() {
             }
         }
         else {
-            arguments!!.getInt("songPosition")
+            arguments?.getInt("songPosition")?:0
         }
 
         //  Now store the song details to the current song helper object so that they can be used later
@@ -740,10 +740,10 @@ class SongPlayingFragment : Fragment() {
         if (fromBottomBar) {
             myActivity?.title = "Now Playing"
             if(mediaPlayer.playWhenReady || mediaPlayer.isPlaying){
-                playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                playpausebutton?.setImageResource(R.drawable.pause_icon)
             }
             else{
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                playpausebutton?.setImageResource(R.drawable.play_icon)
             }
             processInformation()
         } else {
@@ -772,22 +772,22 @@ class SongPlayingFragment : Fragment() {
 
         if (MediaUtils.isShuffle) {
             /*if shuffle was found activated, then we change the icon color and tun loop OFF*/
-            shufflebutton.setBackgroundResource(R.drawable.shuffle_icon)
+            shufflebutton.setImageResource(R.drawable.shuffle_icon)
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopbutton?.setImageResource(R.drawable.loop_white_icon)
         } else {
             /*Else default is set*/
-            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+            shufflebutton.setImageResource(R.drawable.shuffle_white_icon)
         }
 
         if (sharedPreferences!!.getBoolean(Constants.LOOP, false)) {
             /*If loop was activated we change the icon color and shuffle is turned OFF */
-            loopbutton?.setBackgroundResource(R.drawable.loop_icon)
+            loopbutton?.setImageResource(R.drawable.loop_icon)
             sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
             MediaUtils.isShuffle = false
-            shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+            shufflebutton.setImageResource(R.drawable.shuffle_white_icon)
         } else {
-            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopbutton?.setImageResource(R.drawable.loop_white_icon)
         }
 
 
@@ -926,17 +926,17 @@ class SongPlayingFragment : Fragment() {
             if (MediaUtils.isShuffle) {
                 MediaUtils.isShuffle = false
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
-                shufflebutton!!.setBackgroundResource(R.drawable.shuffle_white_icon)
+                shufflebutton!!.setImageResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-                loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
+                loopbutton!!.setImageResource(R.drawable.loop_white_icon)
             }
             // turning on shuffle, repeat must be disabled now
             else {
                 MediaUtils.isShuffle = true
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, true).apply()
-                shufflebutton!!.setBackgroundResource(R.drawable.shuffle_icon)
+                shufflebutton!!.setImageResource(R.drawable.shuffle_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-                loopbutton!!.setBackgroundResource(R.drawable.loop_white_icon)
+                loopbutton!!.setImageResource(R.drawable.loop_white_icon)
             }
 
             mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
@@ -945,11 +945,11 @@ class SongPlayingFragment : Fragment() {
 
 
         nextbutton?.setOnClickListener {
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            playpausebutton?.setImageResource(R.drawable.pause_icon)
             play = true
             stopPlayingCalled = true
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopbutton?.setImageResource(R.drawable.loop_white_icon)
             playNext(MediaUtils.isShuffle)
         }
 
@@ -957,11 +957,11 @@ class SongPlayingFragment : Fragment() {
 
         previousbutton?.setOnClickListener {
             /*We set the player to be playing by setting isPlaying to be true*/
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            playpausebutton?.setImageResource(R.drawable.pause_icon)
             play = true
             stopPlayingCalled = true
             sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-            loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+            loopbutton?.setImageResource(R.drawable.loop_white_icon)
             /*After all of the above is done we then play the previous song using the playPrevious() function*/
             playPrevious(MediaUtils.isShuffle)
         }
@@ -971,15 +971,15 @@ class SongPlayingFragment : Fragment() {
 
             var isRepeat = sharedPreferences!!.getBoolean(Constants.LOOP, false)
             if (isRepeat) {
-                loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                loopbutton?.setImageResource(R.drawable.loop_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-                shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+                shufflebutton.setImageResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
                 MediaUtils.isShuffle = false
             } else {
-                loopbutton?.setBackgroundResource(R.drawable.loop_icon)
+                loopbutton?.setImageResource(R.drawable.loop_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.LOOP, true).apply()
-                shufflebutton.setBackgroundResource(R.drawable.shuffle_white_icon)
+                shufflebutton.setImageResource(R.drawable.shuffle_white_icon)
                 sharedPreferences!!.edit().putBoolean(Constants.SHUFFLE, false).apply()
                 MediaUtils.isShuffle = false
             }
@@ -995,7 +995,7 @@ class SongPlayingFragment : Fragment() {
             if (MediaUtils.isMediaPlayerPlaying()) {
                 mediaPlayer.pause()
                 play = false
-                playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                playpausebutton?.setImageResource(R.drawable.play_icon)
 //                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 //                    var play = Intent(context, EchoNotification::class.java)
 //                    play.action = Constants.ACTION.CHANGE_TO_PLAY
@@ -1012,7 +1012,7 @@ class SongPlayingFragment : Fragment() {
                     mediaPlayer.play()
                     MainScreenAdapter.Statified.stopPlayingCalled = true
                     play = true
-                    playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                    playpausebutton?.setImageResource(R.drawable.pause_icon)
 //                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 //                    var play = Intent(activity, EchoNotification::class.java)
 //                    play.action = Constants.ACTION.CHANGE_TO_PAUSE
@@ -1093,7 +1093,7 @@ class SongPlayingFragment : Fragment() {
         if (MediaUtils.isMediaPlayerPlaying() as Boolean) {
             mediaPlayer.pause()
             play = false
-            playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+            playpausebutton?.setImageResource(R.drawable.play_icon)
 
             /*If the song was not playing then, we start the music player and
             * change the image to pause icon*/
@@ -1101,7 +1101,7 @@ class SongPlayingFragment : Fragment() {
             mediaPlayer.play()
             MainScreenAdapter.Statified.stopPlayingCalled = true
             play = true
-            playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+            playpausebutton?.setImageResource(R.drawable.pause_icon)
 
         }
         BottomBarUtils.updatePlayPause()
