@@ -41,7 +41,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
     override fun onBindViewHolder(holder: NavViewHolder, position: Int) {
 
         /*Here we set the icon and the name of that icon with the setBackgroundResource() and the setText() method respectively*/
-        holder.icon_GET?.setBackgroundResource(getImages?.get(position) as Int)
+        holder.icon_GET?.setImageResource(getImages?.get(position) as Int)
         holder.text_GET?.text = contentList?.get(position)
 
         /*Now since we want to open a new fragment at the click for every item we place the click listener according to the position of the items*/

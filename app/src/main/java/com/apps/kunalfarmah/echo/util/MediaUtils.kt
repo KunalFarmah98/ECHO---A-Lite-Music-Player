@@ -107,7 +107,7 @@ object MediaUtils {
                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                     super.onMediaMetadataChanged(mediaMetadata)
                     SongPlayingFragment.sharedPreferences!!.edit().putBoolean(Constants.LOOP, false).apply()
-                    SongPlayingFragment.Statified.loopbutton?.setBackgroundResource(R.drawable.loop_white_icon)
+                    SongPlayingFragment.Statified.loopbutton?.setImageResource(R.drawable.loop_white_icon)
                     updateCurrentSongIndex()
                     if (mediaMetadata.title == null && mediaMetadata.albumArtist == null && mediaMetadata.albumTitle == null) {
                          val index = mediaPlayer.currentMediaItemIndex
@@ -135,7 +135,7 @@ object MediaUtils {
                               App.context.startService(play)
                          }
                          SongPlayingFragment.Staticated.updateButton("play")
-                         SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.pause_icon)
+                         SongPlayingFragment.Statified.playpausebutton?.setImageResource(R.drawable.pause_icon)
                     } else {
                          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                               val play = Intent(App.context, EchoNotification::class.java)
@@ -144,7 +144,7 @@ object MediaUtils {
                               App.context.startService(play)
                          }
                          SongPlayingFragment.Staticated.updateButton("pause")
-                         SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                         SongPlayingFragment.Statified.playpausebutton?.setImageResource(R.drawable.play_icon)
                     }
                     BottomBarUtils.updatePlayPause()
                }
