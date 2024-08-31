@@ -94,18 +94,6 @@
             android:duplicateParentState="true" />
     </TextView>
 
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/slide"
-        android:layout_width="@dimen/_10sdp"
-        android:layout_height="@dimen/_10sdp"
-        android:layout_toLeftOf="@+id/controls"
-        android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_3sdp"
-        android:layout_alignParentBottom="true"
-        android:background="#ffffff"
-        app:srcCompat="@drawable/down"/>
-
     <LinearLayout
         android:id="@+id/controls"
         android:layout_below="@+id/song_title_nav"
@@ -153,7 +141,5 @@
         tools:ignore="UnknownId" />
 
     </LinearLayout>
-
-    <!--</LinearLayout>-->
 
 </RelativeLayout>

@@ -9,6 +9,9 @@ import com.apps.kunalfarmah.echo.database.dao.EchoDao
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
+import java.lang.IllegalArgumentException
+import java.util.IllegalFormatException
 import java.util.LinkedHashSet
 
 class SongsRepository(
@@ -43,7 +46,7 @@ class SongsRepository(
     }
 
 
-    fun getSongsFromPhone(): ArrayList<Songs> {
+    suspend fun getSongsFromPhone(): ArrayList<Songs> {
 
         val songs = LinkedHashSet<Songs>()
         val contentResolver = context.contentResolver
@@ -59,6 +62,7 @@ class SongsRepository(
                 }
         }
         catch (e: Exception){
+            delay(500)
             return ArrayList(songs)
         }
         // all music files larger than 30 seconds and are not recordings

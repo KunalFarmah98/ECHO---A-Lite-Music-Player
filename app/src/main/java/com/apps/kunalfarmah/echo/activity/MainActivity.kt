@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                 mediaPlayer.pause()
                 SongPlayingFragment.Statified.inform = true
                 BottomBarUtils.updatePlayPause()
-                SongPlayingFragment.Statified.playpausebutton?.setBackgroundResource(R.drawable.play_icon)
+                SongPlayingFragment.Statified.playpausebutton?.setImageResource(R.drawable.play_icon)
             }
         }
     }
@@ -141,11 +141,11 @@ class MainActivity : AppCompatActivity() {
 
     val songObserver = Observer<Boolean> {
         if (it) {
-            binding.mainLayout.nowPlayingBottomBar.playPause.setImageDrawable(resources.getDrawable(R.drawable.pause_icon))
+            binding.mainLayout.nowPlayingBottomBar.playPause.setImageResource(R.drawable.pause_icon)
             binding.mainLayout.nowPlayingBottomBar.next.visibility = View.VISIBLE
         }
         else {
-            binding.mainLayout.nowPlayingBottomBar.playPause.setImageDrawable(resources.getDrawable(R.drawable.play_icon))
+            binding.mainLayout.nowPlayingBottomBar.playPause.setImageResource(R.drawable.play_icon)
             binding.mainLayout.nowPlayingBottomBar.next.visibility = View.GONE
         }
     }

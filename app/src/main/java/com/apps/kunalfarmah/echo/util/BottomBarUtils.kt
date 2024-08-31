@@ -39,28 +39,28 @@ object BottomBarUtils {
 
         Handler(Looper.getMainLooper()).post {
             if (MediaUtils.isMediaPlayerPlaying() || mediaPlayer.playWhenReady) {
-                bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+                bottomBarBinding.playPause.setImageResource(R.drawable.pause_icon)
                 if(mediaPlayer.hasNextMediaItem())
                     bottomBarBinding.next.visibility = View.VISIBLE
                 else
                     bottomBarBinding.next.visibility = View.GONE
             } else {
-                bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
+                bottomBarBinding.playPause.setImageResource(R.drawable.play_icon)
                 bottomBarBinding.next.visibility = View.GONE
             }
         }
 
         if(MediaUtils.isAllSongsPLaying){
-            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+            bottomBarBinding.songType.setImageResource(R.drawable.baseline_audiotrack_white_24dp)
         }
         else if(MediaUtils.isAlbumPlaying){
-            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_album_white_24dp))
+            bottomBarBinding.songType.setImageResource(R.drawable.baseline_album_white_24dp)
         }
         else if(MediaUtils.isFavouritesPlaying){
             bottomBarBinding.songType.setImageResource(R.drawable.baseline_favorite_white_24dp)
         }
         else{
-            bottomBarBinding.songType.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+            bottomBarBinding.songType.setImageResource(R.drawable.baseline_audiotrack_white_24dp)
         }
         bottomBarBinding.songTitle.text = currentSongHelper.songTitle
         var artist = currentSongHelper.songArtist
@@ -121,7 +121,7 @@ object BottomBarUtils {
             if (MediaUtils.isMediaPlayerPlaying()) {
 
                 mediaPlayer.pause()
-                bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.play_icon))
+                bottomBarBinding.playPause.setImageResource(R.drawable.play_icon)
                 bottomBarBinding.next.visibility = View.GONE
 //                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 //                    var play = Intent(App.context, EchoNotification::class.java)
@@ -143,7 +143,7 @@ object BottomBarUtils {
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
 
-                    bottomBarBinding.playPause.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+                    bottomBarBinding.playPause.setImageResource(R.drawable.pause_icon)
                     if(mediaPlayer.hasNextMediaItem())
                         bottomBarBinding.next.visibility = View.VISIBLE
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -174,7 +174,7 @@ object BottomBarUtils {
                     catch (ignored: Exception){}
                     mediaPlayer.seekTo(trackPosition.toLong())
                     mediaPlayer.play()
-                    bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
+                    bottomBarBinding.playPause.setImageResource(R.drawable.pause_icon)
                     if(mediaPlayer.hasNextMediaItem())
                         bottomBarBinding.next.visibility = View.VISIBLE
 //                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -188,7 +188,7 @@ object BottomBarUtils {
         }
         bottomBarBinding.next.setOnClickListener {
             SongPlayingFragment.playNext(MediaUtils.isShuffle)
-            bottomBarBinding.playPause.setImageDrawable(myActivity.resources.getDrawable(R.drawable.pause_icon))
+            bottomBarBinding.playPause.setImageResource(R.drawable.pause_icon)
         }
     }
 
@@ -196,11 +196,7 @@ object BottomBarUtils {
     fun setAlbumArt(songAlbum: Long?) {
         var albumId = songAlbum
         if (albumId == null || albumId <= 0L) {
-            bottomBarBinding?.songImg?.setImageDrawable(
-                App.context.resources?.getDrawable(
-                    R.drawable.echo_icon
-                )
-            )
+            bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             return
         }
         try {
@@ -215,11 +211,7 @@ object BottomBarUtils {
 
     private fun loadAlbumArt(artwork: Bitmap?) {
         if (artwork == null) {
-            bottomBarBinding?.songImg?.setImageDrawable(
-                    App.context.resources?.getDrawable(
-                            R.drawable.echo_icon
-                    )
-            )
+            bottomBarBinding?.songImg?.setImageResource(R.drawable.echo_icon)
             return
         }
         try {
@@ -257,16 +249,16 @@ object BottomBarUtils {
         }
 
         if(MediaUtils.isAllSongsPLaying){
-            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+            bottomBarBinding?.songType?.setImageResource(R.drawable.baseline_audiotrack_white_24dp)
         }
         else if(MediaUtils.isAlbumPlaying){
-            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_album_white_24dp))
+            bottomBarBinding?.songType?.setImageResource(R.drawable.baseline_album_white_24dp)
         }
         else if(MediaUtils.isFavouritesPlaying){
             bottomBarBinding?.songType?.setImageResource(R.drawable.baseline_favorite_white_24dp)
         }
         else{
-            bottomBarBinding?.songType?.setImageDrawable(App.context.resources.getDrawable(R.drawable.baseline_audiotrack_white_24dp))
+            bottomBarBinding?.songType?.setImageResource(R.drawable.baseline_audiotrack_white_24dp)
         }
     }
 
@@ -341,11 +333,11 @@ object BottomBarUtils {
         if(MediaUtils.isMediaPlayerPlaying() || mediaPlayer.playWhenReady){
             if(mediaPlayer.hasNextMediaItem())
                 bottomBarBinding?.next?.visibility = View.VISIBLE
-            bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.pause_icon))
+            bottomBarBinding?.playPause?.setImageResource(R.drawable.pause_icon)
         }
         else{
             bottomBarBinding?.next?.visibility = View.GONE
-            bottomBarBinding?.playPause?.setImageDrawable(App.context.resources.getDrawable(R.drawable.play_icon))
+            bottomBarBinding?.playPause?.setImageResource(R.drawable.play_icon)
         }
     }
 }
