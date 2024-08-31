@@ -510,9 +510,15 @@ public class EchoNotification extends Service {
 
         Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                 .setStyle(mediaStyle)
-                .setSmallIcon(R.drawable.ic_echo_icon)
                 .setContentIntent(pendingIntent)
                 .setDeleteIntent(pcloseIntent);
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            builder.setSmallIcon(R.drawable.echo_icon);
+        }
+        else{
+            builder.setSmallIcon(R.drawable.ic_notification_icon);
+        }
 
         addActions(builder);
 
