@@ -21,7 +21,7 @@ class SongsRepository(
 ){
 
     suspend fun fetchSongs(){
-        var songs = getSongsFromPhone()
+        val songs = getSongsFromPhone()
         echoDao.deleteAllSongs()
         echoDao.insertAll(cacheMapper.mapToEntityList(songs))
     }
@@ -31,7 +31,7 @@ class SongsRepository(
     }
 
     suspend fun fetchAlbums(){
-        var albums = echoDao.getAllAlbums()
+        val albums = echoDao.getAllAlbums()
         if(albums.isNotEmpty())
             echoDao.deleteAllAlbums()
         echoDao.insertAllAlbums(albums)
@@ -82,18 +82,18 @@ class SongsRepository(
 
             while (songCursor.moveToNext()) {
                 // getting the data from the indices
-                var currentID = songCursor.getLong(songId)
-                var currTitle = songCursor.getString(songTitle)
-                var currArtist = songCursor.getString(songArtist)
-                var album = songCursor.getString(songAlbumName)
-                var currData = songCursor.getString(songData)
-                var currdate = songCursor.getLong(dateModified)*1000
-                var currAlbum = songCursor.getLong(songAlbum)
+                val currentID = songCursor.getLong(songId)
+                val currTitle = songCursor.getString(songTitle)
+                val currArtist = songCursor.getString(songArtist)
+                val album = songCursor.getString(songAlbumName)
+                val currData = songCursor.getString(songData)
+                val currDate = songCursor.getLong(dateModified)*1000
+                val currAlbum = songCursor.getLong(songAlbum)
 
                 try {
-                    songs.add(Songs(currentID, currTitle,  currArtist, album, currData, currdate, currAlbum))
+                    songs.add(Songs(currentID, currTitle,  currArtist, album, currData, currDate, currAlbum))
                 }
-                catch (e:Exception){
+                catch (_:Exception){
                 }
             }
         }

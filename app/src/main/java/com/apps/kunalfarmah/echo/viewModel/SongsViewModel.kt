@@ -17,7 +17,7 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
     private val _songsList: MutableLiveData<List<Songs>> = MutableLiveData()
     private val _albumSongsList: MutableLiveData<List<Songs>> = MutableLiveData()
     private val _albumsList: MutableLiveData<List<SongAlbum>> = MutableLiveData()
-    private val _isDataReady: MutableLiveData<Boolean> = MutableLiveData()
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
     private val _isSongPlaying : MutableLiveData<Boolean> = MutableLiveData()
 
     val songsList: MutableLiveData<List<Songs>>
@@ -27,8 +27,8 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         get() = _albumSongsList
 
 
-    val isDataReady: MutableLiveData<Boolean>
-        get() = _isDataReady
+    val isLoading: MutableLiveData<Boolean>
+        get() = _isLoading
 
     val isSongPlaying: MutableLiveData<Boolean>
         get() = _isSongPlaying
@@ -45,19 +45,18 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         viewModelScope.launch {
             songsRepository.fetchSongs()
             songsRepository.fetchAlbums()
-        }.invokeOnCompletion {
-            isDataReady.value = true
         }
     }
 
     fun getAllSongs() {
         viewModelScope.launch {
-            list = songsRepository.getSongsFromPhone()//songsRepository.getAllSongs()
+            isLoading.value = true
+            list = songsRepository.getSongsFromPhone()
         }.invokeOnCompletion {
             songsList.value = list?:ArrayList()
-            //MediaUtils.songsList = (list ?: ArrayList()) as ArrayList<Songs>
             MediaUtils.allSongsList = (list ?: ArrayList()) as ArrayList<Songs>
             MediaUtils.setMediaItems()
+            isLoading.value = false
         }
     }
 

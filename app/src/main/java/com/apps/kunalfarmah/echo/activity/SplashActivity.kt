@@ -157,25 +157,18 @@ class SplashActivity : AppCompatActivity() {
 
     private fun displayActivity() {
         viewModel.getAllSongs()
-        // observe song list, if it has songs, go ahead
         viewModel.songsList.observe(this) {
-            if (viewModel.isDataReady.value == true) {
-                val startAct = Intent(this@SplashActivity, MainActivity::class.java).apply {
-                    `package` = this@SplashActivity.packageName
-                }
-                startActivity(startAct)
-                this.finish()
-                viewModel.isDataReady.value = false
-                return@observe
+            if (viewModel.isLoading.value == false) {
+                // delay launch only on pre android 12 devices
+                Handler(mainLooper).postDelayed({
+                    val startAct = Intent(this@SplashActivity, MainActivity::class.java).apply {
+                        `package` = this@SplashActivity.packageName
+                    }
+                    startActivity(startAct)
+                    this.finish()
+                }, if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 1500 else 0)
+
             }
-            // delay launch only on pre android 12 devices
-            Handler(mainLooper).postDelayed({
-                val startAct = Intent(this@SplashActivity, MainActivity::class.java).apply {
-                    `package` = this@SplashActivity.packageName
-                }
-                startActivity(startAct)
-                this.finish()
-            }, if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 1500 else 0)
         }
     }
 
