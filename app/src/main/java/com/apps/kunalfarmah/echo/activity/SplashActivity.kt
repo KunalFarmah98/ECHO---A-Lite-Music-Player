@@ -136,11 +136,11 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private fun hasPermissions(context: Context, vararg Permissions: String): Boolean {
+    private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
 
-        var hasAllPermisisons = true
+        var hasAllPermissions = true
 
-        for (permission in Permissions) {
+        for (permission in permissions) {
             val res = context.checkCallingOrSelfPermission(permission)
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if(permission === android.Manifest.permission.READ_EXTERNAL_STORAGE || permission ===
@@ -149,9 +149,9 @@ class SplashActivity : AppCompatActivity() {
                 }
             }
             if (res != PackageManager.PERMISSION_GRANTED)
-                hasAllPermisisons = false
+                hasAllPermissions = false
         }
-        return hasAllPermisisons
+        return hasAllPermissions
     }
 
 
