@@ -24,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private val viewModel: SongsViewModel by viewModels()
-    private var permission_String = arrayOf("")
+    private var permissionString = arrayOf("")
     private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,23 +65,23 @@ class SplashActivity : AppCompatActivity() {
 
     private fun handlePermissions() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            permission_String = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            permissionString = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 android.Manifest.permission.MODIFY_AUDIO_SETTINGS)
             // request RECORD_AUDIO at runtime following rationale
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                permission_String.plus(android.Manifest.permission.RECORD_AUDIO)
+                permissionString.plus(android.Manifest.permission.RECORD_AUDIO)
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            permission_String = arrayOf(
+            permissionString = arrayOf(
                 android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.ACCESS_MEDIA_LOCATION,
             )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission_String = arrayOf(
+            permissionString = arrayOf(
                 android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
                 android.Manifest.permission.ACCESS_MEDIA_LOCATION,
                 android.Manifest.permission.READ_MEDIA_AUDIO,
@@ -90,14 +90,14 @@ class SplashActivity : AppCompatActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (!hasPermissions(this@SplashActivity, *permission_String)) {
-                ActivityCompat.requestPermissions(this@SplashActivity, permission_String, 1001)
+            if (!hasPermissions(this@SplashActivity, *permissionString)) {
+                ActivityCompat.requestPermissions(this@SplashActivity, permissionString, 1001)
             } else {
                 displayActivity()
             }
         } else {
-            if (!hasPermissions(this@SplashActivity, *permission_String)) {
-                ActivityCompat.requestPermissions(this@SplashActivity, permission_String, 131)
+            if (!hasPermissions(this@SplashActivity, *permissionString)) {
+                ActivityCompat.requestPermissions(this@SplashActivity, permissionString, 131)
             } else {
                 displayActivity()
             }
@@ -136,7 +136,7 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    fun hasPermissions(context: Context, vararg Permissions: String): Boolean {
+    private fun hasPermissions(context: Context, vararg Permissions: String): Boolean {
 
         var hasAllPermisisons = true
 
@@ -155,7 +155,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
 
-    fun displayActivity() {
+    private fun displayActivity() {
         viewModel.getAllSongs()
         // observe song list, if it has songs, go ahead
         viewModel.songsList.observe(this) {
