@@ -169,7 +169,7 @@ class SplashActivity : AppCompatActivity() {
                 return@observe
             }
             // delay launch only on pre android 12 devices
-            Handler().postDelayed({
+            Handler(mainLooper).postDelayed({
                 val startAct = Intent(this@SplashActivity, MainActivity::class.java).apply {
                     `package` = this@SplashActivity.packageName
                 }
