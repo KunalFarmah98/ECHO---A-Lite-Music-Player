@@ -9,9 +9,6 @@ import com.apps.kunalfarmah.echo.database.dao.EchoDao
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
-import java.lang.IllegalArgumentException
-import java.util.IllegalFormatException
 import java.util.LinkedHashSet
 
 class SongsRepository(
@@ -32,8 +29,7 @@ class SongsRepository(
 
     suspend fun fetchAlbums(){
         val albums = echoDao.getAllAlbums()
-        if(albums.isNotEmpty())
-            echoDao.deleteAllAlbums()
+        echoDao.deleteAllAlbums()
         echoDao.insertAllAlbums(albums)
     }
 
@@ -62,7 +58,6 @@ class SongsRepository(
                 }
         }
         catch (e: Exception){
-            delay(500)
             return ArrayList(songs)
         }
         // all music files larger than 30 seconds and are not recordings
