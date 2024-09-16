@@ -200,6 +200,7 @@ class MainActivity : AppCompatActivity() {
                 exoPlayer.release()
             }
         }.create()
+        dialog.setCancelable(false)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         exoPlayer.addListener(object: Player.Listener{
             override fun onPlaybackStateChanged(playbackState: Int) {
